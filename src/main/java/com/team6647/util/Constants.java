@@ -49,4 +49,21 @@ public class Constants {
                 wheelBase, swerveKinematics, maxSpeed, maxAcceleration, maxAngularVelocity, maxAngularAcceleration);
     }
 
+    public static class ShooterConstants{
+        public static final int shooterMotorLeftID = 19; //checar cual es el ID correcto 
+        public static final int shooterMotorRightID = 20; //checar cual es el ID correcto
+
+        public static final double shooterKp = 0; //calcular Kp
+        public static final double shooterKi = 0; //calcular Ki
+        public static final double shooterKd = 0; //calcular Kd
+
+        public static final double shooterSpeed = 0.25; //calcular shooter speed
+        public static final double passiveStopped = 0.1; //calcular passive stopped
+        public static final int beamBrakePort = 1; //checar cual es el beam break port
+                
+        public static final double armEncoderPositionConversionFactor = 360;
+        public static final double armEncoderZeroOffset = 0; //checar cual es el offset
+        public static final boolean armEncoderInverted = false;
+    }
+
 }
