@@ -14,6 +14,8 @@
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
@@ -21,12 +23,25 @@ import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 public class AndromedaModuleIOSim implements AndromedaModuleIO {
     private static final double LOOP_PERIOD_SECS = 0.02;
 
-    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getFalcon500(1), 6.75, 0.025);
-    private DCMotorSim turnSim = new DCMotorSim(DCMotor.getFalcon500(1), 150.0 / 7.0, 0.004);
+    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), 6.75, 0.025);
+    private DCMotorSim turnSim = new DCMotorSim(DCMotor.getNEO(1), 150.0 / 7.0, 0.004);
 
     private final Rotation2d turnAbsoluteInitPosition = new Rotation2d(Math.random() * 2.0 * Math.PI);
     private double driveAppliedVolts = 0.0;
     private double turnAppliedVolts = 0.0;
+
+    private final SimpleMotorFeedforward driveFeedforward;
+    private final PIDController driveFeedback;
+    private final PIDController turnFeedback;
+
+    private double wheelRadius;
+
+    public AndromedaModuleIOSim(double wheelDiameter) {
+        driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
+        driveFeedback = new PIDController(0.1, 0.0, 0.0);
+        turnFeedback = new PIDController(10.0, 0.0, 0.0);
+        wheelRadius = wheelDiameter / 2;
+    }
 
     @Override
     public void updateInputs(AndromedaModuleIOInputs inputs) {
@@ -43,13 +58,20 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
     }
 
     @Override
-    public void setDriveVoltage(double volts, boolean internalControl) {
-        driveAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    public void setDriveVelocity(double velocity) {
+
+        double velocityRadPerSec = velocity / wheelRadius;
+
+        double volts = driveFeedforward.calculate(velocityRadPerSec)
+                + driveFeedback.calculate(driveSim.getAngularVelocityRadPerSec(), velocityRadPerSec),
+
+                driveAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
         driveSim.setInputVoltage(driveAppliedVolts);
     }
 
     @Override
-    public void setTurnVoltage(double volts, boolean internalControl) {
+    public void setTurnPosition(Rotation2d rotation2d) {
+        double volts = turnFeedback.calculate(turnSim.getAngularPositionRotations());
         turnAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
         turnSim.setInputVoltage(turnAppliedVolts);
     }

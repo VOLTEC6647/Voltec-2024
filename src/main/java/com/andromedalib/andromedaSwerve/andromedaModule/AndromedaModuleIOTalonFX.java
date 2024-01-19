@@ -4,6 +4,8 @@
 
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
+import javax.swing.text.Position;
+
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.ModuleMotorConfig;
 import com.andromedalib.math.Conversions;
@@ -12,13 +14,14 @@ import com.andromedalib.motorControllers.SuperTalonFX;
 import com.andromedalib.sensors.SuperCANCoder;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
@@ -42,6 +45,12 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
         private final StatusSignal<Double> turnAppliedVolts;
         private final StatusSignal<Double> turnCurrent;
 
+        private VelocityVoltage driveVelocityControl = new VelocityVoltage(0).withSlot(0);
+        private VoltageOut driveCharacterizationControl = new VoltageOut(0);
+        private PositionVoltage turnPositionControl = new PositionVoltage(0).withSlot(0);
+
+        private SimpleMotorFeedforward driveFeedforward;
+
         public AndromedaModuleIOTalonFX(int moduleNumber, AndromedaModuleConfig moduleConfig) {
                 this.andromedaModuleConfig = moduleConfig;
 
@@ -51,12 +60,11 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                         true);
                 }
 
-                this.driveMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.driveMotorID,
-                                GlobalIdleMode.brake,
+                this.driveMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.driveMotorID, GlobalIdleMode.brake,
                                 andromedaModuleConfig.driveMotorConfiguration,
                                 andromedaModuleConfig.swerveCANBus);
                 this.steeringMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.steeringMotorID,
-                                GlobalIdleMode.brake,
+                                GlobalIdleMode.Coast,
                                 andromedaModuleConfig.turningMotorConfiguration,
                                 andromedaModuleConfig.swerveCANBus);
 
@@ -64,8 +72,9 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 andromedaModuleConfig.cancoderConfiguration,
                                 andromedaModuleConfig.swerveCANBus);
 
+                driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
+
                 steeringMotor.setPosition(0);
-                driveMotor.setPosition(0);
 
                 resetAbsolutePosition(moduleConfig.moduleIDs.angleOffset);
 
@@ -120,21 +129,25 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
         }
 
         @Override
-        public void setTurnVoltage(double volts, boolean internaControl) {
-                if (internaControl) {
-                        steeringMotor.setControl(new PositionVoltage(volts));
-                } else {
-                        steeringMotor.setControl(new VoltageOut(volts));
-                }
+        public void setTurnPosition(Rotation2d angle) {
+                // steeringMotor.setControl(driveVelocityControl.withVelocity(volts));
+                steeringMotor.setControl(turnPositionControl.withPosition(angle.getRotations()));
         }
 
         @Override
-        public void setDriveVoltage(double volts, boolean internalControl) {
-                if (internalControl) {
-                        driveMotor.setControl(new VelocityVoltage(volts));
-                } else {
-                        driveMotor.setControl(new VoltageOut(volts));
-                }
+        public void setDriveVelocity(double velocity) {
+                driveVelocityControl.Velocity = Conversions.MPSToRPS(velocity,
+                                andromedaModuleConfig.wheelCircumference);
+                // TODO IMPLEMENT FEEDFORWARD
+                // driveVelocityControl.FeedForward =
+                // driveFeedforward.calculate(desiredState.speedMetersPerSecond);
+                driveMotor.setControl(driveVelocityControl.withVelocity(velocity)
+                                .withFeedForward(driveFeedforward.calculate(velocity)));
+        }
+
+        @Override
+        public void runDriveCharacterization(double volts) {
+                driveMotor.setControl(driveCharacterizationControl.withOutput(volts));
         }
 
         public Rotation2d getAbsoluteRotations() {
