@@ -24,7 +24,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.SIM;
+                public static final Mode currentMode = Mode.REAL;
         }
 
         public static class DriveConstants {
