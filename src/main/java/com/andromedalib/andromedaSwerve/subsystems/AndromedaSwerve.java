@@ -3,8 +3,6 @@
  */
 package com.andromedalib.andromedaSwerve.subsystems;
 
-import java.util.function.Supplier;
-
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModule;
@@ -13,7 +11,6 @@ import com.andromedalib.andromedaSwerve.andromedaModule.GyroIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIOInputsAutoLogged;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,6 +20,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.Voltage;
@@ -42,9 +40,7 @@ public class AndromedaSwerve extends SubsystemBase {
 
   private SwerveDriveOdometry odometry;
 
-  private boolean internalControl;
-
-/*   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism(
@@ -58,29 +54,23 @@ public class AndromedaSwerve extends SubsystemBase {
           // state in
           // WPILog with this subsystem's name ("drive")
           this));
- */
-  /*
-   * private SwerveDriveOdometry odometry;
-   */
-  private AndromedaSwerve(boolean internalControl, Mode mode, GyroIO gyro, AndromedaModuleIO[] modulesIO,
-      AndromedaSwerveConfig profileConfig) {
+
+  private AndromedaSwerve(GyroIO gyro, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig profileConfig) {
     this.andromedaProfile = profileConfig;
-    this.internalControl = internalControl;
-    modules[0] = new AndromedaModule(0, "Front Right", andromedaProfile, mode, modulesIO[0]);
-    modules[1] = new AndromedaModule(1, "Back Right", andromedaProfile, mode, modulesIO[1]);
-    modules[2] = new AndromedaModule(2, "Back Left", andromedaProfile, mode, modulesIO[2]);
-    modules[3] = new AndromedaModule(3, "Front Left", andromedaProfile, mode, modulesIO[3]);
+    modules[0] = new AndromedaModule(0, "Front Right", andromedaProfile, modulesIO[0]);
+    modules[1] = new AndromedaModule(1, "Back Right", andromedaProfile, modulesIO[1]);
+    modules[2] = new AndromedaModule(2, "Back Left", andromedaProfile, modulesIO[2]);
+    modules[3] = new AndromedaModule(3, "Front Left", andromedaProfile, modulesIO[3]);
 
     this.gyroIO = gyro;
 
     odometry = new SwerveDriveOdometry(profileConfig.swerveKinematics, getSwerveAngle(), getPositions());
   }
 
-  public static AndromedaSwerve getInstance(boolean internalControl, Mode mode, GyroIO gyro,
-      AndromedaModuleIO[] modules,
+  public static AndromedaSwerve getInstance(GyroIO gyro, AndromedaModuleIO[] modules,
       AndromedaSwerveConfig profileConfig) {
     if (instance == null) {
-      instance = new AndromedaSwerve(internalControl, mode, gyro, modules, profileConfig);
+      instance = new AndromedaSwerve(gyro, modules, profileConfig);
     }
     return instance;
   }
@@ -97,10 +87,11 @@ public class AndromedaSwerve extends SubsystemBase {
     // Log empty setpoint states when disabled
     if (DriverStation.isDisabled()) {
       Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
+      Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
-    
-    odometry.update(getSwerveAngle(), getPositions());
+    Logger.recordOutput("SwerveStates/Measured", getModuleStates());
 
+    odometry.update(getSwerveAngle(), getPositions());
   }
 
   /**
@@ -118,7 +109,7 @@ public class AndromedaSwerve extends SubsystemBase {
                 getSwerveAngle())
             : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
 
-    setModuleStates(swerveModuleStates, internalControl);
+    setModuleStates(swerveModuleStates);
   }
 
   /**
@@ -137,9 +128,17 @@ public class AndromedaSwerve extends SubsystemBase {
   @AutoLogOutput(key = "SwerveStates/Measured")
   private SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
-    for (int i = 0; i < 4; i++) {
-      states[i] = modules[i].getState();
-    }
+
+    states[0] = modules[1].getState();
+    states[1] = modules[1].getState();
+    states[2] = modules[2].getState();
+    states[3] = modules[3].getState();
+
+    /*
+     * for (int i = 0; i < 4; i++) {
+     * states[i] = modules[i].getState();
+     * }
+     */
     return states;
   }
 
@@ -170,28 +169,30 @@ public class AndromedaSwerve extends SubsystemBase {
    * @param desiredStates Desired SwerveModuleState array
    * @param isOpenLoop    True if open loop driving
    */
-  public void setModuleStates(SwerveModuleState[] desiredStates, boolean internalControl) {
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, andromedaProfile.maxSpeed);
 
     Logger.recordOutput("SwerveStates/Setpoints", desiredStates);
 
     for (AndromedaModule andromedaModule : modules) {
-      andromedaModule.setDesiredState(desiredStates[andromedaModule.getModuleNumber()], internalControl);
+      andromedaModule.setDesiredState(desiredStates[andromedaModule.getModuleNumber()]);
     }
   }
 
-  /* public void runSwerveCharacterization(double volts) {
+  public void runSwerveCharacterization(double volts) {
     for (AndromedaModule andromedaModule : modules) {
       andromedaModule.runCharacterization(volts);
     }
-  } */
+  }
 
   // We can bind these to buttons, use them as autonomous routines, whatever
-  /* public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.quasistatic(direction);
   }
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
-  } */
+  }
+
 }
