@@ -12,7 +12,6 @@ public interface AndromedaModuleIO {
         public double drivePosition = 0.0;
         public double driveAppliedVolts = 0.0;
 
-
         public Rotation2d steerAngle = new Rotation2d(0.0);
         public double turnAppliedVolts = 0.0;
         public double turnVelocity = 0.0;
@@ -24,10 +23,15 @@ public interface AndromedaModuleIO {
     }
 
     /** Sets the turn motor to the position */
-    public default void setTurnVoltage(double volts, boolean internaControl) {
+    public default void setTurnPosition(Rotation2d angle) {
     }
 
     /** Sets the drive motor to a voltage */
-    public default void setDriveVoltage(double volts, boolean internalControl) {
+    public default void setDriveVelocity(double velocity) {
     }
+
+    /** Runs the drive motor for characterization */
+    public default void runDriveCharacterization(double volts) {
+    }
+
 }
