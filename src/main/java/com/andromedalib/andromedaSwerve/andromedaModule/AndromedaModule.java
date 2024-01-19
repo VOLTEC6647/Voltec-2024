@@ -93,4 +93,9 @@ public class AndromedaModule {
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(inputs.drivePosition, getAngle());
     }
+
+    public void runCharacterization(double volts) {
+        io.setTurnPosition(new Rotation2d());
+        io.runDriveCharacterization(volts);
+    }
 }
