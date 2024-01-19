@@ -103,9 +103,9 @@ public class AndromedaModuleConfig {
         double steeringGearRatio = ((150.0 / 7.0) / 1.0);
         double driveGearRatio = (6.75 / 1.0);
 
-        double turningKp = 0.2;
+        double turningKp = 8.9;
         double turningKi = 0.0;
-        double turningKd = 0.0;
+        double turningKd = 0.089;
 
         double driveKp = 0.3;
         double driveKi = 0.0;
@@ -158,11 +158,6 @@ public class AndromedaModuleConfig {
         /* CANCoder */
 
         cancoderConfig.MagnetSensor.SensorDirection = canCoderInvert;
-        //REMOVED OFFSET
-        cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
-
-        // cancoderConfig.MagnetSensor.MagnetOffset =
-        // moduleIDs.angleOffset.getRotations();
 
         /* Turning Motor */
 
@@ -180,6 +175,9 @@ public class AndromedaModuleConfig {
         turningMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = angleEnableCurrentLimit;
         turningMotorConfig.CurrentLimits.SupplyCurrentThreshold = anglePeakCurrentLimit;
         turningMotorConfig.CurrentLimits.SupplyTimeThreshold = anglePeakCurrentDuration;
+
+        turningMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
+
 
         return new AndromedaModuleConfig(moduleIDs, driveMotorConfig, turningMotorConfig, cancoderConfig, wheelDiameter,
                 swerveCANBus, motorConfig);
