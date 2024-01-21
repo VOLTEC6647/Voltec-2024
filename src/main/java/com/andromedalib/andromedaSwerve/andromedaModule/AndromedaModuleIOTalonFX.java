@@ -4,8 +4,6 @@
 
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
-import javax.swing.text.Position;
-
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.ModuleMotorConfig;
 import com.andromedalib.math.Conversions;
@@ -21,7 +19,6 @@ import com.ctre.phoenix6.controls.VoltageOut;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.Velocity;
 import edu.wpi.first.wpilibj.DriverStation;
 
 /**
@@ -115,10 +112,18 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 turnAppliedVolts,
                                 turnCurrent);
 
-                inputs.drivePosition = Units.rotationsToRadians(drivePosition.getValueAsDouble());
-                inputs.driveVelocity = Units.rotationsToRadians(driveMotor.getVelocity().getValueAsDouble())
-                                * (andromedaModuleConfig.wheelDiameter / 2);
+                inputs.drivePosition = driveMotor.getPosition().getValue();
+                inputs.driveVelocity = driveMotor.getVelocity().getValue();
 
+                /*
+                 * inputs.drivePosition =
+                 * Units.rotationsToRadians(drivePosition.getValueAsDouble())
+                 * (andromedaModuleConfig.wheelDiameter / 2);
+                 * inputs.driveVelocity = Units
+                 * .rotationsPerMinuteToRadiansPerSecond(driveMotor.getVelocity().
+                 * getValueAsDouble())
+                 * (andromedaModuleConfig.wheelDiameter / 2);
+                 */
                 inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
 
                 inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValue());
@@ -130,7 +135,6 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
 
         @Override
         public void setTurnPosition(Rotation2d angle) {
-                // steeringMotor.setControl(driveVelocityControl.withVelocity(volts));
                 steeringMotor.setControl(turnPositionControl.withPosition(angle.getRotations()));
         }
 
@@ -138,9 +142,6 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
         public void setDriveVelocity(double velocity) {
                 driveVelocityControl.Velocity = Conversions.MPSToRPS(velocity,
                                 andromedaModuleConfig.wheelCircumference);
-                // TODO IMPLEMENT FEEDFORWARD
-                // driveVelocityControl.FeedForward =
-                // driveFeedforward.calculate(desiredState.speedMetersPerSecond);
                 driveMotor.setControl(driveVelocityControl.withVelocity(velocity)
                                 .withFeedForward(driveFeedforward.calculate(velocity)));
         }

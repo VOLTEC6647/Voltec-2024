@@ -103,7 +103,7 @@ public class AndromedaModuleConfig {
         double steeringGearRatio = ((150.0 / 7.0) / 1.0);
         double driveGearRatio = (6.75 / 1.0);
 
-        double turningKp = 8.9;
+        double turningKp = 9.9;
         double turningKi = 0.0;
         double turningKd = 0.089;
 
