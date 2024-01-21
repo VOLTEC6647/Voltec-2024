@@ -72,5 +72,4 @@ public class Robot extends SuperRobot {
     super.setRobotContainer(container, TelemetryManager.getInstance(), false);
     super.robotInit();
   }
-  
 }

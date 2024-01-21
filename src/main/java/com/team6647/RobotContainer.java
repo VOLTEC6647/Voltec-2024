@@ -16,16 +16,22 @@ import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.AndromedaPr
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.team6647.subsystems.AutoSubsystem;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
 
         private AndromedaSwerve andromedaSwerve;
+        private AutoSubsystem autoSubsystem;
 
         private RobotContainer() {
         }
@@ -97,6 +103,8 @@ public class RobotContainer extends SuperRobotContainer {
                                                 }, DriveConstants.andromedaSwerveConfig);
                                 break;
                 }
+
+                autoSubsystem = AutoSubsystem.getInstance(andromedaSwerve);
         }
 
         @Override
@@ -119,5 +127,11 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.driverController1.y().and(OperatorConstants.driverController1.pov(180))
                                 .whileTrue(andromedaSwerve.sysIdDynamic(Direction.kReverse));
 
+        }
+
+        @Override
+        public Command getAutonomousCommand() {
+
+                return new PathPlannerAuto("First Auto");
         }
 }
