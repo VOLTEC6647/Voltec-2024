@@ -7,6 +7,7 @@ import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -44,12 +45,13 @@ public class Constants {
                                 new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0),
                                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
                                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0));
-
-                public static final double maxSpeed = 5.4864;
-                public static final double maxAcceleration = maxSpeed * 0.85;
+                                
+                public static final double maxSpeed = 4.641013629172587;
+                public static final double maxAcceleration = 13.804786438404268;
                 /** Radians per Second */
-                public static final double maxAngularVelocity = 11.5;
-                public static final double maxAngularAcceleration = 3.5;
+                public static final double maxAngularVelocity = 9.872376245899392;
+                public static final double maxAngularAcceleration = 0.09714;
+                
 
                 public static final AndromedaSwerveConfig andromedaSwerveConfig = new AndromedaSwerveConfig(0.1,
                                 trackWidth,

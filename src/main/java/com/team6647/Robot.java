@@ -43,7 +43,7 @@ public class Robot extends SuperRobot {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
 
-        // Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
@@ -74,15 +74,15 @@ public class Robot extends SuperRobot {
     super.setRobotContainer(container, TelemetryManager.getInstance(), false);
     super.robotInit();
   }
-
-  @Override
-  public void teleopInit() {
-    SignalLogger.start();
-  }
-
-  @Override
-  public void teleopExit() {
-    SignalLogger.stop();
-  }
-
+  /*
+   * @Override
+   * public void teleopInit() {
+   * SignalLogger.start();
+   * }
+   * 
+   * @Override
+   * public void teleopExit() {
+   * SignalLogger.stop();
+   * }
+   */
 }

@@ -43,9 +43,15 @@ public class SwerveDriveCommand extends Command {
     double translationXVal = Functions.handleDeadband(translationX.getAsDouble(), swerve.andromedaProfile.deadband);
     double rotationVal = Functions.handleDeadband(rotation.getAsDouble(), swerve.andromedaProfile.deadband);
 
-    double ySpeed = yLimiter.calculate(translationYVal);
-    double xSpeed = xLimiter.calculate(translationXVal);
-    double rotationSpeed = turningLimiter.calculate(rotationVal);
+    /*
+     * double ySpeed = yLimiter.calculate(translationYVal);
+     * double xSpeed = xLimiter.calculate(translationXVal);
+     * double rotationSpeed = turningLimiter.calculate(rotationVal);
+     */
+
+    double ySpeed = translationYVal;
+    double xSpeed = translationXVal;
+    double rotationSpeed = rotationVal;
 
     swerve.drive(
         new Translation2d(ySpeed, xSpeed).times(swerve.andromedaProfile.maxSpeed),
