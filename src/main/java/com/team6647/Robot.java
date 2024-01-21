@@ -4,13 +4,13 @@
 package com.team6647;
 
 import org.littletonrobotics.junction.AutoLogOutputManager;
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.andromedalib.robot.SuperRobot;
-import com.ctre.phoenix6.SignalLogger;
 import com.team6647.util.TelemetryManager;
 import com.team6647.util.Constants.RobotConstants;
 
@@ -42,7 +42,6 @@ public class Robot extends SuperRobot {
     switch (RobotConstants.currentMode) {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
-
         Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         break;
@@ -54,13 +53,13 @@ public class Robot extends SuperRobot {
 
       case REPLAY:
         // Replaying a log, set up replay source
-        /*
-         * setUseTiming(false); // Run as fast as possible
-         * String logPath = LogFileUtil.findReplayLog();
-         * Logger.setReplaySource(new WPILOGReader(logPath));
-         * Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
-         * "_sim")));
-         */
+
+        setUseTiming(false); // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog();
+        Logger.setReplaySource(new WPILOGReader(logPath));
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath,
+            "_sim")));
+
         break;
     }
 
@@ -68,21 +67,10 @@ public class Robot extends SuperRobot {
 
     // Star AdvantageKit Logger, no more fields can be added
     Logger.start();
-    SignalLogger.setPath("/media/sda1/");
 
     container = RobotContainer.getInstance();
     super.setRobotContainer(container, TelemetryManager.getInstance(), false);
     super.robotInit();
   }
-  /*
-   * @Override
-   * public void teleopInit() {
-   * SignalLogger.start();
-   * }
-   * 
-   * @Override
-   * public void teleopExit() {
-   * SignalLogger.stop();
-   * }
-   */
+  
 }
