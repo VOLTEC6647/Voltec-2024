@@ -45,8 +45,8 @@ public class RobotContainer extends SuperRobotContainer {
                 switch (RobotConstants.currentMode) {
                         case REAL:
                                 andromedaSwerve = AndromedaSwerve.getInstance(
-                                                new GyroIO() {
-                                                }, new AndromedaModuleIO[] {
+                                                new GyroIOPigeon2(DriveConstants.gyroID, "6647_CANivore"),
+                                                new AndromedaModuleIO[] {
                                                                 new AndromedaModuleIOTalonFX(0,
                                                                                 AndromedaModuleConfig.getConfig(
                                                                                                 AndromedaProfiles.ANDROMEDA_CONFIG,
