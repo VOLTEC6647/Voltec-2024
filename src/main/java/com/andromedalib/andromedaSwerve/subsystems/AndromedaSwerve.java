@@ -113,7 +113,7 @@ public class AndromedaSwerve extends SubsystemBase {
     }
     Logger.recordOutput("SwerveStates/Measured", getModuleStates());
 
-    Logger.recordOutput("ChassisSpeeds", andromedaProfile.swerveKinematics.toChassisSpeeds(getModuleStates()));
+    Logger.recordOutput("ChassisSpeeds", getFieldRelativeChassisSpeeds());
 
     odometry.update(getSwerveAngle(), getPositions());
   }
@@ -127,17 +127,24 @@ public class AndromedaSwerve extends SubsystemBase {
    * @param isOpenLoop    True if open loop
    */
   public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
-
     ChassisSpeeds chassisSpeeds = fieldRelative
         ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(), rotation,
             getSwerveAngle())
         : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+
+    drive(chassisSpeeds);
+  }
+
+  public void drive(ChassisSpeeds chassisSpeeds) {
     SwerveModuleState[] swerveModuleStates = andromedaProfile.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
     Logger.recordOutput("DesiredChassisSpeeds", chassisSpeeds);
 
     setModuleStates(swerveModuleStates);
+
   }
+
+  /* Telemetry */
 
   /**
    * Gets Navx Angle clamped to 0 - 360 degrees
@@ -156,16 +163,10 @@ public class AndromedaSwerve extends SubsystemBase {
   private SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
 
-    states[0] = modules[1].getState();
-    states[1] = modules[1].getState();
-    states[2] = modules[2].getState();
-    states[3] = modules[3].getState();
+    for (int i = 0; i < 4; i++) {
+      states[i] = modules[i].getState();
+    }
 
-    /*
-     * for (int i = 0; i < 4; i++) {
-     * states[i] = modules[i].getState();
-     * }
-     */
     return states;
   }
 
@@ -173,6 +174,19 @@ public class AndromedaSwerve extends SubsystemBase {
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
     return odometry.getPoseMeters();
+  }
+
+  public void resetPose(Pose2d pose2d) {
+    odometry.resetPosition(getSwerveAngle(), getPositions(), pose2d);
+  }
+
+  public ChassisSpeeds getRelativeChassisSpeeds() {
+    return ChassisSpeeds.fromFieldRelativeSpeeds(andromedaProfile.swerveKinematics.toChassisSpeeds(getModuleStates()),
+        getSwerveAngle());
+  }
+
+  public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+    return andromedaProfile.swerveKinematics.toChassisSpeeds(getModuleStates());
   }
 
   /**
@@ -205,6 +219,8 @@ public class AndromedaSwerve extends SubsystemBase {
       andromedaModule.setDesiredState(desiredStates[andromedaModule.getModuleNumber()]);
     }
   }
+
+  /* Characterization */
 
   public void runSwerveCharacterization(double volts) {
     for (AndromedaModule andromedaModule : modules) {
