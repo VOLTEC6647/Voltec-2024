@@ -7,8 +7,6 @@ package com.andromedalib.sensors;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-
 public class SuperCANCoder extends CANcoder {
 
     /**

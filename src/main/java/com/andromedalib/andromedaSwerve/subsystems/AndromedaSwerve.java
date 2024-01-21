@@ -10,7 +10,7 @@ import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIOInputsAutoLogged;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
-import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
+import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -41,18 +41,12 @@ public class AndromedaSwerve extends SubsystemBase {
   private SwerveDriveOdometry odometry;
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-      // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism(
-          // Tell SysId how to plumb the driving voltage to the motors.
           (Measure<Voltage> volts) -> {
             runSwerveCharacterization(volts.in(Units.Volts));
           },
-          log -> {
-          },
-          // Tell SysId to make generated commands require this subsystem, suffix test
-          // state in
-          // WPILog with this subsystem's name ("drive")
+          null,
           this));
 
   private AndromedaSwerve(GyroIO gyro, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig profileConfig) {
@@ -83,6 +77,8 @@ public class AndromedaSwerve extends SubsystemBase {
     for (var module : modules) {
       module.periodic();
     }
+
+    SignalLogger.writeString("Swerve", getName());
 
     // Log empty setpoint states when disabled
     if (DriverStation.isDisabled()) {
