@@ -7,6 +7,7 @@ package com.andromedalib.andromedaSwerve.andromedaModule;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
+import com.ctre.phoenix6.SignalLogger;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -36,6 +37,9 @@ public class AndromedaModule {
         io.updateInputs(inputs);
         Logger.processInputs("Swerve/" + moduleName, inputs);
 
+        SignalLogger.writeDouble(moduleNumber + "position", inputs.drivePosition);
+        SignalLogger.writeDouble(moduleNumber + "velocity", inputs.driveVelocity);
+        SignalLogger.writeDouble(moduleNumber + "volts", inputs.driveAppliedVolts);
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
