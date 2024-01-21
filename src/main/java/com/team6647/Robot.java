@@ -42,9 +42,9 @@ public class Robot extends SuperRobot {
     switch (RobotConstants.currentMode) {
       case REAL:
         // Running on a real robot, log to a USB stick ("/U/logs")
-        /*
-         * Logger.addDataReceiver(new WPILOGWriter());
-         */ Logger.addDataReceiver(new NT4Publisher());
+
+        // Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new NT4Publisher());
         break;
 
       case SIM:
@@ -68,13 +68,14 @@ public class Robot extends SuperRobot {
 
     // Star AdvantageKit Logger, no more fields can be added
     Logger.start();
+    SignalLogger.setPath("/media/sda1/");
 
     container = RobotContainer.getInstance();
     super.setRobotContainer(container, TelemetryManager.getInstance(), false);
     super.robotInit();
   }
 
-/*   @Override
+  @Override
   public void teleopInit() {
     SignalLogger.start();
   }
@@ -82,6 +83,6 @@ public class Robot extends SuperRobot {
   @Override
   public void teleopExit() {
     SignalLogger.stop();
-  } */
+  }
 
 }
