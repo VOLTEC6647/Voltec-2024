@@ -5,9 +5,6 @@ package com.team6647.subsystems;
 
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PIDConstants;
-import com.pathplanner.lib.util.ReplanningConfig;
 import com.team6647.util.Constants.DriveConstants;
 
 import edu.wpi.first.wpilibj.DriverStation;

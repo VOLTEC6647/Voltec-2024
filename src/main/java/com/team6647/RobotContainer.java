@@ -16,9 +16,7 @@ import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.AndromedaPr
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.team6647.subsystems.AutoSubsystem;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
@@ -105,6 +103,9 @@ public class RobotContainer extends SuperRobotContainer {
                 }
 
                 autoSubsystem = AutoSubsystem.getInstance(andromedaSwerve);
+
+                /* Removed unused warning */
+                autoSubsystem.getClass();
         }
 
         @Override
@@ -131,7 +132,6 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-
                 return new PathPlannerAuto("First Auto");
         }
 }
