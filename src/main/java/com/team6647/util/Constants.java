@@ -5,6 +5,9 @@ package com.team6647.util;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -45,11 +48,11 @@ public class Constants {
                                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
                                 new Translation2d(wheelBase / 2.0, trackWidth / 2.0));
 
-                public static final double maxSpeed = 5.4864;
-                public static final double maxAcceleration = maxSpeed * 0.85;
+                public static final double maxSpeed = 4.641013629172587;
+                public static final double maxAcceleration = 13.804786438404268;
                 /** Radians per Second */
-                public static final double maxAngularVelocity = 11.5;
-                public static final double maxAngularAcceleration = 3.5;
+                public static final double maxAngularVelocity = 9.872376245899392;
+                public static final double maxAngularAcceleration = 0.09714;
 
                 public static final AndromedaSwerveConfig andromedaSwerveConfig = new AndromedaSwerveConfig(0.1,
                                 trackWidth,
@@ -57,6 +60,25 @@ public class Constants {
                                 maxAngularAcceleration, wheelDiameter);
 
                 public static final int gyroID = 13;
+
+                /* Auto constants */
+                public static final double translationP = 0.00003;
+                public static final double translationI = 0.0;
+                public static final double translationD = 0.0;
+                public static final double rotationP = 0.001;
+                public static final double rotationI = 0.0;
+                public static final double rotationD = 0.0;
+
+                public static final PIDConstants translationConstants = new PIDConstants(translationP, translationI,
+                                translationD);
+                public static final PIDConstants rotationConstants = new PIDConstants(rotationP, rotationI,
+                                rotationD);
+                public static final HolonomicPathFollowerConfig holonomicPathConfig = new HolonomicPathFollowerConfig(
+                                DriveConstants.translationConstants,
+                                DriveConstants.rotationConstants,
+                                maxSpeed,
+                                Math.sqrt(Math.pow(trackWidth, 2) + Math.pow(trackWidth, 2)),
+                                new ReplanningConfig());
         }
 
 }
