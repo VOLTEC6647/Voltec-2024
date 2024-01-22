@@ -228,8 +228,6 @@ public class AndromedaSwerve extends SubsystemBase {
     }
   }
 
-  // We can bind these to buttons, use them as autonomous routines, whatever
-
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.quasistatic(direction);
   }
