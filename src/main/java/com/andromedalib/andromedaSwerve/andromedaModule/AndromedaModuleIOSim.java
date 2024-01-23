@@ -39,8 +39,10 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
     public AndromedaModuleIOSim(double wheelDiameter) {
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
         driveFeedback = new PIDController(0.1, 0.0, 0.0);
-        turnFeedback = new PIDController(10.0, 0.0, 0.0);
+        turnFeedback = new PIDController(1, 0.0, 0.0);
         wheelRadius = wheelDiameter / 2;
+
+        turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     @Override
@@ -48,8 +50,8 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
         driveSim.update(LOOP_PERIOD_SECS);
         turnSim.update(LOOP_PERIOD_SECS);
 
-        inputs.drivePosition = driveSim.getAngularPositionRad();
-        inputs.driveVelocity = driveSim.getAngularVelocityRadPerSec();
+        inputs.drivePosition = driveSim.getAngularPositionRad() * (wheelRadius);
+        inputs.driveVelocity = driveSim.getAngularVelocityRadPerSec() * (wheelRadius);
         inputs.driveAppliedVolts = driveAppliedVolts;
 
         inputs.encoderAbsolutePosition = new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition);
@@ -71,7 +73,7 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
 
     @Override
     public void setTurnPosition(Rotation2d rotation2d) {
-        double volts = turnFeedback.calculate(turnSim.getAngularPositionRotations());
+        double volts = turnFeedback.calculate(turnSim.getAngularPositionRad(), rotation2d.getRadians());
         turnAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
         turnSim.setInputVoltage(turnAppliedVolts);
     }
