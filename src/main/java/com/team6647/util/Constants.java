@@ -27,7 +27,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.REAL;
+                public static final Mode currentMode = Mode.SIM;
         }
 
         public static class DriveConstants {
@@ -62,12 +62,12 @@ public class Constants {
                 public static final int gyroID = 13;
 
                 /* Auto constants */
-                public static final double translationP = 0.00003;
-                public static final double translationI = 0.0;
-                public static final double translationD = 0.0;
-                public static final double rotationP = 0.001;
+                public static final double translationP = 7;
+                public static final double translationI = 0.00;
+                public static final double translationD = 0.195;
+                public static final double rotationP = 0.00;
                 public static final double rotationI = 0.0;
-                public static final double rotationD = 0.0;
+                public static final double rotationD = 0.000;
 
                 public static final PIDConstants translationConstants = new PIDConstants(translationP, translationI,
                                 translationD);
@@ -80,5 +80,4 @@ public class Constants {
                                 Math.sqrt(Math.pow(trackWidth, 2) + Math.pow(trackWidth, 2)),
                                 new ReplanningConfig());
         }
-
 }
