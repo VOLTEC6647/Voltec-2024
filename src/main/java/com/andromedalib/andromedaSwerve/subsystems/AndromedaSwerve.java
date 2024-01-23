@@ -11,12 +11,12 @@ import com.andromedalib.andromedaSwerve.andromedaModule.GyroIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIOInputsAutoLogged;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Distance;
@@ -45,7 +45,7 @@ public class AndromedaSwerve extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
-  private SwerveDriveOdometry odometry;
+  private SwerveDrivePoseEstimator poseEsimtator;
 
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
@@ -84,7 +84,8 @@ public class AndromedaSwerve extends SubsystemBase {
 
     this.gyroIO = gyro;
 
-    odometry = new SwerveDriveOdometry(profileConfig.swerveKinematics, getSwerveAngle(), getPositions());
+    poseEsimtator = new SwerveDrivePoseEstimator(profileConfig.swerveKinematics, getSwerveAngle(), getPositions(),
+        new Pose2d());
   }
 
   public static AndromedaSwerve getInstance(GyroIO gyro, AndromedaModuleIO[] modules,
@@ -115,7 +116,7 @@ public class AndromedaSwerve extends SubsystemBase {
 
     Logger.recordOutput("ChassisSpeeds", getFieldRelativeChassisSpeeds());
 
-    odometry.update(getSwerveAngle(), getPositions());
+    updateOdometry();
   }
 
   /**
@@ -173,11 +174,19 @@ public class AndromedaSwerve extends SubsystemBase {
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Odometry/Robot")
   public Pose2d getPose() {
-    return odometry.getPoseMeters();
+    return poseEsimtator.getEstimatedPosition();
   }
 
   public void resetPose(Pose2d pose2d) {
-    odometry.resetPosition(getSwerveAngle(), getPositions(), pose2d);
+    poseEsimtator.resetPosition(getSwerveAngle(), getPositions(), pose2d);
+  }
+
+  public void updateOdometry() {
+    poseEsimtator.update(getSwerveAngle(), getPositions());
+  }
+
+  public void addVisionMeasurements(Pose2d visionMeasurement, double timestampSeconds) {
+    poseEsimtator.addVisionMeasurement(visionMeasurement, timestampSeconds);
   }
 
   public ChassisSpeeds getRelativeChassisSpeeds() {
