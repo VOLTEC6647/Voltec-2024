@@ -19,7 +19,7 @@ public class Constants {
         public static class OperatorConstants {
                 public static final int kDriverControllerPort = 0;
                 public static final int kDriverControllerPort2 = 1;
-
+          
                 public static final CommandXboxController driverController1 = new CommandXboxController(
                                 OperatorConstants.kDriverControllerPort);
                 public static final CommandXboxController driverController2 = new CommandXboxController(
@@ -29,6 +29,23 @@ public class Constants {
         public static class RobotConstants {
                 public static final Mode currentMode = Mode.REAL;
         }
+  
+      public static class ShooterConstants{
+        public static final int shooterMotorLeftID = 19; //checar cual es el ID correcto 
+        public static final int shooterMotorRightID = 20; //checar cual es el ID correcto
+
+        public static final double shooterKp = 0; //calcular Kp
+        public static final double shooterKi = 0; //calcular Ki
+        public static final double shooterKd = 0; //calcular Kd
+
+        public static final double shooterSpeed = 0.25; //calcular shooter speed
+        public static final double passiveStopped = 0.1; //calcular passive stopped
+        public static final int beamBrakePort = 1; //checar cual es el beam break port
+                
+        public static final double armEncoderPositionConversionFactor = 360;
+        public static final double armEncoderZeroOffset = 0; //checar cual es el offset
+        public static final boolean armEncoderInverted = false;
+    }
 
         public static class DriveConstants {
                 public static final double trackWidth = Units.inchesToMeters(18.5);
