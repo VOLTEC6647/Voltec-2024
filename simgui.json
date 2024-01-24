@@ -1,6 +1,7 @@
 {
   "NTProvider": {
     "types": {
+      "/AdvantageKit/RealOutputs/Elevator/Mechanism2D": "Mechanism2d",
       "/FMSInfo": "FMSInfo"
     }
   },
