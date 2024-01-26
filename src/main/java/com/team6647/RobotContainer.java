@@ -16,12 +16,14 @@ import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.AndromedaPr
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.team6647.subsystems.AutoSubsystem;
+import com.team6647.subsystems.vision.VisionAutoSubsystem;
+import com.team6647.subsystems.vision.VisionIOLimelight;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -29,7 +31,8 @@ public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
 
         private AndromedaSwerve andromedaSwerve;
-        private AutoSubsystem autoSubsystem;
+        private VisionAutoSubsystem visionAutoSubsystem;
+        // private ElevatorSubsystem elevatorSubsystem;
 
         private RobotContainer() {
         }
@@ -66,9 +69,10 @@ public class RobotContainer extends SuperRobotContainer {
                                                                                                 AndromedaProfiles.ANDROMEDA_CONFIG,
                                                                                                 AndromedaMap.mod4Const)),
                                                 }, DriveConstants.andromedaSwerveConfig);
+                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(new VisionIOLimelight(),
+                                                andromedaSwerve);
                                 break;
                         case SIM:
-                                // Sim robot, instantiate physics sim IO implementations
                                 andromedaSwerve = AndromedaSwerve.getInstance(new GyroIO() {
                                 }, new AndromedaModuleIO[] {
                                                 new AndromedaModuleIOSim(0.1),
@@ -76,6 +80,8 @@ public class RobotContainer extends SuperRobotContainer {
                                                 new AndromedaModuleIOSim(0.1),
                                                 new AndromedaModuleIOSim(0.1),
                                 }, DriveConstants.andromedaSwerveConfig);
+                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(new VisionIOLimelight(),
+                                                andromedaSwerve);
                                 break;
 
                         default:
@@ -99,13 +105,12 @@ public class RobotContainer extends SuperRobotContainer {
                                                                                                 AndromedaProfiles.ANDROMEDA_CONFIG,
                                                                                                 AndromedaMap.mod4Const)),
                                                 }, DriveConstants.andromedaSwerveConfig);
+                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(new VisionIOLimelight(),
+                                                andromedaSwerve);
                                 break;
                 }
 
-                autoSubsystem = AutoSubsystem.getInstance(andromedaSwerve);
-
-                /* Removed unused warning */
-                autoSubsystem.getClass();
+                // elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
         }
 
         @Override
@@ -123,15 +128,25 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.driverController1.a().and(OperatorConstants.driverController1.pov(180))
                                 .whileTrue(andromedaSwerve.sysIdQuasistatic(Direction.kReverse));
 
+                /* Characterization */
                 OperatorConstants.driverController1.y().and(OperatorConstants.driverController1.pov(0))
                                 .whileTrue(andromedaSwerve.sysIdDynamic(Direction.kForward));
                 OperatorConstants.driverController1.y().and(OperatorConstants.driverController1.pov(180))
                                 .whileTrue(andromedaSwerve.sysIdDynamic(Direction.kReverse));
 
+                /*
+                 * OperatorConstants.driverController2.a().whileTrue(
+                 * new InstantCommand(() ->
+                 * elevatorSubsystem.changeElevatorState(ElevatorState.TOP)));
+                 * OperatorConstants.driverController2.b().whileTrue(
+                 * new InstantCommand(() ->
+                 * elevatorSubsystem.changeElevatorState(ElevatorState.HOMED)));
+                 */
+
         }
 
         @Override
         public Command getAutonomousCommand() {
-                return new PathPlannerAuto("First Auto");
+                return visionAutoSubsystem.getPathFindPath(new Pose2d(11.44, 5.52, Rotation2d.fromDegrees(0.0)));
         }
 }
