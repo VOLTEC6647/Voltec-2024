@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -25,8 +24,6 @@ public class VisionAutoSubsystem extends SubsystemBase {
   private static VisionAutoSubsystem instance;
 
   private final AndromedaSwerve andromedaSwerve;
-
-  private Alliance alliance;
 
   private VisionIO io;
   private VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
@@ -38,8 +35,6 @@ public class VisionAutoSubsystem extends SubsystemBase {
     this.andromedaSwerve = swerve;
 
     andromedaSwerve.resetPose(new Pose2d(5.11, 5.52, new Rotation2d()));
-
-    this.alliance = DriverStation.getAlliance().get();
 
     AutoBuilder.configureHolonomic(
         swerve::getPose,

@@ -16,8 +16,6 @@ public class VisionIOLimelight implements VisionIO {
 
     private Alliance alliance;
 
-    private Pose2d observedPose = new Pose2d();
-
     public VisionIOLimelight() {
         this.alliance = DriverStation.getAlliance().get();
         ;
