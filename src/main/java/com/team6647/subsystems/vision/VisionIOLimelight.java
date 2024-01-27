@@ -21,7 +21,7 @@ public class VisionIOLimelight implements VisionIO {
     }
 
     @Override
-    public void updateInputs(VisionIOInputs inputs) {
+    public synchronized void updateInputs(VisionIOInputs inputs) {
         LimelightHelpers.Results result = LimelightHelpers.getLatestResults("limelight").targetingResults;
 
         inputs.TA = LimelightHelpers.getTA("limelight");

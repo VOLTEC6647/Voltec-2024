@@ -8,8 +8,11 @@ package com.team6647.subsystems.vision;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
+import com.andromedalib.andromedaSwerve.utils.LocalADStarAK;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.pathfinding.Pathfinding;
+import com.pathplanner.lib.util.PathPlannerLogging;
 import com.team6647.util.Constants.DriveConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -33,22 +36,6 @@ public class VisionAutoSubsystem extends SubsystemBase {
     this.io = io;
 
     this.andromedaSwerve = swerve;
-
-    andromedaSwerve.resetPose(new Pose2d(5.11, 5.52, new Rotation2d()));
-
-    AutoBuilder.configureHolonomic(
-        swerve::getPose,
-        swerve::resetPose,
-        swerve::getRelativeChassisSpeeds,
-        swerve::drive,
-        DriveConstants.holonomicPathConfig,
-        () -> {
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        }, andromedaSwerve);
   }
 
   public static VisionAutoSubsystem getInstance(VisionIO io, AndromedaSwerve swerve) {
@@ -70,17 +57,5 @@ public class VisionAutoSubsystem extends SubsystemBase {
     if (inputs.hasTarget) {
       andromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
     }
-  }
-
-  public Command getPathFindPath(Pose2d targetPose) {
-    PathConstraints constraints = new PathConstraints(
-        3.0, 4.0,
-        Units.degreesToRadians(540), Units.degreesToRadians(720));
-
-    return AutoBuilder.pathfindToPose(
-        targetPose,
-        constraints,
-        0.0,
-        0.0);
   }
 }
