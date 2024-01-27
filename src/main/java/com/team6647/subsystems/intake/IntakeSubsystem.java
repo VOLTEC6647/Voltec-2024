@@ -16,7 +16,7 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private static IntakeSubsystem instance;
 
-  @AutoLogOutput(key = "Intake/State")
+  @AutoLogOutput(key = "Intake/Rollers/State")
   private RollerState mState = RollerState.STOPPED;
 
   private IntakeIO io;
@@ -37,7 +37,7 @@ public class IntakeSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Intake", inputs);
+    Logger.processInputs("Intake/Rollers", inputs);
   }
 
   /**
