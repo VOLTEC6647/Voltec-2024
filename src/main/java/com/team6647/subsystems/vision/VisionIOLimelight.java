@@ -16,9 +16,8 @@ public class VisionIOLimelight implements VisionIO {
 
     private Alliance alliance;
 
-    public VisionIOLimelight() {
-        this.alliance = DriverStation.getAlliance().get();
-        ;
+    public VisionIOLimelight(Alliance alliance) {
+        this.alliance = alliance;
     }
 
     @Override
