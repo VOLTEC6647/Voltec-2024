@@ -6,16 +6,7 @@
 
 package com.team6647.subsystems.intake;
 
-import com.andromedalib.math.Conversions;
-import com.team6647.subsystems.elevator.ElevatorIO.ElevatorIOInputs;
-import com.team6647.util.Constants.ElevatorConstants;
-import com.team6647.util.Constants.IntakeConstants;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class IntakePivotIOSim implements IntakePivotIO {
