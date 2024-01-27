@@ -15,6 +15,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private static ShooterSubsystem instance;
 
+  @AutoLogOutput(key = "Shooter/State")
   private RollerState mState = RollerState.STOPPED;
 
   private ShooterIO io;
@@ -31,9 +32,12 @@ public class ShooterSubsystem extends SubsystemBase {
     return instance;
   }
 
+  /**
+   * Shared between Shooter and Intake
+   */
   public enum RollerState {
     STOPPED,
-    SHOOTING,
+    EXHAUSTING,
     INTAKING,
     IDLE
   }
@@ -55,9 +59,8 @@ public class ShooterSubsystem extends SubsystemBase {
         mState = RollerState.STOPPED;
         setShooterSpeed(ShooterConstants.passiveStopped);
         break;
-
-      case SHOOTING:
-        mState = RollerState.SHOOTING;
+      case EXHAUSTING:
+        mState = RollerState.EXHAUSTING;
         setShooterSpeed(0);
         break;
       case INTAKING:
@@ -78,16 +81,6 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   private void setShooterSpeed(double speed) {
     io.setShooterVelocity(speed);
-  }
-
-  /**
-   * Gets the current shooter state
-   * 
-   * @return Shooter state
-   */
-  @AutoLogOutput(key = "Shooter/State")
-  public RollerState getRollerState() {
-    return mState;
   }
 
   /**
