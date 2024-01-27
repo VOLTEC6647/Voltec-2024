@@ -9,7 +9,6 @@ package com.team6647.subsystems.intake;
 import org.littletonrobotics.junction.AutoLog;
 
 public interface IntakeIO {
-
     @AutoLog
     public static class IntakeIOInputs {
         public double intakeMotorVelocity = 0.0;

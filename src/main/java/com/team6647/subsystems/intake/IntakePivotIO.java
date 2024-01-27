@@ -14,9 +14,14 @@ public interface IntakePivotIO {
 
     @AutoLog
     public static class IntakePivoIOInputs {
-        public double intakePivotMotorVelocity = 0.0;
-        public double intakePivotMotorAppliedVoltage = 0.0;
-        public double intakePivotMotorPosition = 0.0;
+        public double intakePivotLeftMotorVelocity = 0.0;
+        public double intakePivotLeftMotorAppliedVoltage = 0.0;
+        public double intakePivotLeftMotorPosition = 0.0;
+
+        public double intakePivotRightMotorVelocity = 0.0;
+        public double intakePivotRightMotorAppliedVoltage = 0.0;
+        public double intakePivotRightMotorPosition = 0.0;
+
         public double intakePivotAbsoluteEncoderPosition = 0.0;
     }
 
