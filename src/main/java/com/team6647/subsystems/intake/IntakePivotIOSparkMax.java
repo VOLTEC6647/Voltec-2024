@@ -32,10 +32,15 @@ public class IntakePivotIOSparkMax implements IntakePivotIO {
 
     @Override
     public void updateInputs(IntakePivoIOInputs inputs) {
-        inputs.intakePivotMotorVelocity = leftIntakePivotMotor.getVelocity();
-        inputs.intakePivotMotorAppliedVoltage = leftIntakePivotMotor.getAppliedOutput();
-        inputs.intakePivotMotorPosition = leftIntakePivotMotor.getPosition();
+        inputs.intakePivotLeftMotorVelocity = leftIntakePivotMotor.getVelocity();
+        inputs.intakePivotLeftMotorAppliedVoltage = leftIntakePivotMotor.getAppliedOutput();
+        inputs.intakePivotLeftMotorPosition = leftIntakePivotMotor.getPosition();
+
         inputs.intakePivotAbsoluteEncoderPosition = pivotEncoder.getPosition();
+
+        inputs.intakePivotRightMotorVelocity = rightIntakePivotMotor.getVelocity();
+        inputs.intakePivotRightMotorAppliedVoltage = rightIntakePivotMotor.getAppliedOutput();
+        inputs.intakePivotRightMotorPosition = rightIntakePivotMotor.getPosition();
     }
 
     @Override
