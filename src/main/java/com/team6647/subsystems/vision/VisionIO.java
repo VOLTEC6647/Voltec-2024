@@ -17,6 +17,7 @@ public interface VisionIO {
         public Pose2d observedPose2d = new Pose2d();
         public double timestampLatency = 0.0;
         public boolean hasTarget = false;
+        public double targetDistance = 0.0;
     }
 
     /** Updates the set of loggable inputs. */
