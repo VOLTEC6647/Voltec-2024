@@ -33,7 +33,7 @@ public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
 
         private AndromedaSwerve andromedaSwerve;
-        //private VisionAutoSubsystem visionAutoSubsystem;
+        private VisionAutoSubsystem visionAutoSubsystem;
         // private ElevatorSubsystem elevatorSubsystem;
 
         private RobotContainer() {
@@ -71,9 +71,9 @@ public class RobotContainer extends SuperRobotContainer {
                                                                                                 AndromedaProfiles.ANDROMEDA_CONFIG,
                                                                                                 AndromedaMap.mod4Const)),
                                                 }, DriveConstants.andromedaSwerveConfig);
-                                /* visionAutoSubsystem = VisionAutoSubsystem.getInstance(
+                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(
                                                 new VisionIOLimelight(Alliance.Blue),
-                                                andromedaSwerve); */
+                                                andromedaSwerve);
                                 break;
                         case SIM:
                                 andromedaSwerve = AndromedaSwerve.getInstance(new GyroIO() {
@@ -83,9 +83,9 @@ public class RobotContainer extends SuperRobotContainer {
                                                 new AndromedaModuleIOSim(0.1),
                                                 new AndromedaModuleIOSim(0.1),
                                 }, DriveConstants.andromedaSwerveConfig);
-                                /* visionAutoSubsystem = VisionAutoSubsystem.getInstance(
+                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(
                                                 new VisionIOLimelight(DriverStation.getAlliance().get()),
-                                                andromedaSwerve); */
+                                                andromedaSwerve);
                                 break;
 
                         default:
@@ -109,9 +109,9 @@ public class RobotContainer extends SuperRobotContainer {
                                                                                                 AndromedaProfiles.ANDROMEDA_CONFIG,
                                                                                                 AndromedaMap.mod4Const)),
                                                 }, DriveConstants.andromedaSwerveConfig);
-                                /* visionAutoSubsystem = VisionAutoSubsystem.getInstance(
+                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(
                                                 new VisionIOLimelight(DriverStation.getAlliance().get()),
-                                                andromedaSwerve); */
+                                                andromedaSwerve);
                                 break;
                 }
 
@@ -152,6 +152,8 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
+                andromedaSwerve.resetPose(new Pose2d(5.11, 5.52, new Rotation2d()));
+
                 return andromedaSwerve.getPathFindPath(new Pose2d(11.44, 5.52, Rotation2d.fromDegrees(0.0)));
         }
 }
