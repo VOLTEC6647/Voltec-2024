@@ -8,18 +8,7 @@ package com.team6647.subsystems.vision;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
-import com.andromedalib.andromedaSwerve.utils.LocalADStarAK;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.pathfinding.Pathfinding;
-import com.pathplanner.lib.util.PathPlannerLogging;
-import com.team6647.util.Constants.DriveConstants;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionAutoSubsystem extends SubsystemBase {
@@ -55,7 +44,9 @@ public class VisionAutoSubsystem extends SubsystemBase {
 
   public void computeVisionMeasurements() {
     if (inputs.hasTarget) {
-      andromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
+      if (inputs.targetDistance < 1.5) {
+        andromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
+      }
     }
   }
 }
