@@ -18,14 +18,18 @@ import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.team6647.util.Constants.DriveConstants;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
@@ -54,9 +58,17 @@ public class AndromedaSwerve extends SubsystemBase {
 
   private SwerveDrivePoseEstimator poseEstimator;
 
+  private SwerveDriveOdometry odometry;
+
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
   private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+
+  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.03, 0.03,
+      edu.wpi.first.math.util.Units.degreesToRadians(1));
+
+  private final Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5,
+      edu.wpi.first.math.util.Units.degreesToRadians(50));
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(),
@@ -96,9 +108,14 @@ public class AndromedaSwerve extends SubsystemBase {
             new SwerveModulePosition(),
             new SwerveModulePosition(),
             new SwerveModulePosition() },
-        new Pose2d());
+        new Pose2d(), stateStandardDeviations, visionmeasurementStandardDeviations);
 
-    resetPose(new Pose2d(5.11, 5.52, new Rotation2d()));
+    odometry = new SwerveDriveOdometry(profileConfig.swerveKinematics, new Rotation2d(),
+        new SwerveModulePosition[] { new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition() },
+        new Pose2d());
 
     AutoBuilder.configureHolonomic(
         this::getPose,
@@ -217,17 +234,31 @@ public class AndromedaSwerve extends SubsystemBase {
   }
 
   /** Returns the current odometry pose. */
-  @AutoLogOutput(key = "Swerve/Odometry/Robot")
+  @AutoLogOutput(key = "Swerve/PoseEstimate/Robot")
   public Pose2d getPose() {
     return poseEstimator.getEstimatedPosition();
   }
 
+  /** Returns the current odometry pose. */
+  @AutoLogOutput(key = "Swerve/Odometry/Robot")
+  public Pose2d getOdometryPose() {
+    return odometry.getPoseMeters();
+  }
+
   public void resetPose(Pose2d pose2d) {
-    poseEstimator.resetPosition(getSwerveAngle(), getPositions(), pose2d);
+    poseEstimator.resetPosition(new Rotation2d(), new SwerveModulePosition[] { new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition() }, pose2d);
+    odometry.resetPosition(new Rotation2d(), new SwerveModulePosition[] { new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition() }, pose2d);
   }
 
   public void updateOdometry() {
-    poseEstimator.update(getSwerveAngle(), getPositions());
+    poseEstimator.updateWithTime(Logger.getRealTimestamp(), getSwerveAngle(), getPositions());
+    odometry.update(getSwerveAngle(), getPositions());
   }
 
   public void addVisionMeasurements(Pose2d visionMeasurement, double timestampSeconds) {
@@ -292,8 +323,8 @@ public class AndromedaSwerve extends SubsystemBase {
 
   public Command getPathFindPath(Pose2d targetPose) {
     PathConstraints constraints = new PathConstraints(
-        1, 1,
-        edu.wpi.first.math.util.Units.degreesToRadians(540), edu.wpi.first.math.util.Units.degreesToRadians(720));
+        3, 4,
+        edu.wpi.first.math.util.Units.degreesToRadians(560), edu.wpi.first.math.util.Units.degreesToRadians(720));
 
     return AutoBuilder.pathfindToPose(
         targetPose,
