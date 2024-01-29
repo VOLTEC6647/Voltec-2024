@@ -54,11 +54,10 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                         true);
                 }
 
-                this.driveMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.driveMotorID, GlobalIdleMode.brake,
+                this.driveMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.driveMotorID,
                                 andromedaModuleConfig.driveMotorConfiguration,
                                 andromedaModuleConfig.swerveCANBus);
                 this.steeringMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.steeringMotorID,
-                                GlobalIdleMode.Coast,
                                 andromedaModuleConfig.turningMotorConfiguration,
                                 andromedaModuleConfig.swerveCANBus);
 
