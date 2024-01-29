@@ -8,10 +8,10 @@ import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.vision.LimelightHelpers;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableEntry;
-import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class VisionIOLimelight implements VisionIO {
@@ -24,7 +24,7 @@ public class VisionIOLimelight implements VisionIO {
     // distance from the center of the Limelight lens to the floor
     private double limelightLensHeightMeters = 0.6;
 
-    private double goalHeightMeters = 0.142;
+    AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
     public VisionIOLimelight(Alliance alliance) {
         this.alliance = alliance;
@@ -62,9 +62,19 @@ public class VisionIOLimelight implements VisionIO {
         double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetVertical;
         double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
-        // calculate distance
-        return (goalHeightMeters - limelightLensHeightMeters)
+        return (0.142 - limelightLensHeightMeters)
                 / Math.tan(angleToGoalRadians);
     }
 
+    public double computeTagDistance() {
+        double id = LimelightHelpers.getFiducialID("limelight");
+
+        double targetOffsetVertical = LimelightHelpers.getTY("limelight");
+
+        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetVertical;
+        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+
+        return (layout.getTagPose((int) id).get().getY() - limelightLensHeightMeters)
+                / Math.tan(angleToGoalRadians);
+    }
 }
