@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.team6647.subsystems.shooter.ShooterSubsystem.RollerState;
+import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -49,19 +50,19 @@ public class IntakeSubsystem extends SubsystemBase {
     switch (rollerState) {
       case STOPPED:
         mState = RollerState.STOPPED;
-        io.setIntakeVelocity(0.0);
+        io.setIntakeVelocity(IntakeConstants.intakeStoppedVelocity);
         break;
       case EXHAUSTING:
         mState = RollerState.EXHAUSTING;
-        io.setIntakeVelocity(0.0);
+        io.setIntakeVelocity(IntakeConstants.intakeExhaustingVelocity);
         break;
       case INTAKING:
         mState = RollerState.INTAKING;
-        io.setIntakeVelocity(0.0);
+        io.setIntakeVelocity(IntakeConstants.intakeIntakingVelocity);
         break;
       case IDLE:
         mState = RollerState.IDLE;
-        io.setIntakeVelocity(0.0);
+        io.setIntakeVelocity(IntakeConstants.intakeIdleVelocity);
         break;
     }
   }

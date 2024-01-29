@@ -15,13 +15,16 @@ import com.team6647.util.Constants.IntakeConstants;
 public class IntakePivotIOSparkMax implements IntakePivotIO {
     private static SuperSparkMax leftIntakePivotMotor = new SuperSparkMax(
             IntakeConstants.intakePivotLeftMotorID,
-            GlobalIdleMode.Coast, IntakeConstants.intakePivotLeftMotorInverted,
+            GlobalIdleMode.Coast,
+            IntakeConstants.intakePivotLeftMotorInverted,
             IntakeConstants.intakeMotorsCurrentLimit,
             IntakeConstants.intakePivotEncoderPositionConversionFactor,
-            IntakeConstants.intakePivotEncoderZeroOffset, IntakeConstants.intakePivotEncoderInverted);
+            IntakeConstants.intakePivotEncoderZeroOffset,
+            IntakeConstants.intakePivotEncoderInverted);
     private static SuperSparkMax rightIntakePivotMotor = new SuperSparkMax(
             IntakeConstants.intakePivotRightMotorID,
-            GlobalIdleMode.Coast, IntakeConstants.intakePivotRightMotorInverted,
+            GlobalIdleMode.Coast,
+            IntakeConstants.intakePivotRightMotorInverted,
             IntakeConstants.intakeMotorsCurrentLimit);
 
     private static AbsoluteEncoder pivotEncoder;

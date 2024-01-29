@@ -68,6 +68,9 @@ public class Constants {
 
                 public static final double maxIntakePivotPosition = 0.0;
                 public static final double minIntakePivotPosition = 0.0;
+                public static final double intakePivotPositionTolerance = 0.0;
+                public static final double intakeHomedPosition = 0.0;
+                public static final double intakeExtendedPosition = 0.0;
 
                 public static final int intakePivotLeftMotorID = 13;
                 public static final int intakePivotRightMotorID = 14;
@@ -80,6 +83,11 @@ public class Constants {
                 public static final boolean intakePivotRightMotorInverted = true;
 
                 public static final int intakeMotorsCurrentLimit = 80;
+
+                public static final double intakeStoppedVelocity = 0.0;
+                public static final double intakeIntakingVelocity = 0.5;
+                public static final double intakeExhaustingVelocity = -0.5;
+                public static final double intakeIdleVelocity = 0.1;
 
         }
 

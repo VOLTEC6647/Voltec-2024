@@ -34,6 +34,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
   /** Creates a new IntakePivotSubsystem. */
   private IntakePivotSubsystem(IntakePivotIO io) {
     this.io = io;
+
+    mIntakePivotController.setTolerance(IntakeConstants.intakePivotPositionTolerance);
   }
 
   public static IntakePivotSubsystem getInstance(IntakePivotIO io) {
@@ -86,5 +88,10 @@ public class IntakePivotSubsystem extends SubsystemBase {
     output = output * 12;
 
     io.setIntakeVoltage(output);
+  }
+
+  @AutoLogOutput(key = "Intake/Pivot/InTolerance")
+  public boolean inTolerance() {
+    return mIntakePivotController.atGoal();
   }
 }
