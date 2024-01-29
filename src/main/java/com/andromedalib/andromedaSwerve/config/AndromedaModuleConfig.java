@@ -10,6 +10,7 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 
 import edu.wpi.first.math.util.Units;
@@ -105,7 +106,7 @@ public class AndromedaModuleConfig {
 
         double turningKp = 38.0;
         double turningKi = 0.0;
-        double turningKd = 0.0; //0.089;
+        double turningKd = 0.0; // 0.089;
 
         double driveKp = 0.1;
         double driveKi = 0.0;
@@ -154,6 +155,8 @@ public class AndromedaModuleConfig {
         driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = drivePeakCurrentLimit;
         driveMotorConfig.CurrentLimits.SupplyTimeThreshold = drivePeakCurrentDuration;
 
+        driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
         ModuleMotorConfig motorConfig = ModuleMotorConfig.FALCON_CONFIG;
         /* CANCoder */
 
@@ -177,7 +180,6 @@ public class AndromedaModuleConfig {
         turningMotorConfig.CurrentLimits.SupplyTimeThreshold = anglePeakCurrentDuration;
 
         turningMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
-
 
         return new AndromedaModuleConfig(moduleIDs, driveMotorConfig, turningMotorConfig, cancoderConfig, wheelDiameter,
                 swerveCANBus, motorConfig);
