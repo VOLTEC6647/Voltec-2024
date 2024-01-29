@@ -7,12 +7,8 @@
 package com.team6647.subsystems.elevator;
 
 import com.andromedalib.math.Conversions;
-import com.team6647.util.Constants.ElevatorConstants;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class ElevatorIOSim implements ElevatorIO {
@@ -20,11 +16,7 @@ public class ElevatorIOSim implements ElevatorIO {
 
     private DCMotorSim elevatorMotorSim = new DCMotorSim(DCMotor.getNEO(1), 1, 0.025);
 
-    private ProfiledPIDController elevatorPIDController = new ProfiledPIDController(ElevatorConstants.elevatorKp,
-            ElevatorConstants.elevatorKi, ElevatorConstants.elevatorKd, new TrapezoidProfile.Constraints(1, 1));
-
-    private double elevatorAppliedVolts = 0.0;
-    private double setpoint = 0.0;
+    double appliedVolts = 0.0;
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
@@ -35,20 +27,14 @@ public class ElevatorIOSim implements ElevatorIO {
 
         inputs.topBeambrake = false; // TODO SET
         inputs.bottomBeamBrake = false; // TODO SET
-        inputs.elevatorAppliedVolts = elevatorAppliedVolts;
+        inputs.elevatorAppliedVolts = appliedVolts;
 
-        moveElevator();
     }
 
     @Override
-    public void setElevatorPosition(double position) {
-        setpoint = position;
-    }
-
-    private void moveElevator() {
-        double volts = elevatorPIDController
-                .calculate(Conversions.rotationsToMeters(elevatorMotorSim.getAngularPositionRotations(), 1), setpoint);
-        elevatorAppliedVolts = MathUtil.clamp(volts, -12.0, 12.0);
+    public void setElevatorVoltage(double volts) {
+        appliedVolts = volts;
         elevatorMotorSim.setInputVoltage(volts);
     }
+
 }
