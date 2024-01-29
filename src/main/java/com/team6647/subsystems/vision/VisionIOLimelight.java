@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.vision.LimelightHelpers;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
