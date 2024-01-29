@@ -15,7 +15,7 @@ public class IntakeIOSparkMax implements IntakeIO {
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.intakeMotorAppliedVoltage = intakeMotor.getBusVoltage();
+        inputs.intakeMotorAppliedVoltage  = intakeMotor.getBusVoltage();
         inputs.intakeMotorVelocity = intakeMotor.getVelocity();
     }
 
