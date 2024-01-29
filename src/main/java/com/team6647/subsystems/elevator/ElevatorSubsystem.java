@@ -9,8 +9,12 @@ package com.team6647.subsystems.elevator;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.andromedalib.math.Conversions;
 import com.team6647.util.Constants.ElevatorConstants;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.smartdashboard.Mechanism2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismLigament2d;
 import edu.wpi.first.wpilibj.smartdashboard.MechanismRoot2d;
@@ -26,6 +30,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @AutoLogOutput(key = "Elevator/State")
   private ElevatorState mState = ElevatorState.HOMED;
+
+  private ProfiledPIDController elevatorPIDController = new ProfiledPIDController(ElevatorConstants.elevatorKp,
+      ElevatorConstants.elevatorKi, ElevatorConstants.elevatorKd, new TrapezoidProfile.Constraints(1, 1));
 
   // TODO configure Mechanism2D approriately
   @AutoLogOutput(key = "Elevator/Mechanism2D")
@@ -67,12 +74,19 @@ public class ElevatorSubsystem extends SubsystemBase {
     switch (state) {
       case HOMED:
         mState = ElevatorState.HOMED;
-        io.setElevatorPosition(ElevatorConstants.elevatorMinPosition);
+        setElevatorPosition(ElevatorConstants.elevatorMinPosition);
         break;
       case TOP:
         mState = ElevatorState.TOP;
-        io.setElevatorPosition(ElevatorConstants.elevatorMaxPosition);
+        setElevatorPosition(ElevatorConstants.elevatorMaxPosition);
         break;
     }
+  }
+
+  private void setElevatorPosition(double setpoint) {
+    double volts = elevatorPIDController
+        .calculate(inputs.elevatorAbsoluteEncoderPosition, setpoint);
+    volts = MathUtil.clamp(volts, -12.0, 12.0);
+    io.setElevatorVoltage(setpoint);
   }
 }
