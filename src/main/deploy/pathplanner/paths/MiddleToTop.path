@@ -1,0 +1,86 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.903749682499365,
+        "y": 5.612298798671672
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.2876961448367346,
+        "y": 5.565860215053764
+      },
+      "isLocked": false,
+      "linkedName": "MiddlePiece"
+    },
+    {
+      "anchor": {
+        "x": 1.956865774842661,
+        "y": 6.313806456316617
+      },
+      "prevControl": {
+        "x": 1.9421384490917133,
+        "y": 5.961775863366542
+      },
+      "nextControl": {
+        "x": 1.9725460820593927,
+        "y": 6.688616380432694
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.920005626623959,
+        "y": 6.981745845094965
+      },
+      "prevControl": {
+        "x": 2.284592781724195,
+        "y": 7.192263465204278
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "TopPiece"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "ShootMove",
+      "waypointRelativePos": 0.7,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    },
+    {
+      "name": "GrabPiece",
+      "waypointRelativePos": 2.0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": []
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": null,
+  "useDefaultConstraints": false
+}
