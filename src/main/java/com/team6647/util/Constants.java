@@ -48,6 +48,14 @@ public class Constants {
         }
 
         public static class ElevatorConstants {
+                public static final int elevatorMotorID = 13;
+                public static final boolean elevatorMotorInverted = false;
+                public static final int elevatorMotorCurrentLimit = 80;
+
+                public static final double elevatorAbsoluteEncoderPositionConversionFactor = 0.0;
+                public static final double elevatorAbsoluteEncoderZeroOffset = 0.0;
+                public static final boolean elevatorAbsoluteEncoderInverted = false;
+
                 public static final double elevatorKp = 0.01;
                 public static final double elevatorKi = 0;
                 public static final double elevatorKd = 0.00000000000000001;

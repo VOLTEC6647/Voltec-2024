@@ -9,7 +9,6 @@ package com.team6647.subsystems.elevator;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.andromedalib.math.Conversions;
 import com.team6647.util.Constants.ElevatorConstants;
 
 import edu.wpi.first.math.MathUtil;

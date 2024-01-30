@@ -154,6 +154,6 @@ public class RobotContainer extends SuperRobotContainer {
         public Command getAutonomousCommand() {
                 andromedaSwerve.resetPose(new Pose2d(5.11, 5.52, new Rotation2d()));
 
-                return andromedaSwerve.getPathFindPath(new Pose2d(11.44, 5.52, Rotation2d.fromDegrees(0.0)));
+                return andromedaSwerve.getPathFindPath(new Pose2d(11.97, 5.57, Rotation2d.fromDegrees(0.0)));
         }
 }
