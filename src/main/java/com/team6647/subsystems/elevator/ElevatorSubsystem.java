@@ -58,6 +58,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public enum ElevatorState {
     HOMED,
+    SHOOTING,
     TOP,
   }
 
@@ -78,6 +79,10 @@ public class ElevatorSubsystem extends SubsystemBase {
       case TOP:
         mState = ElevatorState.TOP;
         setElevatorPosition(ElevatorConstants.elevatorMaxPosition);
+        break;
+      case SHOOTING:
+        mState = ElevatorState.SHOOTING;
+        setElevatorPosition(ElevatorConstants.elevatorShootingPosition);
         break;
     }
   }

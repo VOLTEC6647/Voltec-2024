@@ -62,6 +62,7 @@ public class Constants {
 
                 public static final double elevatorMinPosition = 0.64;
                 public static final double elevatorMaxPosition = 0.8;
+                public static final double elevatorShootingPosition = 0.70;
         }
 
         public static class IntakeConstants {
