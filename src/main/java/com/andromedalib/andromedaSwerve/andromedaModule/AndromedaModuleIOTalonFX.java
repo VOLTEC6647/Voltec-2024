@@ -7,7 +7,6 @@ package com.andromedalib.andromedaSwerve.andromedaModule;
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.ModuleMotorConfig;
 import com.andromedalib.math.Conversions;
-import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.andromedalib.sensors.SuperCANCoder;
 import com.ctre.phoenix6.BaseStatusSignal;
