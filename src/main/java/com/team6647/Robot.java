@@ -13,7 +13,6 @@ import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 import com.andromedalib.andromedaSwerve.utils.LocalADStarAK;
 import com.andromedalib.robot.SuperRobot;
 import com.pathplanner.lib.pathfinding.Pathfinding;
-import com.team6647.util.TelemetryManager;
 import com.team6647.util.Constants.RobotConstants;
 
 public class Robot extends SuperRobot {
@@ -45,7 +44,7 @@ public class Robot extends SuperRobot {
     // Set up data receivers & replay source
     switch (RobotConstants.currentMode) {
       case REAL:
-        Logger.addDataReceiver(new WPILOGWriter());
+       // Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
@@ -68,7 +67,7 @@ public class Robot extends SuperRobot {
     Logger.start();
 
     container = RobotContainer.getInstance();
-    super.setRobotContainer(container, TelemetryManager.getInstance(), false);
+    super.setRobotContainer(container, false);
     super.robotInit();
   }
 }
