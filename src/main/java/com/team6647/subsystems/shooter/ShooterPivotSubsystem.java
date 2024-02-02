@@ -32,13 +32,18 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private LoggedTunableNumber pivotKd = new LoggedTunableNumber("Shooter/Pivot/kd", ShooterConstants.pivotKd);
   private LoggedTunableNumber pivotKf = new LoggedTunableNumber("Shooter/Pivot/kf", ShooterConstants.pivotKf);
 
-  private LoggedTunableNumber pivotSetpoint = new LoggedTunableNumber("Shooter/Pivot/Setpoint",
-      ShooterConstants.pivotHomedPosition);
-
+  /*
+   * private LoggedTunableNumber pivotSetpoint = new
+   * LoggedTunableNumber("Shooter/Pivot/Setpoint",
+   * ShooterConstants.pivotHomedPosition);
+   */
   private static ShootingParameters currentParameters;
 
   @AutoLogOutput(key = "Shooter/Pivot/Emergency Disable")
   private boolean emergencyDisable = false;
+
+  @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
+  private double setpoint = ShooterConstants.pivotHomedPosition;
 
   /** Creates a new ShooterPivotSubsystem. */
   private ShooterPivotSubsystem(
@@ -63,9 +68,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
       io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
 
-      changeSetpoint(pid[4]);
+      // changeSetpoint(pid[4]);
 
-    }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
+    }, pivotKp, pivotKi, pivotKd, pivotKf);
+
   }
 
   public enum ShooterPivotState {
@@ -89,19 +95,26 @@ public class ShooterPivotSubsystem extends SubsystemBase {
       case AMP:
         mState = ShooterPivotState.AMP;
         changeSetpoint(ShooterConstants.pivotAmpPosition);
+        break;
       case INDEXING:
         mState = ShooterPivotState.INDEXING;
         changeSetpoint(ShooterConstants.pivotIndexingPosition);
+        break;
       default:
         break;
     }
   }
 
   private void changeSetpoint(double newSetpoint) {
+
+    System.out.println(newSetpoint);
+
     if (newSetpoint > ShooterConstants.pivotMaxPosition || newSetpoint < ShooterConstants.pivotMinPosition) {
       newSetpoint = Functions.clamp(newSetpoint, ShooterConstants.pivotMinPosition,
           ShooterConstants.pivotMaxPosition);
     }
+
+    setpoint = newSetpoint;
 
     io.setShooterReference(newSetpoint);
   }
