@@ -24,9 +24,6 @@ public class VisionIOLimelight implements VisionIO {
 
     AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-    public VisionIOLimelight() {
-    }
-
     @Override
     public synchronized void updateInputs(VisionIOInputs inputs) {
         LimelightHelpers.Results result = LimelightHelpers
@@ -44,11 +41,14 @@ public class VisionIOLimelight implements VisionIO {
             inputs.timestampLatency = Logger.getRealTimestamp()
                     - (result.latency_capture + result.latency_pipeline / 1000.0);
             inputs.targetDistance = computeTagDistance();
+
+            inputs.targetID = (int) LimelightHelpers.getFiducialID(VisionConstants.aprilLimeNTName);
         } else {
             inputs.observedPose2d = new Pose2d();
             inputs.timestampLatency = 0;
             inputs.hasTarget = false;
             inputs.targetDistance = 0.0;
+            inputs.targetID = 0;
         }
     }
 
@@ -70,5 +70,10 @@ public class VisionIOLimelight implements VisionIO {
             return alliance.get() == DriverStation.Alliance.Red;
         }
         return true;
+    }
+
+    @Override
+    public void changePipeline(int pipelineNumber) {
+        LimelightHelpers.setPipelineIndex(VisionConstants.aprilLimeNTName, pipelineNumber);
     }
 }
