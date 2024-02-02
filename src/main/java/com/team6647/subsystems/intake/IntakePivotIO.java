@@ -17,10 +17,12 @@ public interface IntakePivotIO {
         public double intakePivotLeftMotorVelocity = 0.0;
         public double intakePivotLeftMotorAppliedVoltage = 0.0;
         public double intakePivotLeftMotorPosition = 0.0;
+        public double intakePivotLeftMotorCurrent = 0.0;
 
         public double intakePivotRightMotorVelocity = 0.0;
         public double intakePivotRightMotorAppliedVoltage = 0.0;
         public double intakePivotRightMotorPosition = 0.0;
+        public double intakePivtoRightMotorCurrent = 0.0;
 
         public double intakePivotAbsoluteEncoderPosition = 0.0;
 

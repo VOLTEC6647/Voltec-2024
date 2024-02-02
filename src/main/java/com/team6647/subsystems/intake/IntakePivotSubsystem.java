@@ -116,10 +116,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
         ? mHomedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint)
         : mExtendedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
 
-    double feedforwardValue = equalOutput ? output : -output * 2.1;
-
-    output = output * 12;
-    feedforwardValue = feedforwardValue * 12;
+    double feedforwardValue = equalOutput ? output : -output * 0.004;
 
     Logger.recordOutput("Intake/Pivot/output", output);
     Logger.recordOutput("Intake/Pivot/feedforward", feedforwardValue);
