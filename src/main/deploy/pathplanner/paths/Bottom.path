@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4345801700862661,
-        "y": 4.10161960601699
+        "x": 1.6,
+        "y": 4.1
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.234580170086266,
-        "y": 4.10161960601699
+        "x": 1.8743469944074989,
+        "y": 4.1
       },
       "isLocked": false,
       "linkedName": "BottomStart"
     },
     {
       "anchor": {
-        "x": 2.898415435420366,
-        "y": 4.10161960601699
+        "x": 2.6099751643947733,
+        "y": 4.1
       },
       "prevControl": {
-        "x": 2.0984154354203657,
-        "y": 4.10161960601699
+        "x": 1.7521637528933018,
+        "y": 4.1
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,8 +32,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "ShootMove",
-      "waypointRelativePos": 0.35,
+      "name": "ShootStay",
+      "waypointRelativePos": 0.0,
       "command": {
         "type": "parallel",
         "data": {
@@ -42,7 +42,7 @@
       }
     },
     {
-      "name": "IntakeAlign",
+      "name": "GrabPiece",
       "waypointRelativePos": 1.0,
       "command": {
         "type": "parallel",
@@ -53,14 +53,14 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": 0.829167895475644,
     "rotateFast": false
   },
   "reversed": false,

@@ -3,12 +3,12 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.898415435420366,
+        "x": 2.6099751643947733,
         "y": 4.10161960601699
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.4672745039934525,
+        "x": 2.17883423296786,
         "y": 4.052449341009793
       },
       "isLocked": false,
@@ -48,8 +48,8 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "ShootMove",
-      "waypointRelativePos": 0.9,
+      "name": "ShootStay",
+      "waypointRelativePos": 1.85,
       "command": {
         "type": "parallel",
         "data": {
