@@ -3,47 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4345801700862661,
-        "y": 4.10161960601699
+        "x": 1.72,
+        "y": 2.06
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.234580170086266,
-        "y": 4.10161960601699
+        "x": 2.7294521600413724,
+        "y": 2.06
       },
       "isLocked": false,
-      "linkedName": "BottomStart"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.898415435420366,
-        "y": 4.10161960601699
+        "x": 3.4,
+        "y": 2.06
       },
       "prevControl": {
-        "x": 2.0984154354203657,
-        "y": 4.10161960601699
+        "x": 1.9857864376269039,
+        "y": 2.06
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "BottomPiece"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "ShootMove",
-      "waypointRelativePos": 0.35,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "IntakeAlign",
-      "waypointRelativePos": 1.0,
+      "name": "GrabPiece",
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -53,8 +43,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxVelocity": 1.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
