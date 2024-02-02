@@ -25,7 +25,7 @@ public class ShooterCommands {
         return Commands.deadline(
                 Commands.waitUntil(() -> !shooterSubsystem.getBeamBrake()),
                 new ShooterPivotTarget(pivotSubsystem, ShooterPivotState.INDEXING),
-                new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING));
+                new ShooterRollerTarget(rollerSubsystem, RollerState.IDLE));
 
     }
 

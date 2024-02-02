@@ -41,7 +41,6 @@ public class IntakeSubsystem extends SubsystemBase {
     Logger.processInputs("Intake/Rollers", inputs);
   }
 
-
   /**
    * Public method to command intake state
    * 
@@ -66,5 +65,9 @@ public class IntakeSubsystem extends SubsystemBase {
         io.setIntakeVelocity(IntakeConstants.intakeIdleVelocity);
         break;
     }
+  }
+
+  public double getAmps() {
+    return inputs.intakeMotorCurrent;
   }
 }

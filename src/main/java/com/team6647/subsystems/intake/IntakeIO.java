@@ -13,6 +13,7 @@ public interface IntakeIO {
     public static class IntakeIOInputs {
         public double intakeMotorVelocity = 0.0;
         public double intakeMotorAppliedVoltage = 0.0;
+        public double intakeMotorCurrent = 0.0;
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {

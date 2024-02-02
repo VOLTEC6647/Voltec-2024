@@ -25,21 +25,20 @@ public class IntakeCommands {
         private static IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
 
         public static final Command getIntakeCommand() {
-                Trigger beamBrakeTrigger = new Trigger(() -> intakePivotSubsystem.getBeamBrake());
+                Trigger beamBrakeTrigger = new Trigger(() -> intakeSubsystem.getAmps() > 20);
 
                 return Commands.sequence(
                                 Commands.deadline(
                                                 new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.EXTENDED),
-                                                new IntakeRollerStartEnd(intakeSubsystem, RollerState.INTAKING,
-                                                                RollerState.IDLE)),
+                                                new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING)),
+                                Commands.waitSeconds(0.5),
                                 new RunCommand(() -> {
                                         beamBrakeTrigger
-                                                        .onFalse(
+                                                        .onTrue(
                                                                         Commands.sequence(
-                                                                                        new InstantCommand(
-                                                                                                        () -> intakePivotSubsystem
-                                                                                                                        .changeIntakePivotState(
-                                                                                                                                        IntakePivotState.HOMED)),
+                                                                                        new IntakePivotTarget(
+                                                                                                        intakePivotSubsystem,
+                                                                                                        IntakePivotState.HOMED),
                                                                                         new IntakeRollerTarget(
                                                                                                         intakeSubsystem,
                                                                                                         RollerState.IDLE),

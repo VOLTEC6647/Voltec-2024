@@ -18,6 +18,7 @@ public class IntakeIOTalonFX implements IntakeIO {
     public void updateInputs(IntakeIOInputs inputs) {
         inputs.intakeMotorAppliedVoltage = intakeMotor.getSupplyVoltage().getValueAsDouble();
         inputs.intakeMotorVelocity = intakeMotor.getVelocity().getValueAsDouble();
+        inputs.intakeMotorCurrent = intakeMotor.getStatorCurrent().getValueAsDouble();
     }
 
     @Override
