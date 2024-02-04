@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class SuperRobot extends LoggedRobot {
     private SuperRobotContainer container;
-    private BaseTelemetryManager telemetryManager;
 
     private Command autonomousCommand;
 
@@ -23,9 +22,8 @@ public class SuperRobot extends LoggedRobot {
      * 
      * @param container {@link SuperRobotContainer}
      */
-    public void setRobotContainer(SuperRobotContainer container, BaseTelemetryManager telemetryManager,
+    public void setRobotContainer(SuperRobotContainer container,
             boolean useCamera) {
-        this.telemetryManager = telemetryManager;
         this.container = container;
         this.useCamera = useCamera;
     }
@@ -46,7 +44,6 @@ public class SuperRobot extends LoggedRobot {
     @Override
     public void robotInit() {
         container.initSubsystems();
-        telemetryManager.initTelemetry();
         container.configureBindings();
 
         if (useCamera)
@@ -61,7 +58,6 @@ public class SuperRobot extends LoggedRobot {
     @Override
     public void robotPeriodic() {
         CommandScheduler.getInstance().run();
-        telemetryManager.updateTelemetry();
     }
 
     /**
