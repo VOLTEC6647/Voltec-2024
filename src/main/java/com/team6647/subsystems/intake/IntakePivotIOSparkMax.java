@@ -17,20 +17,20 @@ public class IntakePivotIOSparkMax implements IntakePivotIO {
             IntakeConstants.intakePivotLeftMotorID,
             GlobalIdleMode.Coast,
             IntakeConstants.intakePivotLeftMotorInverted,
-            IntakeConstants.intakeMotorsCurrentLimit,
-            IntakeConstants.intakePivotEncoderPositionConversionFactor,
-            IntakeConstants.intakePivotEncoderZeroOffset,
-            IntakeConstants.intakePivotEncoderInverted);
+            IntakeConstants.intakeMotorsCurrentLimit);
     private static SuperSparkMax rightIntakePivotMotor = new SuperSparkMax(
             IntakeConstants.intakePivotRightMotorID,
             GlobalIdleMode.Coast,
             IntakeConstants.intakePivotRightMotorInverted,
-            IntakeConstants.intakeMotorsCurrentLimit);
+            IntakeConstants.intakeMotorsCurrentLimit, 
+            IntakeConstants.intakePivotEncoderPositionConversionFactor,
+            IntakeConstants.intakePivotEncoderZeroOffset,
+            IntakeConstants.intakePivotEncoderInverted);
 
     private static AbsoluteEncoder pivotEncoder;
 
     public IntakePivotIOSparkMax() {
-        pivotEncoder = leftIntakePivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        pivotEncoder = rightIntakePivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
     }
 
     @Override

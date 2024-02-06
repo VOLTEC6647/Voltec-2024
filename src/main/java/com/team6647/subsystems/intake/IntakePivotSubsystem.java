@@ -11,8 +11,7 @@ import org.littletonrobotics.junction.Logger;
 import com.andromedalib.math.Functions;
 import com.team6647.util.Constants.IntakeConstants;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivotSubsystem extends SubsystemBase {
@@ -25,17 +24,21 @@ public class IntakePivotSubsystem extends SubsystemBase {
   private IntakePivotIO io;
   private IntakePivoIOInputsAutoLogged inputs = new IntakePivoIOInputsAutoLogged();
 
-  private ProfiledPIDController mIntakePivotController = new ProfiledPIDController(IntakeConstants.pivotKp,
-      IntakeConstants.pivotKi, IntakeConstants.pivotKd,
-      new TrapezoidProfile.Constraints(IntakeConstants.intakePIDMaxVelocity, IntakeConstants.intakePIDMaxAcceleration));
+  private PIDController mIntakePivotController = new PIDController(IntakeConstants.pivotKp,
+      IntakeConstants.pivotKi, IntakeConstants.pivotKd);
+  // new TrapezoidProfile.Constraints(IntakeConstants.intakePIDMaxVelocity,
+  // IntakeConstants.intakePIDMaxAcceleration));
 
-  private double setpoint;
+  @AutoLogOutput(key = "Intake/Pivot/Setpoint")
+  private double setpoint = IntakeConstants.intakeHomedPosition;
 
   /** Creates a new IntakePivotSubsystem. */
   private IntakePivotSubsystem(IntakePivotIO io) {
     this.io = io;
 
     mIntakePivotController.setTolerance(IntakeConstants.intakePivotPositionTolerance);
+
+    resetEncoder();
   }
 
   public static IntakePivotSubsystem getInstance(IntakePivotIO io) {
@@ -62,11 +65,11 @@ public class IntakePivotSubsystem extends SubsystemBase {
     switch (intakePivotState) {
       case HOMED:
         mState = IntakePivotState.HOMED;
-        changeSetpoint(setpoint);
+        changeSetpoint(IntakeConstants.intakeHomedPosition);
         break;
       case EXTENDED:
         mState = IntakePivotState.EXTENDED;
-        changeSetpoint(setpoint);
+        changeSetpoint(IntakeConstants.intakeExtendedPosition);
         break;
       default:
         break;
@@ -74,9 +77,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   private void changeSetpoint(double newSetpoint) {
-    if (newSetpoint < IntakeConstants.minIntakePivotPosition || newSetpoint > IntakeConstants.maxIntakePivotPosition) {
-      newSetpoint = Functions.clamp(newSetpoint, IntakeConstants.minIntakePivotPosition,
-          IntakeConstants.maxIntakePivotPosition);
+    if (newSetpoint < IntakeConstants.maxIntakePivotPosition || newSetpoint > IntakeConstants.minIntakePivotPosition) {
+      newSetpoint = Functions.clamp(newSetpoint, IntakeConstants.maxIntakePivotPosition,
+          IntakeConstants.minIntakePivotPosition);
     }
 
     setpoint = newSetpoint;
@@ -87,11 +90,16 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     output = output * 12;
 
+    Logger.recordOutput("Intake/Pivot/output", output);
     io.setIntakeVoltage(output);
   }
 
   @AutoLogOutput(key = "Intake/Pivot/InTolerance")
   public boolean inTolerance() {
-    return mIntakePivotController.atGoal();
+    return mIntakePivotController.atSetpoint();
+  }
+
+  public void resetEncoder() {
+    mIntakePivotController.reset();
   }
 }
