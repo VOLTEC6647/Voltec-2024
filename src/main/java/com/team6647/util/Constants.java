@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class Constants {
 
@@ -24,27 +25,49 @@ public class Constants {
                                 OperatorConstants.kDriverControllerPort);
                 public static final CommandXboxController driverController2 = new CommandXboxController(
                                 OperatorConstants.kDriverControllerPort2);
+
+                /* Driver 1 */
+                public static final Trigger FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.y(),
+                                BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.a(),
+                                FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.b(),
+                                BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.x();
+
+                /* Driver 2 */
+
+                public static final Trigger RUN_INTAKE_FORWARD = driverController2.rightTrigger(),
+                                RUN_INTAKE_BACKWARD = driverController2.leftTrigger(),
+                                HOME_INTAKE = driverController2.povRight(),
+                                EXTEND_INTAKE = driverController2.povLeft();
+
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.REAL;
+                public static final Mode currentMode = Mode.SIM;
         }
 
         public static class ShooterConstants {
-                public static final int shooterMotorLeftID = 19; // checar cual es el ID correcto
-                public static final int shooterMotorRightID = 20; // checar cual es el ID correcto
 
-                public static final double shooterKp = 0; // calcular Kp
-                public static final double shooterKi = 0; // calcular Ki
-                public static final double shooterKd = 0; // calcular Kd
+                public static final int shooterPivotMotorID = 18;
+                public static final int shooterMotorLeftID = 19;
+                public static final int shooterMotorRightID = 20;
 
-                public static final double shooterSpeed = 0.25; // calcular shooter speed
-                public static final double passiveStopped = 0.1; // calcular passive stopped
-                public static final int beamBrakePort = 1; // checar cual es el beam break port
+                public static final double shooterKp = 0;
+                public static final double shooterKi = 0;
+                public static final double shooterKd = 0;
+
+                public static final double shooterSpeed = 0.25;
+                public static final double passiveStopped = 0.1;
+                public static final int beamBrakePort = 1;
+                public static final int shooterMotorCurrentLimit = 80;
 
                 public static final double armEncoderPositionConversionFactor = 360;
-                public static final double armEncoderZeroOffset = 0; // checar cual es el offset
+                public static final double armEncoderZeroOffset = 0;
                 public static final boolean armEncoderInverted = false;
+                public static final boolean shooterPivotMotorInverted = false;
+
+                public static final double shooterMinPosition = 0.0;
+                public static final double shooterMaxPosition = 0.0;
+                public static final double shooterHomedPosition = 0.0;
         }
 
         public static class ElevatorConstants {
@@ -68,26 +91,26 @@ public class Constants {
         public static class IntakeConstants {
                 public static final int intakeMotorID = 13;
 
-                public static final double pivotKp = 0.1;
+                public static final double pivotKp = 0.003;
                 public static final double pivotKi = 0.0;
                 public static final double pivotKd = 0.0;
 
-                public static final double intakePIDMaxVelocity = 0.0;
-                public static final double intakePIDMaxAcceleration = 0.0;
+                public static final double intakePIDMaxVelocity = 1.0;
+                public static final double intakePIDMaxAcceleration = 1.0;
 
-                public static final double maxIntakePivotPosition = 0.0;
-                public static final double minIntakePivotPosition = 0.0;
-                public static final double intakePivotPositionTolerance = 0.0;
-                public static final double intakeHomedPosition = 0.0;
-                public static final double intakeExtendedPosition = 0.0;
+                public static final double minIntakePivotPosition = 137.400;
+                public static final double maxIntakePivotPosition = 197.040;
+                public static final double intakePivotPositionTolerance = 0.4;
+                public static final double intakeHomedPosition = 136.342;
+                public static final double intakeExtendedPosition = 197.000;
 
-                public static final int intakePivotLeftMotorID = 13;
-                public static final int intakePivotRightMotorID = 14;
+                public static final int intakePivotLeftMotorID = 14;
+                public static final int intakePivotRightMotorID = 15;
 
-                public static final double intakePivotEncoderPositionConversionFactor = 0.0;
+                public static final double intakePivotEncoderPositionConversionFactor = 360;
                 public static final double intakePivotEncoderZeroOffset = 0.0;
 
-                public static final boolean intakePivotEncoderInverted = false;
+                public static final boolean intakePivotEncoderInverted = true;
                 public static final boolean intakePivotLeftMotorInverted = false;
                 public static final boolean intakePivotRightMotorInverted = true;
 
