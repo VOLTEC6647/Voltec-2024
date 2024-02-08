@@ -73,6 +73,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(mode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
+        burnFlash();
     }
 
     /**
