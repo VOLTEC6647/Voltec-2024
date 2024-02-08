@@ -18,8 +18,6 @@ public interface ElevatorIO {
         public double elevatorAbsoluteEncoderPosition = 0.0;
         public double elevatorAppliedVolts = 0.0;
 
-        public boolean topBeambrake = false;
-        public boolean bottomBeamBrake = false;
     }
 
     /* Updates the set of loggable inputs s */

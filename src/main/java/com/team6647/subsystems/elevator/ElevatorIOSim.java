@@ -25,8 +25,6 @@ public class ElevatorIOSim implements ElevatorIO {
         inputs.elevatorPosition = Conversions.rotationsToMeters(elevatorMotorSim.getAngularPositionRotations(), 1);
         inputs.elevatorAbsoluteEncoderPosition = 0.0; // TODO SET
 
-        inputs.topBeambrake = false; // TODO SET
-        inputs.bottomBeamBrake = false; // TODO SET
         inputs.elevatorAppliedVolts = appliedVolts;
 
     }

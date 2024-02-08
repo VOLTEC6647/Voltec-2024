@@ -7,31 +7,45 @@
 package com.team6647.subsystems.elevator;
 
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
+import com.ctre.phoenix6.hardware.CANcoder;
 import com.andromedalib.motorControllers.SuperSparkMax;
 import com.team6647.util.Constants.ElevatorConstants;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+
 public class ElevatorIOSparkMax implements ElevatorIO {
-    private static SuperSparkMax elevatorMotor = new SuperSparkMax(
-            ElevatorConstants.elevatorMotorID,
+    private static SuperSparkMax elevatorTopMotor = new SuperSparkMax(
+            ElevatorConstants.elevatorTopMotorID,
             GlobalIdleMode.brake,
-            ElevatorConstants.elevatorMotorInverted,
-            ElevatorConstants.elevatorMotorCurrentLimit,
-            ElevatorConstants.elevatorAbsoluteEncoderPositionConversionFactor,
-            ElevatorConstants.elevatorAbsoluteEncoderZeroOffset,
-            ElevatorConstants.elevatorAbsoluteEncoderInverted);
+            ElevatorConstants.elevatorTopMotorInverted,
+            ElevatorConstants.elevatorMotorCurrentLimit);
+
+    private static SuperSparkMax elevatorBottomMotor = new SuperSparkMax(
+            ElevatorConstants.elevatorBoottomMotorID,
+            GlobalIdleMode.brake,
+            ElevatorConstants.elevatorTopMotorInverted,
+            ElevatorConstants.elevatorMotorCurrentLimit);
+
+    private static CANcoder elevatorCANCoder = new CANcoder(ElevatorConstants.elevatorCANCoderID);
+
+    private static Rotation2d elevatorOffset = new Rotation2d(ElevatorConstants.elevatorCANCoderOffset);
+
+    public ElevatorIOSparkMax() {
+
+    }
 
     @Override
     public void updateInputs(ElevatorIOInputs inputs) {
-        inputs.elevatorPosition = elevatorMotor.getPosition();
-        inputs.elevatorAbsoluteEncoderPosition = 0.0; // TODO SET
+        inputs.elevatorPosition = elevatorTopMotor.getPosition();
+        inputs.elevatorAbsoluteEncoderPosition = elevatorCANCoder.getAbsolutePosition().getValueAsDouble()
+                - elevatorOffset.getRotations();
 
-        inputs.topBeambrake = false; // TODO SET
-        inputs.bottomBeamBrake = false; // TODO SET
-        inputs.elevatorAppliedVolts = elevatorMotor.getBusVoltage();
+        inputs.elevatorAppliedVolts = elevatorTopMotor.getBusVoltage();
     }
 
     @Override
     public void setElevatorVoltage(double volts) {
-        elevatorMotor.setVoltage(volts);
+        elevatorTopMotor.setVoltage(volts);
+        elevatorBottomMotor.setVoltage(volts);
     }
 }
