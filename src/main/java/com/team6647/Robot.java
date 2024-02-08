@@ -44,7 +44,7 @@ public class Robot extends SuperRobot {
     // Set up data receivers & replay source
     switch (RobotConstants.currentMode) {
       case REAL:
-       // Logger.addDataReceiver(new WPILOGWriter());
+       Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
