@@ -42,7 +42,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.SIM;
+                public static final Mode currentMode = Mode.REAL;
         }
 
         public static class ShooterConstants {
@@ -71,13 +71,16 @@ public class Constants {
         }
 
         public static class ElevatorConstants {
-                public static final int elevatorMotorID = 13;
-                public static final boolean elevatorMotorInverted = false;
-                public static final int elevatorMotorCurrentLimit = 80;
+                public static final int elevatorBoottomMotorID = 16;
+                public static final int elevatorTopMotorID = 17;
 
-                public static final double elevatorAbsoluteEncoderPositionConversionFactor = 0.0;
-                public static final double elevatorAbsoluteEncoderZeroOffset = 0.0;
-                public static final boolean elevatorAbsoluteEncoderInverted = false;
+                public static final int elevatorCANCoderID = 21;
+
+                public static final double elevatorCANCoderOffset = -0.003174;
+
+                public static final boolean elevatorTopMotorInverted = false;
+                public static final boolean elevatorBottomMotorInverted = true;
+                public static final int elevatorMotorCurrentLimit = 80;
 
                 public static final double elevatorKp = 0.01;
                 public static final double elevatorKi = 0;
@@ -91,12 +94,20 @@ public class Constants {
         public static class IntakeConstants {
                 public static final int intakeMotorID = 13;
 
-                public static final double pivotKp = 0.003;
+                public static final double pivotKp = 0.010;
                 public static final double pivotKi = 0.0;
                 public static final double pivotKd = 0.0;
 
-                public static final double intakePIDMaxVelocity = 1.0;
-                public static final double intakePIDMaxAcceleration = 1.0;
+                public static final double extendedPivotKp = 0.003;
+                public static final double extendedPivotKi = 0.0;
+                public static final double extendedPivotKd = 0.0;
+
+                public static final double extendedPivotKs = 0.14283;
+                public static final double extendedPivotKv = 0.002136;
+                public static final double extendedPivotKa = 0.00065975;
+
+                public static final double intakePIDMaxVelocity = 50.0;
+                public static final double intakePIDMaxAcceleration = 70.0;
 
                 public static final double minIntakePivotPosition = 137.400;
                 public static final double maxIntakePivotPosition = 197.040;

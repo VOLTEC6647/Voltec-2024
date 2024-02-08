@@ -13,11 +13,11 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.team6647.util.Constants.IntakeConstants;
 
 public class IntakePivotIOSparkMax implements IntakePivotIO {
-    private static SuperSparkMax leftIntakePivotMotor = new SuperSparkMax(
+    /* private static SuperSparkMax leftIntakePivotMotor = new SuperSparkMax(
             IntakeConstants.intakePivotLeftMotorID,
             GlobalIdleMode.Coast,
             IntakeConstants.intakePivotLeftMotorInverted,
-            IntakeConstants.intakeMotorsCurrentLimit);
+            IntakeConstants.intakeMotorsCurrentLimit); */
     private static SuperSparkMax rightIntakePivotMotor = new SuperSparkMax(
             IntakeConstants.intakePivotRightMotorID,
             GlobalIdleMode.Coast,
@@ -35,9 +35,9 @@ public class IntakePivotIOSparkMax implements IntakePivotIO {
 
     @Override
     public void updateInputs(IntakePivoIOInputs inputs) {
-        inputs.intakePivotLeftMotorVelocity = leftIntakePivotMotor.getVelocity();
+     /*    inputs.intakePivotLeftMotorVelocity = leftIntakePivotMotor.getVelocity();
         inputs.intakePivotLeftMotorAppliedVoltage = leftIntakePivotMotor.getAppliedOutput();
-        inputs.intakePivotLeftMotorPosition = leftIntakePivotMotor.getPosition();
+        inputs.intakePivotLeftMotorPosition = leftIntakePivotMotor.getPosition(); */
 
         inputs.intakePivotAbsoluteEncoderPosition = pivotEncoder.getPosition();
 
@@ -48,7 +48,7 @@ public class IntakePivotIOSparkMax implements IntakePivotIO {
 
     @Override
     public void setIntakeVoltage(double voltage) {
-        leftIntakePivotMotor.setVoltage(voltage);
-        rightIntakePivotMotor.setVoltage(voltage);
+/*         leftIntakePivotMotor.setVoltage(voltage);
+ */        rightIntakePivotMotor.setVoltage(voltage);
     }
 }
