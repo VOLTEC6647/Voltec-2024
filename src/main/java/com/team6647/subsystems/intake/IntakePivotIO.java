@@ -23,6 +23,8 @@ public interface IntakePivotIO {
         public double intakePivotRightMotorPosition = 0.0;
 
         public double intakePivotAbsoluteEncoderPosition = 0.0;
+
+        public boolean intakeBeamBrake = false;
     }
 
     public default void updateInputs(IntakePivoIOInputs inputs) {

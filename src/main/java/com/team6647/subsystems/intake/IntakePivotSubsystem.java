@@ -53,9 +53,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
       new TrapezoidProfile.Constraints(IntakeConstants.intakePIDMaxVelocity,
           IntakeConstants.intakePIDMaxAcceleration));
 
-  private PIDController mExtendedPivotController = new PIDController(IntakeConstants.extendedPivotKp,
-      IntakeConstants.extendedPivotKi, IntakeConstants.extendedPivotKd);
-
   private ArmFeedforward intakeFeedforward = new ArmFeedforward(IntakeConstants.extendedPivotKs,
       IntakeConstants.extendedPivotKv, IntakeConstants.extendedPivotKa);
 
@@ -165,19 +162,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
       output = output - feedforwardValue;
     } */
 
-    io.setIntakeVoltage(output);
-  }
-
-  private void calculateExtendedPID() {
-    double output = mExtendedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
-
-    output = output * 12;
-
-    if (inputs.intakePivotAbsoluteEncoderPosition > 154.4993438720703) {
-      output = output - (inputs.intakePivotAbsoluteEncoderPosition / setpoint) * 0.25 * 12;
-    }
-
-    Logger.recordOutput("Intake/Pivot/output", output);
     io.setIntakeVoltage(output);
   }
 
