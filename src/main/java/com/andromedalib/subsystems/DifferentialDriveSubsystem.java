@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@Deprecated
 public class DifferentialDriveSubsystem extends SubsystemBase {
   public static MotorControllerGroup leftMotorController;
   public static MotorControllerGroup rightMotorController;
