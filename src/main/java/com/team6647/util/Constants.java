@@ -5,6 +5,7 @@ package com.team6647.util;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -76,11 +77,12 @@ public class Constants {
 
                 public static final int elevatorCANCoderID = 21;
 
-                public static final double elevatorCANCoderOffset = -0.003174;
+                public static final double elevatorCANCoderOffset = 0.0;
 
                 public static final boolean elevatorTopMotorInverted = false;
                 public static final boolean elevatorBottomMotorInverted = true;
                 public static final int elevatorMotorCurrentLimit = 80;
+                public static final double elevatorGearRatio = 24.6;
 
                 public static final double elevatorKp = 0.01;
                 public static final double elevatorKi = 0;
@@ -89,18 +91,16 @@ public class Constants {
                 public static final double elevatorMinPosition = 0.64;
                 public static final double elevatorMaxPosition = 0.8;
                 public static final double elevatorShootingPosition = 0.70;
+
+                public static final SensorDirectionValue elevatorCANCoderSensorValue = SensorDirectionValue.CounterClockwise_Positive;
         }
 
         public static class IntakeConstants {
-                public static final int intakeMotorID = 13;
+                public static final int intakeMotorID = 20;
 
                 public static final double pivotKp = 0.010;
                 public static final double pivotKi = 0.0;
                 public static final double pivotKd = 0.0;
-
-                public static final double extendedPivotKp = 0.003;
-                public static final double extendedPivotKi = 0.0;
-                public static final double extendedPivotKd = 0.0;
 
                 public static final double extendedPivotKs = 0.14283;
                 public static final double extendedPivotKv = 0.002136;
@@ -131,6 +131,8 @@ public class Constants {
                 public static final double intakeIntakingVelocity = 0.5;
                 public static final double intakeExhaustingVelocity = -0.5;
                 public static final double intakeIdleVelocity = 0.1;
+
+                public static final int intakeBeamBrakeChannel = 9;
 
         }
 

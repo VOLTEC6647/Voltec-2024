@@ -111,15 +111,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Intake/Pivot", inputs);
 
-    calculateHomedPID();
-
-    /*
-     * if (mState == IntakePivotState.HOMED) {
-     * calculateHomedPID();
-     * } else {
-     * calculateExtendedPID();
-     * }
-     */
+    computePID();
   }
 
   public void changeIntakePivotState(IntakePivotState intakePivotState) {
@@ -146,7 +138,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
     setpoint = newSetpoint;
   }
 
-  private void calculateHomedPID() {
+  private void computePID() {
     double output = mIntakePivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
 
     double feedforwardValue = intakeFeedforward.calculate(edu.wpi.first.math.util.Units.degreesToRadians(setpoint),
@@ -157,10 +149,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
     Logger.recordOutput("Intake/Pivot/output", output);
     Logger.recordOutput("Intake/Pivot/feedforward", feedforwardValue);
-    //output = output - feedforwardValue;
-   /*  if(inputs.intakePivotAbsoluteEncoderPosition >= 154.4993438720703 && mState == IntakePivotState.EXTENDED){
-      output = output - feedforwardValue;
-    } */
 
     io.setIntakeVoltage(output);
   }
