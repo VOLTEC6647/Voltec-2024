@@ -89,7 +89,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   private void setElevatorPosition(double setpoint) {
     double volts = elevatorPIDController
-        .calculate(inputs.elevatorAbsoluteEncoderPosition, setpoint);
+        .calculate(inputs.elevatorPosition, setpoint);
     volts = MathUtil.clamp(volts, -12.0, 12.0);
     io.setElevatorVoltage(setpoint);
   }
