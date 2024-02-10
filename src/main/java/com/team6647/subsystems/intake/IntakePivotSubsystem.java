@@ -8,31 +8,21 @@ package com.team6647.subsystems.intake;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.andromedalib.math.Conversions;
 import com.andromedalib.math.Functions;
-import com.ctre.phoenix6.configs.VoltageConfigs;
 import com.team6647.util.Constants.IntakeConstants;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 import static edu.wpi.first.units.MutableMeasure.mutable;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
@@ -52,9 +42,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
       IntakeConstants.pivotKi, IntakeConstants.pivotKd,
       new TrapezoidProfile.Constraints(IntakeConstants.intakePIDMaxVelocity,
           IntakeConstants.intakePIDMaxAcceleration));
-
-  private ArmFeedforward intakeFeedforward = new ArmFeedforward(IntakeConstants.extendedPivotKs,
-      IntakeConstants.extendedPivotKv, IntakeConstants.extendedPivotKa);
 
   @AutoLogOutput(key = "Intake/Pivot/Setpoint")
   private double setpoint = IntakeConstants.intakeHomedPosition;
@@ -111,7 +98,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Intake/Pivot", inputs);
 
-    computePID();
+    computePID(mState == IntakePivotState.HOMED);
   }
 
   public void changeIntakePivotState(IntakePivotState intakePivotState) {
@@ -138,11 +125,10 @@ public class IntakePivotSubsystem extends SubsystemBase {
     setpoint = newSetpoint;
   }
 
-  private void computePID() {
+  private void computePID(boolean equalOutput) {
     double output = mIntakePivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
 
-    double feedforwardValue = intakeFeedforward.calculate(edu.wpi.first.math.util.Units.degreesToRadians(setpoint),
-        mIntakePivotController.getGoal().velocity);
+    double feedforwardValue = equalOutput ? output : output * 0.8;
 
     output = output * 12;
     feedforwardValue = feedforwardValue * 12;
@@ -150,7 +136,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
     Logger.recordOutput("Intake/Pivot/output", output);
     Logger.recordOutput("Intake/Pivot/feedforward", feedforwardValue);
 
-    io.setIntakeVoltage(output);
+    io.setIntakeVoltage(feedforwardValue, output);
   }
 
   @AutoLogOutput(key = "Intake/Pivot/InTolerance")
@@ -165,7 +151,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
   /* Characterization */
 
   private void runIntakeCharacterization(Measure<Voltage> volts) {
-    io.setIntakeVoltage(volts.baseUnitMagnitude());
+    io.setIntakeVoltage(volts.baseUnitMagnitude(), volts.baseUnitMagnitude());
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

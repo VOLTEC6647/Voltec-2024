@@ -30,6 +30,6 @@ public interface IntakePivotIO {
     public default void updateInputs(IntakePivoIOInputs inputs) {
     }
 
-    public default void setIntakeVoltage(double velocity) {
+    public default void setIntakeVoltage(double leftMotorVolts, double rightMotorVolts) {
     }
 }

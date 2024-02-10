@@ -32,8 +32,8 @@ public class IntakePivotIOSim implements IntakePivotIO {
     }
 
     @Override
-    public void setIntakeVoltage(double voltage) {
-        leftMotorSim.setInputVoltage(voltage);
-        rightMotorSim.setInputVoltage(voltage);
+    public void setIntakeVoltage(double leftMotorVolts, double rightMotorVolts) {
+        leftMotorSim.setInputVoltage(leftMotorVolts);
+        rightMotorSim.setInputVoltage(rightMotorVolts);
     }
 }

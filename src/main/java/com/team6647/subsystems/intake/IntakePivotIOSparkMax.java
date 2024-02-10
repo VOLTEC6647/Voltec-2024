@@ -12,22 +12,27 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.team6647.util.Constants.IntakeConstants;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 public class IntakePivotIOSparkMax implements IntakePivotIO {
-    /* private static SuperSparkMax leftIntakePivotMotor = new SuperSparkMax(
+
+    private static SuperSparkMax leftIntakePivotMotor = new SuperSparkMax(
             IntakeConstants.intakePivotLeftMotorID,
             GlobalIdleMode.Coast,
             IntakeConstants.intakePivotLeftMotorInverted,
-            IntakeConstants.intakeMotorsCurrentLimit); */
+            IntakeConstants.intakeMotorsCurrentLimit);
     private static SuperSparkMax rightIntakePivotMotor = new SuperSparkMax(
             IntakeConstants.intakePivotRightMotorID,
             GlobalIdleMode.Coast,
             IntakeConstants.intakePivotRightMotorInverted,
-            IntakeConstants.intakeMotorsCurrentLimit, 
+            IntakeConstants.intakeMotorsCurrentLimit,
             IntakeConstants.intakePivotEncoderPositionConversionFactor,
             IntakeConstants.intakePivotEncoderZeroOffset,
             IntakeConstants.intakePivotEncoderInverted);
 
     private static AbsoluteEncoder pivotEncoder;
+
+    private static DigitalInput beamBrake = new DigitalInput(IntakeConstants.intakeBeamBrakeChannel);
 
     public IntakePivotIOSparkMax() {
         pivotEncoder = rightIntakePivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
@@ -35,20 +40,23 @@ public class IntakePivotIOSparkMax implements IntakePivotIO {
 
     @Override
     public void updateInputs(IntakePivoIOInputs inputs) {
-     /*    inputs.intakePivotLeftMotorVelocity = leftIntakePivotMotor.getVelocity();
+        inputs.intakePivotLeftMotorVelocity = leftIntakePivotMotor.getVelocity();
         inputs.intakePivotLeftMotorAppliedVoltage = leftIntakePivotMotor.getAppliedOutput();
-        inputs.intakePivotLeftMotorPosition = leftIntakePivotMotor.getPosition(); */
+        inputs.intakePivotLeftMotorPosition = leftIntakePivotMotor.getPosition();
 
         inputs.intakePivotAbsoluteEncoderPosition = pivotEncoder.getPosition();
 
         inputs.intakePivotRightMotorVelocity = rightIntakePivotMotor.getVelocity();
         inputs.intakePivotRightMotorAppliedVoltage = rightIntakePivotMotor.getAppliedOutput();
         inputs.intakePivotRightMotorPosition = rightIntakePivotMotor.getPosition();
+
+        inputs.intakeBeamBrake = beamBrake.get();
     }
 
     @Override
-    public void setIntakeVoltage(double voltage) {
-/*         leftIntakePivotMotor.setVoltage(voltage);
- */        rightIntakePivotMotor.setVoltage(voltage);
+    public void setIntakeVoltage(double leftMotorVolts, double rightMotorVolts) {
+
+        leftIntakePivotMotor.setVoltage(leftMotorVolts);
+        rightIntakePivotMotor.setVoltage(rightMotorVolts);
     }
 }
