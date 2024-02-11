@@ -7,7 +7,6 @@ package com.team6647.subsystems.shooter;
 
 import com.andromedalib.motorControllers.SuperSparkMax;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
-import com.team6647.util.Constants.IntakeConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
 public class ShooterIOSparkMax implements ShooterIO {
@@ -16,7 +15,19 @@ public class ShooterIOSparkMax implements ShooterIO {
             ShooterConstants.shooterRollerMotorID,
             GlobalIdleMode.Coast,
             true,
-            IntakeConstants.intakeMotorsCurrentLimit);
+            ShooterConstants.rollerMotorCurrentLimit);
+
+    private static SuperSparkMax topFlywheelMotor = new SuperSparkMax(
+            ShooterConstants.flywheelTopMotorID,
+            GlobalIdleMode.Coast,
+            true,
+            ShooterConstants.shooterMotorCurrentLimit);
+
+    private static SuperSparkMax bottomFlywheelMotor = new SuperSparkMax(
+            ShooterConstants.flywheelBottomMotorID,
+            GlobalIdleMode.Coast,
+            true,
+            ShooterConstants.shooterMotorCurrentLimit);
 
     public ShooterIOSparkMax() {
 
@@ -24,11 +35,15 @@ public class ShooterIOSparkMax implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        rollerMotor.set(0.25);
     }
 
     @Override
     public void setShooterVelocity(double velocity) {
 
+    }
+
+    @Override
+    public void setRollerVelocity(double velocity) {
+        rollerMotor.set(velocity);
     }
 }
