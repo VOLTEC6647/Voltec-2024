@@ -10,7 +10,6 @@ import com.andromedalib.motorControllers.SuperSparkMax;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
-import com.team6647.util.Constants.IntakeConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -21,9 +20,9 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
             ShooterConstants.shooterPivotMotorID,
             GlobalIdleMode.brake, ShooterConstants.shooterPivotMotorInverted,
             ShooterConstants.shooterMotorCurrentLimit,
-            IntakeConstants.intakePivotEncoderPositionConversionFactor,
-            IntakeConstants.intakePivotEncoderZeroOffset,
-            IntakeConstants.intakePivotEncoderInverted);
+            ShooterConstants.armEncoderPositionConversionFactor,
+            ShooterConstants.armEncoderZeroOffset,
+            ShooterConstants.armEncoderInverted);
 
     private static AbsoluteEncoder pivotEncoder;
 
