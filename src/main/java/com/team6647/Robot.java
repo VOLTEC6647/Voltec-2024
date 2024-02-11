@@ -10,9 +10,7 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import com.andromedalib.andromedaSwerve.utils.LocalADStarAK;
 import com.andromedalib.robot.SuperRobot;
-import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.team6647.util.Constants.RobotConstants;
 
 public class Robot extends SuperRobot {
