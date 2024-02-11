@@ -13,20 +13,9 @@ import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
-import static edu.wpi.first.units.MutableMeasure.mutable;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
+
 
 public class IntakePivotSubsystem extends SubsystemBase {
 
@@ -38,45 +27,24 @@ public class IntakePivotSubsystem extends SubsystemBase {
   private IntakePivotIO io;
   private IntakePivoIOInputsAutoLogged inputs = new IntakePivoIOInputsAutoLogged();
 
-  private ProfiledPIDController mIntakePivotController = new ProfiledPIDController(IntakeConstants.pivotKp,
-      IntakeConstants.pivotKi, IntakeConstants.pivotKd,
-      new TrapezoidProfile.Constraints(IntakeConstants.intakePIDMaxVelocity,
-          IntakeConstants.intakePIDMaxAcceleration));
+  private ProfiledPIDController mExtendedPivotController = new ProfiledPIDController(IntakeConstants.extendedKp,
+      IntakeConstants.extendedKi, IntakeConstants.extendedKd,
+      new TrapezoidProfile.Constraints(IntakeConstants.homedPIDMaxVelocity,
+          IntakeConstants.homedPIDMaxAcceleration));
+
+  private ProfiledPIDController mHomedPivotController = new ProfiledPIDController(IntakeConstants.homedKp,
+      IntakeConstants.homedKi, IntakeConstants.homedKd,
+      new TrapezoidProfile.Constraints(IntakeConstants.extendedPIDMaxVelocity,
+          IntakeConstants.extendedPIDMaxAcceleration));
 
   @AutoLogOutput(key = "Intake/Pivot/Setpoint")
   private double setpoint = IntakeConstants.intakeHomedPosition;
-
-  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-  private final MutableMeasure<Angle> m_angle = mutable(Rotations.of(0));
-  private final MutableMeasure<Velocity<Angle>> m_velocity = mutable(RotationsPerSecond.of(0));
-
-  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(Volts.of(0.5).per(Seconds.of(1)), Volts.of(3), Seconds.of(60), null),
-      new SysIdRoutine.Mechanism(
-          (Measure<Voltage> volts) -> {
-            runIntakeCharacterization(volts);
-          },
-          log -> {
-            log.motor("intake-left")
-                .voltage(
-                    m_appliedVoltage.mut_replace(
-                        inputs.intakePivotLeftMotorAppliedVoltage, Volts))
-                .angularPosition(m_angle.mut_replace(inputs.intakePivotLeftMotorPosition, Rotations))
-                .angularVelocity(m_velocity.mut_replace(inputs.intakePivotLeftMotorVelocity, RotationsPerSecond));
-            log.motor("intake-right")
-                .voltage(
-                    m_appliedVoltage.mut_replace(
-                        inputs.intakePivotRightMotorAppliedVoltage, Volts))
-                .angularPosition(m_angle.mut_replace(inputs.intakePivotRightMotorPosition, Rotations))
-                .angularVelocity(m_velocity.mut_replace(inputs.intakePivotRightMotorVelocity, RotationsPerSecond));
-          },
-          this));
 
   /** Creates a new IntakePivotSubsystem. */
   private IntakePivotSubsystem(IntakePivotIO io) {
     this.io = io;
 
-    mIntakePivotController.setTolerance(IntakeConstants.intakePivotPositionTolerance);
+    mExtendedPivotController.setTolerance(IntakeConstants.intakePivotPositionTolerance);
 
     resetPID();
   }
@@ -126,9 +94,10 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   private void computePID(boolean equalOutput) {
-    double output = mIntakePivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
+    double output = equalOutput ? mHomedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint)
+        : mExtendedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
 
-    double feedforwardValue = equalOutput ? output : output * 0.8;
+    double feedforwardValue = equalOutput ? output : -output * 2.1;
 
     output = output * 12;
     feedforwardValue = feedforwardValue * 12;
@@ -141,24 +110,12 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   @AutoLogOutput(key = "Intake/Pivot/InTolerance")
   public boolean inTolerance() {
-    return mIntakePivotController.atSetpoint();
+    return mExtendedPivotController.atSetpoint();
   }
 
   public void resetPID() {
-    mIntakePivotController.reset(inputs.intakePivotAbsoluteEncoderPosition);
+    mExtendedPivotController.reset(inputs.intakePivotAbsoluteEncoderPosition);
+    mHomedPivotController.reset(inputs.intakePivotAbsoluteEncoderPosition);
   }
 
-  /* Characterization */
-
-  private void runIntakeCharacterization(Measure<Voltage> volts) {
-    io.setIntakeVoltage(volts.baseUnitMagnitude(), volts.baseUnitMagnitude());
-  }
-
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
-  }
-
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
-  }
 }
