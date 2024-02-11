@@ -55,7 +55,6 @@ public class IntakePivotIOSparkMax implements IntakePivotIO {
 
     @Override
     public void setIntakeVoltage(double leftMotorVolts, double rightMotorVolts) {
-
         leftIntakePivotMotor.setVoltage(leftMotorVolts);
         rightIntakePivotMotor.setVoltage(rightMotorVolts);
     }

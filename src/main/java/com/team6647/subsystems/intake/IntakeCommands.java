@@ -31,7 +31,6 @@ public class IntakeCommands {
                 () -> {
                 },
                 interrupted -> {
-                    intakePivotSubsystem.changeIntakePivotState(IntakePivotState.HOMED);
                 },
                 () -> intakePivotSubsystem.inTolerance(), intakePivotSubsystem);
     }
