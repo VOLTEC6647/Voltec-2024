@@ -29,7 +29,16 @@ import com.team6647.subsystems.intake.IntakePivotIOSim;
 import com.team6647.subsystems.intake.IntakePivotIOSparkMax;
 import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakeSubsystem;
-import com.team6647.subsystems.shooter.ShooterSubsystem.RollerState;
+import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
+import com.team6647.subsystems.shooter.ShooterIO;
+import com.team6647.subsystems.shooter.ShooterIOSim;
+import com.team6647.subsystems.shooter.ShooterIOSparkMax;
+import com.team6647.subsystems.shooter.ShooterPivotIO;
+import com.team6647.subsystems.shooter.ShooterPivotIOSim;
+import com.team6647.subsystems.shooter.ShooterPivotIOSparkMax;
+import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
+import com.team6647.subsystems.shooter.ShooterSubsystem;
+import com.team6647.subsystems.shooter.ShooterSubsystem.FlywheelState;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
@@ -41,7 +50,10 @@ public class RobotContainer extends SuperRobotContainer {
         public static AndromedaSwerve andromedaSwerve;
         public static IntakePivotSubsystem intakePivotSubsystem;
         public static IntakeSubsystem intakeSubsystem;
-        public static ElevatorSubsystem elevatorSubsystem;
+        /*
+         * public static ElevatorSubsystem elevatorSubsystem;
+         */ public static ShooterPivotSubsystem shooterPivotSubsystem;
+        public static ShooterSubsystem shooterSubsystem;
         // private VisionAutoSubsystem visionAutoSubsystem;
         // private ElevatorSubsystem elevatorSubsystem;
 
@@ -58,7 +70,7 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public void initSubsystems() {
-                switch (RobotConstants.currentMode) {
+                switch (RobotConstants.getMode()) {
                         case REAL:
                                 andromedaSwerve = AndromedaSwerve.getInstance(
                                                 new GyroIOPigeon2(DriveConstants.gyroID, "6647_CANivore"),
@@ -82,8 +94,12 @@ public class RobotContainer extends SuperRobotContainer {
                                                 }, DriveConstants.andromedaSwerveConfig,
                                                 DriveConstants.holonomicPathConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOTalonFX());
-                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSparkMax());
-                                intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSparkMax());
+                                /*
+                                 * elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSparkMax());
+                                 */ intakePivotSubsystem = IntakePivotSubsystem
+                                                .getInstance(new IntakePivotIOSparkMax());
+                                shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSparkMax());
+                                shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSparkMax());
                                 break;
                         case SIM:
                                 andromedaSwerve = AndromedaSwerve.getInstance(new GyroIO() {
@@ -94,8 +110,11 @@ public class RobotContainer extends SuperRobotContainer {
                                                 new AndromedaModuleIOSim(0.1),
                                 }, DriveConstants.andromedaSwerveConfig, DriveConstants.holonomicPathConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOSim());
-                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
-                                intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
+                                /*
+                                 * elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
+                                 */ intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
+                                shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSim());
+                                shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSim());
                                 break;
 
                         default:
@@ -114,9 +133,14 @@ public class RobotContainer extends SuperRobotContainer {
                                                 DriveConstants.holonomicPathConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIO() {
                                 });
-                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIO() {
+                                /*
+                                 * elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIO() {
+                                 * });
+                                 */ intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIO() {
                                 });
-                                intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIO() {
+                                shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIO() {
+                                });
+                                shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIO() {
                                 });
                                 break;
                 }
@@ -142,18 +166,14 @@ public class RobotContainer extends SuperRobotContainer {
                  */
 
                 OperatorConstants.RUN_INTAKE_FORWARD
-                                .whileTrue(IntakeCommands.getTargetStateIntakeCommand(RollerState.INTAKING));
+                                .whileTrue(IntakeCommands.getTargetStateIntakeCommand(FlywheelState.INTAKING));
                 OperatorConstants.RUN_INTAKE_BACKWARD
-                                .whileTrue(IntakeCommands.getTargetStateIntakeCommand(RollerState.EXHAUSTING));
+                                .whileTrue(IntakeCommands.getTargetStateIntakeCommand(FlywheelState.EXHAUSTING));
 
-                /*
-                 * OperatorConstants.HOME_INTAKE
-                 * .whileTrue(IntakeCommands.getTargetPivotStateCommand(IntakePivotState.HOMED))
-                 * ;
-                 * OperatorConstants.EXTEND_INTAKE
-                 * .whileTrue(IntakeCommands.getTargetPivotStateCommand(IntakePivotState.
-                 * EXTENDED));
-                 */
+                OperatorConstants.HOME_INTAKE
+                                .whileTrue(IntakeCommands.getTargetPivotStateCommand(IntakePivotState.HOMED));
+                OperatorConstants.EXTEND_INTAKE
+                                .whileTrue(IntakeCommands.getTargetPivotStateCommand(IntakePivotState.EXTENDED));
 
         }
 

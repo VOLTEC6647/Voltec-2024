@@ -9,6 +9,12 @@
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
+          "Intake": {
+            "Pivot": {
+              "open": true
+            },
+            "open": true
+          },
           "open": true
         },
         "open": true
