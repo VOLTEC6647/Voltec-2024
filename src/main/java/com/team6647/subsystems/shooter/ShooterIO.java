@@ -11,8 +11,8 @@ public interface ShooterIO {
 
     @AutoLog
     public static class ShooterIOInputs {
-        public double leftMotorVelocity = 0.0;
-        public double rightMotorVelocity = 0.0;
+        public double topMotorVelocity = 0.0;
+        public double bottomMotorVelocity = 0.0;
 
         public boolean beamBrake = false;
     }
@@ -22,5 +22,8 @@ public interface ShooterIO {
     }
 
     public default void setShooterVelocity(double velocity) {
+    }
+
+    public default void setRollerVelocity(double velocity) {
     }
 }

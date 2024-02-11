@@ -2,12 +2,14 @@
  * Written by Mauricio Villarreal
  *            Juan Pablo Gutiérrez
  */
+
 package com.team6647.subsystems.shooter;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.team6647.util.Constants.ShooterConstants;
+import com.team6647.util.Constants.RobotConstants.RollerState;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -15,11 +17,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private static ShooterSubsystem instance;
 
-  @AutoLogOutput(key = "Shooter/State")
-  private RollerState mState = RollerState.STOPPED;
+  @AutoLogOutput(key = "Shooter/Flywheel/State")
+  private FlywheelState mFlywheelState = FlywheelState.STOPPED;
+
+  @AutoLogOutput(key = "Shooter/Rollers/State")
+  private RollerState mRollerState = RollerState.STOPPED;
 
   private ShooterIO io;
-  private ShooterIOInputsAutoLogged inputs;
+  private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
   private ShooterSubsystem(ShooterIO io) {
     this.io = io;
@@ -32,20 +37,17 @@ public class ShooterSubsystem extends SubsystemBase {
     return instance;
   }
 
-  /**
-   * Shared between Shooter and Intake
-   */
-  public enum RollerState {
+  public enum FlywheelState {
     STOPPED,
     EXHAUSTING,
-    INTAKING,
+    SHOOTING,
     IDLE
   }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
-    Logger.processInputs("Shooter/Rollers", inputs);
+    Logger.processInputs("Shooter/Flywheel", inputs);
   }
 
   /**
@@ -53,25 +55,47 @@ public class ShooterSubsystem extends SubsystemBase {
    * 
    * @param rollerState Shooter RollerState
    */
-  public void changeRollerState(RollerState rollerState) {
+  public void changeFlywheelState(FlywheelState rollerState) {
     switch (rollerState) {
       case STOPPED:
-        mState = RollerState.STOPPED;
-        setShooterSpeed(ShooterConstants.passiveStopped);
-        break;
-      case EXHAUSTING:
-        mState = RollerState.EXHAUSTING;
+        mFlywheelState = FlywheelState.STOPPED;
         setShooterSpeed(0);
         break;
-      case INTAKING:
-        mState = RollerState.INTAKING;
+      case EXHAUSTING:
+        mFlywheelState = FlywheelState.EXHAUSTING;
+        setShooterSpeed(0);
+        break;
+      case SHOOTING:
+        mFlywheelState = FlywheelState.SHOOTING;
         setShooterSpeed(0);
         break;
       case IDLE:
-        mState = RollerState.IDLE;
+        mFlywheelState = FlywheelState.IDLE;
         setShooterSpeed(0);
         break;
     }
+  }
+
+  public void changeRollerState(RollerState rollerState) {
+    switch (rollerState) {
+      case STOPPED:
+        mRollerState = RollerState.STOPPED;
+        io.setRollerVelocity(0);
+        break;
+      case EXHAUSTING:
+        mRollerState = RollerState.EXHAUSTING;
+        io.setRollerVelocity(ShooterConstants.rollerExhaustingVelocity);
+        break;
+      case INTAKING:
+        mRollerState = RollerState.INTAKING;
+        io.setRollerVelocity(ShooterConstants.rollerIntakingVelocity);
+        break;
+      case IDLE:
+        mRollerState = RollerState.IDLE;
+        io.setRollerVelocity(ShooterConstants.rollerIdleVelocity);
+        break;
+    }
+
   }
 
   /**
@@ -81,15 +105,5 @@ public class ShooterSubsystem extends SubsystemBase {
    */
   private void setShooterSpeed(double speed) {
     io.setShooterVelocity(speed);
-  }
-
-  /**
-   * Gets the beam brake status
-   * 
-   * @return Beam brake state
-   */
-  @AutoLogOutput(key = "Shooter/BeamBrake")
-  public boolean getBeamBrake() {
-    return inputs.beamBrake;
   }
 }

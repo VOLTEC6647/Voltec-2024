@@ -13,6 +13,8 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -43,39 +45,71 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.REAL;
+                public static final Mode currentMode = Mode.SIM;
+
+                public static Mode getMode() {
+                        if ((currentMode == Mode.SIM || currentMode == Mode.REPLAY) && RobotBase.isReal()) {
+                                DriverStation.reportError("[Mode Error] Mode is set to " + currentMode.toString()
+                                                + " , but the robot is running on a real robot. Changing mode to avoid issues",
+                                                true);
+                        }
+
+                        if (currentMode == Mode.SIM)
+                                return RobotBase.isReal() ? Mode.REAL : Mode.SIM;
+
+                        return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
+
+                }
+
+                public enum RollerState {
+                        STOPPED,
+                        EXHAUSTING,
+                        INTAKING,
+                        IDLE
+                }
         }
 
         public static class ShooterConstants {
-
-                public static final int shooterPivotMotorID = 18;
-                public static final int shooterMotorLeftID = 19;
-                public static final int shooterMotorRightID = 20;
+                public static final int shooterPivotMotorID = 20;
+                public static final int flywheelBottomMotorID = 21;
+                public static final int flywheelTopMotorID = 22;
+                public static final int shooterRollerMotorID = 23;
 
                 public static final double shooterKp = 0;
                 public static final double shooterKi = 0;
                 public static final double shooterKd = 0;
 
-                public static final double shooterSpeed = 0.25;
-                public static final double passiveStopped = 0.1;
-                public static final int beamBrakePort = 1;
+                public static final double pivotKp = 0.1;
+                public static final double piovtKi = 0.0;
+                public static final double pivotKd = 0.0;
+
+                public static final double pivotMaxVelocity = 0.0;
+                public static final double pivotMaxAcceleration = 0.0;
+
+                public static final int shooterBeamBrakeChannel = 8;
                 public static final int shooterMotorCurrentLimit = 80;
+                public static final int rollerMotorCurrentLimit = 80;
 
                 public static final double armEncoderPositionConversionFactor = 360;
-                public static final double armEncoderZeroOffset = 0;
-                public static final boolean armEncoderInverted = false;
-                public static final boolean shooterPivotMotorInverted = false;
+                public static final double armEncoderZeroOffset = 359.9639940;
+                public static final boolean armEncoderInverted = true;
+                public static final boolean shooterPivotMotorInverted = true;
 
-                public static final double shooterMinPosition = 0.0;
-                public static final double shooterMaxPosition = 0.0;
-                public static final double shooterHomedPosition = 0.0;
+                public static final double pivotMinPosition = 13.200;
+                public static final double pivotMaxPosition = 257.750;
+                public static final double pivotHomedPosition = 14.000;
+                public static final double pivotIndexingPosition = 100;
+
+                public static final double rollerIntakingVelocity = 0.25;
+                public static final double rollerExhaustingVelocity = -0.25;
+                public static final double rollerIdleVelocity = 0.1;
         }
 
         public static class ElevatorConstants {
-                public static final int elevatorBoottomMotorID = 16;
-                public static final int elevatorTopMotorID = 17;
+                public static final int elevatorBoottomMotorID = 17;
+                public static final int elevatorTopMotorID = 18;
 
-                public static final int elevatorCANCoderID = 21;
+                public static final int elevatorCANCoderID = 19;
 
                 public static final double elevatorCANCoderOffset = 0.0;
 
@@ -96,18 +130,21 @@ public class Constants {
         }
 
         public static class IntakeConstants {
-                public static final int intakeMotorID = 20;
+                public static final int intakeMotorID = 16;
 
-                public static final double pivotKp = 0.010;
-                public static final double pivotKi = 0.0;
-                public static final double pivotKd = 0.0;
+                public static final double homedKp = 0.006;
+                public static final double homedKi = 0.0;
+                public static final double homedKd = 0.0;
 
-                public static final double extendedPivotKs = 0.14283;
-                public static final double extendedPivotKv = 0.002136;
-                public static final double extendedPivotKa = 0.00065975;
+                public static final double extendedKp = 0.005;
+                public static final double extendedKi = 0.0;
+                public static final double extendedKd = 0.0;
 
-                public static final double intakePIDMaxVelocity = 50.0;
-                public static final double intakePIDMaxAcceleration = 70.0;
+                public static final double extendedPIDMaxVelocity = 50.0;
+                public static final double extendedPIDMaxAcceleration = 100.0;
+
+                public static final double homedPIDMaxVelocity = 50.0;
+                public static final double homedPIDMaxAcceleration = 40.0;
 
                 public static final double minIntakePivotPosition = 137.400;
                 public static final double maxIntakePivotPosition = 197.040;
