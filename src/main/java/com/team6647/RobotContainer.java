@@ -16,11 +16,11 @@ import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.AndromedaPr
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
+import com.team6647.subsystems.SuperStructure;
+import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
 import com.team6647.subsystems.elevator.ElevatorIOSim;
-import com.team6647.subsystems.elevator.ElevatorIOSparkMax;
 import com.team6647.subsystems.elevator.ElevatorSubsystem;
-import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
 import com.team6647.subsystems.intake.IntakeIOTalonFX;
@@ -29,7 +29,6 @@ import com.team6647.subsystems.intake.IntakePivotIOSim;
 import com.team6647.subsystems.intake.IntakePivotIOSparkMax;
 import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakeSubsystem;
-import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.subsystems.shooter.ShooterIO;
 import com.team6647.subsystems.shooter.ShooterIOSim;
 import com.team6647.subsystems.shooter.ShooterIOSparkMax;
@@ -38,10 +37,11 @@ import com.team6647.subsystems.shooter.ShooterPivotIOSim;
 import com.team6647.subsystems.shooter.ShooterPivotIOSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
 import com.team6647.subsystems.shooter.ShooterSubsystem;
-import com.team6647.subsystems.shooter.ShooterSubsystem.FlywheelState;
+import com.team6647.subsystems.vision.VisionAutoSubsystem;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
+
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer extends SuperRobotContainer {
@@ -50,12 +50,12 @@ public class RobotContainer extends SuperRobotContainer {
         public static AndromedaSwerve andromedaSwerve;
         public static IntakePivotSubsystem intakePivotSubsystem;
         public static IntakeSubsystem intakeSubsystem;
-        /*
-         * public static ElevatorSubsystem elevatorSubsystem;
-         */ public static ShooterPivotSubsystem shooterPivotSubsystem;
+        public static ShooterPivotSubsystem shooterPivotSubsystem;
         public static ShooterSubsystem shooterSubsystem;
-        // private VisionAutoSubsystem visionAutoSubsystem;
-        // private ElevatorSubsystem elevatorSubsystem;
+        public static VisionAutoSubsystem visionAutoSubsystem;
+        public static ElevatorSubsystem elevatorSubsystem;
+
+        public static SuperStructure superStructure;
 
         private RobotContainer() {
         }
@@ -94,10 +94,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                 }, DriveConstants.andromedaSwerveConfig,
                                                 DriveConstants.holonomicPathConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOTalonFX());
-                                /*
-                                 * elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSparkMax());
-                                 */ intakePivotSubsystem = IntakePivotSubsystem
-                                                .getInstance(new IntakePivotIOSparkMax());
+                                intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSparkMax());
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSparkMax());
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSparkMax());
                                 break;
@@ -110,9 +107,8 @@ public class RobotContainer extends SuperRobotContainer {
                                                 new AndromedaModuleIOSim(0.1),
                                 }, DriveConstants.andromedaSwerveConfig, DriveConstants.holonomicPathConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOSim());
-                                /*
-                                 * elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
-                                 */ intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
+                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
+                                intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSim());
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSim());
                                 break;
@@ -133,10 +129,9 @@ public class RobotContainer extends SuperRobotContainer {
                                                 DriveConstants.holonomicPathConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIO() {
                                 });
-                                /*
-                                 * elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIO() {
-                                 * });
-                                 */ intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIO() {
+                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIO() {
+                                });
+                                intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIO() {
                                 });
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIO() {
                                 });
@@ -144,6 +139,8 @@ public class RobotContainer extends SuperRobotContainer {
                                 });
                                 break;
                 }
+
+                superStructure = SuperStructure.getInstance();
         }
 
         @Override
@@ -165,15 +162,8 @@ public class RobotContainer extends SuperRobotContainer {
                  * elevatorSubsystem.changeElevatorState(ElevatorState.HOMED)));
                  */
 
-                OperatorConstants.RUN_INTAKE_FORWARD
-                                .whileTrue(IntakeCommands.getTargetStateIntakeCommand(FlywheelState.INTAKING));
-                OperatorConstants.RUN_INTAKE_BACKWARD
-                                .whileTrue(IntakeCommands.getTargetStateIntakeCommand(FlywheelState.EXHAUSTING));
-
-                OperatorConstants.HOME_INTAKE
-                                .whileTrue(IntakeCommands.getTargetPivotStateCommand(IntakePivotState.HOMED));
-                OperatorConstants.EXTEND_INTAKE
-                                .whileTrue(IntakeCommands.getTargetPivotStateCommand(IntakePivotState.EXTENDED));
+                OperatorConstants.TOGGLE_INTAKE
+                                .whileTrue(superStructure.update(SuperStructureState.INTAKING));
 
         }
 

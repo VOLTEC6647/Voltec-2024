@@ -39,7 +39,7 @@ public class Constants {
 
                 public static final Trigger RUN_INTAKE_FORWARD = driverController2.rightTrigger(),
                                 RUN_INTAKE_BACKWARD = driverController2.leftTrigger(),
-                                HOME_INTAKE = driverController2.povRight(),
+                                TOGGLE_INTAKE = driverController2.povRight(),
                                 EXTEND_INTAKE = driverController2.povLeft();
 
         }
