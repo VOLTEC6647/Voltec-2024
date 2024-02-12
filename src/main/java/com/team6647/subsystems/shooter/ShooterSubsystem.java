@@ -26,6 +26,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private ShooterIO io;
   private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
+  private double mVelocitySetpoint = 0.0;
+
   private ShooterSubsystem(ShooterIO io) {
     this.io = io;
   }
@@ -106,4 +108,15 @@ public class ShooterSubsystem extends SubsystemBase {
   private void setShooterSpeed(double speed) {
     io.setShooterVelocity(speed);
   }
+
+  @AutoLogOutput(key = "Shooter/Flywheel/topInTolerance")
+  public boolean topInTolerance() {
+    return Math.abs(inputs.topMotorVelocity - mVelocitySetpoint) < ShooterConstants.shooterTolerance;
+  }
+
+  @AutoLogOutput(key = "Shooter/Flywheel/bottomInTolerance")
+  public boolean bottomInTolerance() {
+    return Math.abs(inputs.topMotorVelocity - mVelocitySetpoint) < ShooterConstants.shooterTolerance;
+  }
+
 }
