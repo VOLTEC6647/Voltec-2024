@@ -13,8 +13,6 @@ public interface ShooterPivotIO {
     @AutoLog
     public static class ShooterPivotIOInputs {
         public double shooterAbsoluteEncoderPosition = 0.0;
-
-        public boolean shooterBeamBrake = false;
     }
 
     public default void updateInputs(ShooterPivotIOInputs inputs) {

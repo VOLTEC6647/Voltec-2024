@@ -12,8 +12,6 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.team6647.util.Constants.ShooterConstants;
 
-import edu.wpi.first.wpilibj.DigitalInput;
-
 public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
     private SuperSparkMax shooterPivotLeftMotor = new SuperSparkMax(
@@ -26,8 +24,6 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
     private static AbsoluteEncoder pivotEncoder;
 
-    private static DigitalInput shooterBeamBrake = new DigitalInput(ShooterConstants.shooterBeamBrakeChannel);
-
     public ShooterPivotIOSparkMax() {
         pivotEncoder = shooterPivotLeftMotor.getAbsoluteEncoder(Type.kDutyCycle);
     }
@@ -35,8 +31,6 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
     @Override
     public void updateInputs(ShooterPivotIOInputs inputs) {
         inputs.shooterAbsoluteEncoderPosition = pivotEncoder.getPosition();
-
-        inputs.shooterBeamBrake = shooterBeamBrake.get();
     }
 
     @Override
