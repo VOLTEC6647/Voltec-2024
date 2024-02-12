@@ -20,6 +20,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
   private static ShooterPivotSubsystem instance;
 
+  @AutoLogOutput(key = "Shooter/Pivot/State")
   private static ShooterPivotState mState = ShooterPivotState.HOMED;
 
   private ShooterPivotIO io;
@@ -36,6 +37,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private ShooterPivotSubsystem(
       ShooterPivotIO io) {
     this.io = io;
+
+    mPivotController.reset(setpoint);
   }
 
   public static ShooterPivotSubsystem getInstance(ShooterPivotIO io) {
@@ -96,10 +99,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
   public void computePID() {
     double output = mPivotController.calculate(inputs.shooterAbsoluteEncoderPosition, setpoint);
-
-    output = Functions.clamp(output, 0.2, 0.2);
-
     Logger.recordOutput("Shooter/Pivot/output", output);
+
+    output = Functions.clamp(output, 0, 0.2);
+
+    Logger.recordOutput("Shooter/Pivot/ClampedOutput", output);
     output = output * 12;
 
     io.setShooterVoltage(output);

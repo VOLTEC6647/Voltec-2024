@@ -18,7 +18,7 @@ public class ShooterPivotIOSim implements ShooterPivotIO {
         pivotMotorSim.update(LOOP_PERIOD_SECS);
 
         inputs.shooterAbsoluteEncoderPosition = pivotMotorSim.getAngularPositionRotations();
-
+        inputs.pivotMotorPosition = pivotMotorSim.getAngularPositionRotations();
     }
 
     @Override

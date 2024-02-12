@@ -58,7 +58,6 @@ public class ShooterIOSparkMax implements ShooterIO {
                 inputs.bottomMotorVelocity = bottomFlywheelMotor.getVelocity();
                 inputs.topMotorVelocity = topFlywheelMotor.getVelocity();
                 inputs.beamBrake = shooterBeamBrake.get();
-
         }
 
         @Override

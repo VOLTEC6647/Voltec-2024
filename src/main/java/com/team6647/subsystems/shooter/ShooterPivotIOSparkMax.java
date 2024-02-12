@@ -16,7 +16,7 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
     private SuperSparkMax shooterPivotLeftMotor = new SuperSparkMax(
             ShooterConstants.shooterPivotMotorID,
-            GlobalIdleMode.brake, ShooterConstants.shooterPivotMotorInverted,
+            GlobalIdleMode.Brake, ShooterConstants.shooterPivotMotorInverted,
             ShooterConstants.shooterMotorCurrentLimit,
             ShooterConstants.armEncoderPositionConversionFactor,
             ShooterConstants.armEncoderZeroOffset,
@@ -31,6 +31,7 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
     @Override
     public void updateInputs(ShooterPivotIOInputs inputs) {
         inputs.shooterAbsoluteEncoderPosition = pivotEncoder.getPosition();
+        inputs.pivotMotorPosition = shooterPivotLeftMotor.getPosition();
     }
 
     @Override
