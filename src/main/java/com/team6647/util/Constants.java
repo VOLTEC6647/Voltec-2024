@@ -78,6 +78,9 @@ public class Constants {
                 public static final double shooterKp = 0;
                 public static final double shooterKi = 0;
                 public static final double shooterKd = 0;
+                public static final double shooterFF = 0.0;
+
+                public static final double shooterTolerance = 0.0;
 
                 public static final double pivotKp = 0.1;
                 public static final double piovtKi = 0.0;
