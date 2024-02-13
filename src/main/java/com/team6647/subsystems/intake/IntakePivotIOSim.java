@@ -6,6 +6,8 @@
 
 package com.team6647.subsystems.intake;
 
+import com.team6647.util.Constants.IntakeConstants;
+
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
@@ -24,7 +26,7 @@ public class IntakePivotIOSim implements IntakePivotIO {
         inputs.intakePivotLeftMotorPosition = leftMotorSim.getAngularPositionRotations();
         inputs.intakePivotLeftMotorVelocity = leftMotorSim.getAngularVelocityRPM();
 
-        inputs.intakePivotAbsoluteEncoderPosition = leftMotorSim.getAngularPositionRotations();
+        inputs.intakePivotAbsoluteEncoderPosition = leftMotorSim.getAngularPositionRotations() + IntakeConstants.intakeHomedPosition - 30;
 
         inputs.intakePivotRightMotorAppliedVoltage = 0.0;
         inputs.intakePivotRightMotorPosition = rightMotorSim.getAngularPositionRotations();
