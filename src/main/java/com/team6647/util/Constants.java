@@ -45,7 +45,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.SIM;
+                public static final Mode currentMode = Mode.REAL;
 
                 public static Mode getMode() {
                         if ((currentMode == Mode.SIM || currentMode == Mode.REPLAY) && RobotBase.isReal()) {
@@ -82,26 +82,26 @@ public class Constants {
 
                 public static final double shooterTolerance = 0.0;
 
-                public static final double pivotKp = 0.1;
-                public static final double piovtKi = 0.0;
+                public static final double pivotKp = 0.028;
+                public static final double piovtKi = 0.000029;
                 public static final double pivotKd = 0.0;
 
-                public static final double pivotMaxVelocity = 0.0;
-                public static final double pivotMaxAcceleration = 0.0;
+                public static final double pivotMaxVelocity = 10.0;
+                public static final double pivotMaxAcceleration = 10.0;
 
                 public static final int shooterBeamBrakeChannel = 8;
                 public static final int shooterMotorCurrentLimit = 80;
                 public static final int rollerMotorCurrentLimit = 80;
 
                 public static final double armEncoderPositionConversionFactor = 360;
-                public static final double armEncoderZeroOffset = 359.9639940;
+                public static final double armEncoderZeroOffset = 320;
                 public static final boolean armEncoderInverted = true;
                 public static final boolean shooterPivotMotorInverted = true;
 
-                public static final double pivotMinPosition = 13.200;
+                public static final double pivotMinPosition = 113;
                 public static final double pivotMaxPosition = 257.750;
-                public static final double pivotHomedPosition = 14.000;
-                public static final double pivotIndexingPosition = 100;
+                public static final double pivotHomedPosition = 114;
+                public static final double pivotIndexingPosition = 150;
 
                 public static final double rollerIntakingVelocity = 0.25;
                 public static final double rollerExhaustingVelocity = -0.25;
@@ -135,19 +135,19 @@ public class Constants {
         public static class IntakeConstants {
                 public static final int intakeMotorID = 16;
 
-                public static final double homedKp = 0.006;
-                public static final double homedKi = 0.0;
+                public static final double homedKp = 0.004;
+                public static final double homedKi = 0.00004;
                 public static final double homedKd = 0.0;
 
                 public static final double extendedKp = 0.005;
                 public static final double extendedKi = 0.0;
                 public static final double extendedKd = 0.0;
 
-                public static final double extendedPIDMaxVelocity = 50.0;
-                public static final double extendedPIDMaxAcceleration = 100.0;
+                public static final double extendedPIDMaxVelocity = 4500.0;
+                public static final double extendedPIDMaxAcceleration = 4500.0;
 
-                public static final double homedPIDMaxVelocity = 50.0;
-                public static final double homedPIDMaxAcceleration = 40.0;
+                public static final double homedPIDMaxVelocity = 2500.0;
+                public static final double homedPIDMaxAcceleration = 1500.0;
 
                 public static final double minIntakePivotPosition = 137.400;
                 public static final double maxIntakePivotPosition = 197.040;
@@ -168,8 +168,8 @@ public class Constants {
                 public static final int intakeMotorsCurrentLimit = 80;
 
                 public static final double intakeStoppedVelocity = 0.0;
-                public static final double intakeIntakingVelocity = 0.5;
-                public static final double intakeExhaustingVelocity = -0.5;
+                public static final double intakeIntakingVelocity = -0.5;
+                public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = 0.1;
 
                 public static final int intakeBeamBrakeChannel = 9;
