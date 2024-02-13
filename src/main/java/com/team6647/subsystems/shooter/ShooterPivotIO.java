@@ -13,7 +13,10 @@ public interface ShooterPivotIO {
     @AutoLog
     public static class ShooterPivotIOInputs {
         public double shooterAbsoluteEncoderPosition = 0.0;
+        public double shooterAbsoluteEncoderVelocity = 0.0;
 
+        public double shooterPivotAppliedVolts = 0.0;
+            
         public double pivotMotorPosition = 0.0;
     }
 

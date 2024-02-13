@@ -32,6 +32,10 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
     public void updateInputs(ShooterPivotIOInputs inputs) {
         inputs.shooterAbsoluteEncoderPosition = pivotEncoder.getPosition();
         inputs.pivotMotorPosition = shooterPivotLeftMotor.getPosition();
+        inputs.shooterAbsoluteEncoderVelocity = pivotEncoder.getVelocity();
+
+        inputs.shooterPivotAppliedVolts = shooterPivotLeftMotor.getAppliedOutput();
+
     }
 
     @Override
