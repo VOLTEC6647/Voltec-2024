@@ -15,6 +15,7 @@ import com.team6647.util.Constants.RobotConstants.RollerState;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class SuperStructure {
 
@@ -34,10 +35,10 @@ public class SuperStructure {
         IDLE, INTAKING, SHOOTING_SPEAKER, SHOOTING_AMP, SHOOTING_TRAP, SHOOTING_MOVING, CLIMBING
     }
 
-    public Command update(SuperStructureState newState) {
+    public Command update(SuperStructureState newState, Trigger trigger) {
         switch (newState) {
             case IDLE:
-                break;
+                return idleCommand();
             case INTAKING:
                 return intakingCommand();
             case SHOOTING_SPEAKER:
@@ -58,7 +59,15 @@ public class SuperStructure {
     private Command intakingCommand() {
         mRobotState = SuperStructureState.INTAKING;
 
-        return Commands.sequence(IntakeCommands.getTargetStateIntakeCommand(RollerState.INTAKING),
-                IntakeCommands.getTargetPivotStateCommand(IntakePivotState.EXTENDED));
+        return Commands.parallel(
+                IntakeCommands.getTargetPivotStateCommand(IntakePivotState.EXTENDED),
+                IntakeCommands.getTargetStateIntakeCommand(RollerState.INTAKING));
+    }
+
+    private Command idleCommand() {
+        mRobotState = SuperStructureState.INTAKING;
+
+        return Commands.parallel(
+                IntakeCommands.getTargetPivotStateCommand(IntakePivotState.HOMED));
     }
 }
