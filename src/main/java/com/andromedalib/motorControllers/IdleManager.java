@@ -15,7 +15,7 @@ public class IdleManager {
 
     public enum GlobalIdleMode {
         Coast,
-        brake
+        Brake
     }
 
     /**
