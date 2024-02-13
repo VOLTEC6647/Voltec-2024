@@ -11,8 +11,7 @@ import org.littletonrobotics.junction.Logger;
 import com.andromedalib.math.Functions;
 import com.team6647.util.Constants.IntakeConstants;
 
-import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivotSubsystem extends SubsystemBase {
@@ -25,15 +24,11 @@ public class IntakePivotSubsystem extends SubsystemBase {
   private IntakePivotIO io;
   private IntakePivoIOInputsAutoLogged inputs = new IntakePivoIOInputsAutoLogged();
 
-  private ProfiledPIDController mExtendedPivotController = new ProfiledPIDController(IntakeConstants.extendedKp,
-      IntakeConstants.extendedKi, IntakeConstants.extendedKd,
-      new TrapezoidProfile.Constraints(IntakeConstants.homedPIDMaxVelocity,
-          IntakeConstants.homedPIDMaxAcceleration));
+  private PIDController mExtendedPivotController = new PIDController(IntakeConstants.extendedKp,
+      IntakeConstants.extendedKi, IntakeConstants.extendedKd);
 
-  private ProfiledPIDController mHomedPivotController = new ProfiledPIDController(IntakeConstants.homedKp,
-      IntakeConstants.homedKi, IntakeConstants.homedKd,
-      new TrapezoidProfile.Constraints(IntakeConstants.extendedPIDMaxVelocity,
-          IntakeConstants.extendedPIDMaxAcceleration));
+  private PIDController mHomedPivotController = new PIDController(IntakeConstants.homedKp,
+      IntakeConstants.homedKi, IntakeConstants.homedKd);
 
   @AutoLogOutput(key = "Intake/Pivot/Setpoint")
   private double setpoint = IntakeConstants.intakeHomedPosition;
@@ -112,8 +107,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   public void resetPID() {
-    mExtendedPivotController.reset(inputs.intakePivotAbsoluteEncoderPosition);
-    mHomedPivotController.reset(inputs.intakePivotAbsoluteEncoderPosition);
+
+    // mExtendedPivotController.reset(inputs.intakePivotAbsoluteEncoderPosition);
+    // mHomedPivotController.reset(inputs.intakePivotAbsoluteEncoderPosition);
   }
 
 }
