@@ -11,6 +11,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
+import com.team6647.subsystems.shooter.ShooterCommands;
+import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -61,13 +63,16 @@ public class SuperStructure {
 
         return Commands.parallel(
                 IntakeCommands.getTargetPivotStateCommand(IntakePivotState.EXTENDED),
-                IntakeCommands.getTargetStateIntakeCommand(RollerState.INTAKING));
+                IntakeCommands.getTargetStateIntakeCommand(RollerState.INTAKING),
+                ShooterCommands.getTargetRollersCommand(RollerState.INTAKING),
+                ShooterCommands.getTargetShooterPivotCommand(ShooterPivotState.INDEXING));
     }
 
     private Command idleCommand() {
         mRobotState = SuperStructureState.INTAKING;
 
         return Commands.parallel(
-                IntakeCommands.getTargetPivotStateCommand(IntakePivotState.HOMED));
+                IntakeCommands.getTargetPivotStateCommand(IntakePivotState.HOMED),
+                ShooterCommands.getTargetShooterPivotCommand(ShooterPivotState.HOMED));
     }
 }
