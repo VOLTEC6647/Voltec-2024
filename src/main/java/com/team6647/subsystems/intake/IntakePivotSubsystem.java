@@ -50,8 +50,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
     this.io = io;
 
     mExtendedPivotController.setTolerance(IntakeConstants.intakePivotPositionTolerance);
-
-    resetPID();
   }
 
   public static IntakePivotSubsystem getInstance(IntakePivotIO io) {
@@ -128,12 +126,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Intake/Pivot/InTolerance")
   public boolean inTolerance() {
     return mExtendedPivotController.atSetpoint();
-  }
-
-  public void resetPID() {
-
-    // mExtendedPivotController.reset(inputs.intakePivotAbsoluteEncoderPosition);
-    // mHomedPivotController.reset(inputs.intakePivotAbsoluteEncoderPosition);
   }
 
 }
