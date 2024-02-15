@@ -73,7 +73,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(mode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
-        burnFlash();
     }
 
     /**
@@ -98,6 +97,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
         getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setPositionConversionFactor(absolutePositionConversionFactor);
+        getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setVelocityConversionFactor(absolutePositionConversionFactor / 60);
         getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setZeroOffset(zeroOfsset);
         getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setInverted(encoderInverted);
         burnFlash();
