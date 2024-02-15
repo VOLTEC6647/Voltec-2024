@@ -14,6 +14,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.math.Functions;
+import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -64,6 +65,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
           },
           this));
 
+  private LoggedTunableNumber pivotKp = new LoggedTunableNumber("Shooter/Pivot/kp", ShooterConstants.revPivotKp);
+  private LoggedTunableNumber pivotKi = new LoggedTunableNumber("Shooter/Pivot/ki", ShooterConstants.revPivotKi);
+  private LoggedTunableNumber pivotKd = new LoggedTunableNumber("Shooter/Pivot/kd", ShooterConstants.revPivotKd);
+  private LoggedTunableNumber pivotKf = new LoggedTunableNumber("Shooter/Pivot/kf", ShooterConstants.revPivotKf);
+
   /** Creates a new ShooterPivotSubsystem. */
   private ShooterPivotSubsystem(
       ShooterPivotIO io) {
@@ -84,12 +90,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
 
-    if (mState == ShooterPivotState.SHOOTING) {
-      calculateShooterAngle();
-    }
-
-    computePID();
-
+    LoggedTunableNumber.ifChanged(hashCode(), pid -> {
+      io.setPID(pid[0], pid[1], pid[2], pid[3]);
+    }, pivotKp, pivotKi, pivotKd, pivotKf);
   }
 
   public enum ShooterPivotState {
@@ -126,14 +129,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     setpoint = newSetpoint;
-  }
-
-  public void computePID() {
-    double output = mPivotController.calculate(inputs.shooterAbsoluteEncoderPosition, setpoint);
-
-    Logger.recordOutput("Shooter/Pivot/output", output);
-
-    io.setShooterVoltage(output);
+    io.setShooterReference(setpoint);
   }
 
   public boolean inTolerance() {
