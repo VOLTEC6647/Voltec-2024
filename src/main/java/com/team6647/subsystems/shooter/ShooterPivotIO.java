@@ -25,5 +25,4 @@ public interface ShooterPivotIO {
 
     public default void setShooterVoltage(double volts) {
     }
-
 }

@@ -6,9 +6,8 @@
 
 package com.team6647.subsystems.shooter;
 
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
 import org.littletonrobotics.junction.AutoLogOutput;
@@ -39,18 +38,18 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private ShooterPivotIOInputsAutoLogged inputs = new ShooterPivotIOInputsAutoLogged();
 
   private ProfiledPIDController mPivotController = new ProfiledPIDController(ShooterConstants.pivotKp,
-      ShooterConstants.piovtKi, ShooterConstants.pivotKd,
+      ShooterConstants.pivotKi, ShooterConstants.pivotKd,
       new TrapezoidProfile.Constraints(ShooterConstants.pivotMaxVelocity, ShooterConstants.pivotMaxAcceleration));
 
   @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
   private double setpoint = ShooterConstants.pivotHomedPosition;
 
   private final MutableMeasure<Voltage> m_appliedVoltage = MutableMeasure.mutable(Volts.of(0));
-  private final MutableMeasure<Angle> m_angle = MutableMeasure.mutable(Rotations.of(0));
-  private final MutableMeasure<Velocity<Angle>> m_velocity = MutableMeasure.mutable(RotationsPerSecond.of(0));
+  private final MutableMeasure<Angle> m_angle = MutableMeasure.mutable(Degrees.of(0));
+  private final MutableMeasure<Velocity<Angle>> m_velocity = MutableMeasure.mutable(DegreesPerSecond.of(0));
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(Volts.of(0.5).per(Seconds.of(1)), Volts.of(3), Seconds.of(60), null),
+      new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism(
           (Measure<Voltage> volts) -> {
             runPivotCharacterization(volts);
@@ -60,8 +59,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
                 .voltage(
                     m_appliedVoltage.mut_replace(
                         inputs.shooterPivotAppliedVolts, Volts))
-                .angularPosition(m_angle.mut_replace(inputs.shooterAbsoluteEncoderPosition, Rotations))
-                .angularVelocity(m_velocity.mut_replace(inputs.shooterAbsoluteEncoderVelocity, RotationsPerSecond));
+                .angularPosition(m_angle.mut_replace(inputs.shooterAbsoluteEncoderPosition, Degrees))
+                .angularVelocity(m_velocity.mut_replace(inputs.shooterAbsoluteEncoderVelocity, DegreesPerSecond));
           },
           this));
 
@@ -131,10 +130,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
   public void computePID() {
     double output = mPivotController.calculate(inputs.shooterAbsoluteEncoderPosition, setpoint);
-    Logger.recordOutput("Shooter/Pivot/output", output);
 
-    Logger.recordOutput("Shooter/Pivot/ClampedOutput", output);
-    output = output * 12;
+    Logger.recordOutput("Shooter/Pivot/output", output);
 
     io.setShooterVoltage(output);
   }

@@ -34,7 +34,8 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
         inputs.pivotMotorPosition = shooterPivotLeftMotor.getPosition();
         inputs.shooterAbsoluteEncoderVelocity = pivotEncoder.getVelocity();
 
-        inputs.shooterPivotAppliedVolts = shooterPivotLeftMotor.getAppliedOutput();
+        inputs.shooterPivotAppliedVolts = shooterPivotLeftMotor.getAppliedOutput()
+                * shooterPivotLeftMotor.getBusVoltage();
 
     }
 
