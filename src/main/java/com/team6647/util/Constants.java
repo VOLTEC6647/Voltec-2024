@@ -43,7 +43,6 @@ public class Constants {
                                 RUN_INTAKE_BACKWARD = driverController2.leftTrigger(),
                                 TOGGLE_INTAKE = driverController2.povRight(),
                                 EXTEND_INTAKE = driverController2.povLeft();
-
         }
 
         public static class RobotConstants {
@@ -171,6 +170,12 @@ public class Constants {
                 public static final double pivotKi = 0.0050;
                 public static final double pivotKd = 0.00002;
 
+                public static final double revPivotKp = 0.02;
+                public static final double revPivotKi = 0.0;
+                public static final double revPivotKd = 0.0;
+                public static final double revPivotKf = 0.0003;
+                public static final double positionTolerance = 0.5;
+
                 public static final double pivotParallelFloorOffset = 203.0478515625;
 
                 public static final double pivotMaxVelocity = 1500.0;
@@ -185,9 +190,9 @@ public class Constants {
                 public static final boolean armEncoderInverted = true;
                 public static final boolean shooterPivotMotorInverted = true;
 
-                public static final double pivotMinPosition = 114;
+                public static final double pivotMinPosition = 115;
                 public static final double pivotMaxPosition = 257.750;
-                public static final double pivotHomedPosition = 115;
+                public static final double pivotHomedPosition = 116.5;
                 public static final double pivotIndexingPosition = 152;
 
                 public static final double rollerIntakingVelocity = 0.25;
