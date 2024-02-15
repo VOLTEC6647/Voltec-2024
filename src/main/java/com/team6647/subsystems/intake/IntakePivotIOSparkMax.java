@@ -18,12 +18,12 @@ public class IntakePivotIOSparkMax implements IntakePivotIO {
 
     private static SuperSparkMax leftIntakePivotMotor = new SuperSparkMax(
             IntakeConstants.intakePivotLeftMotorID,
-            GlobalIdleMode.Coast,
+            GlobalIdleMode.Brake,
             IntakeConstants.intakePivotLeftMotorInverted,
             IntakeConstants.intakeMotorsCurrentLimit);
     private static SuperSparkMax rightIntakePivotMotor = new SuperSparkMax(
             IntakeConstants.intakePivotRightMotorID,
-            GlobalIdleMode.Coast,
+            GlobalIdleMode.Brake,
             IntakeConstants.intakePivotRightMotorInverted,
             IntakeConstants.intakeMotorsCurrentLimit,
             IntakeConstants.intakePivotEncoderPositionConversionFactor,
