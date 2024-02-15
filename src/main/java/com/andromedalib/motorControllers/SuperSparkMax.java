@@ -100,7 +100,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setVelocityConversionFactor(absolutePositionConversionFactor / 60);
         getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setZeroOffset(zeroOfsset);
         getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setInverted(encoderInverted);
-        burnFlash();
     }
 
     /**

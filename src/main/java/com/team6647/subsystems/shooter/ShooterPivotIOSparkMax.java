@@ -27,7 +27,7 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
     public ShooterPivotIOSparkMax() {
         pivotEncoder = shooterPivotLeftMotor.getAbsoluteEncoder(Type.kDutyCycle);
     }
-
+    
     @Override
     public void updateInputs(ShooterPivotIOInputs inputs) {
         inputs.shooterAbsoluteEncoderPosition = pivotEncoder.getPosition();
