@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.math.Functions;
+import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -29,6 +30,17 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   private PIDController mHomedPivotController = new PIDController(IntakeConstants.homedKp,
       IntakeConstants.homedKi, IntakeConstants.homedKd);
+
+  private LoggedTunableNumber mExtendedKp = new LoggedTunableNumber("Intake/Pivot/Extended/Kp",
+      IntakeConstants.extendedKp);
+  private LoggedTunableNumber mExtendedKi = new LoggedTunableNumber("Intake/Pivot/Extended/Ki",
+      IntakeConstants.extendedKi);
+  private LoggedTunableNumber mExtendedKd = new LoggedTunableNumber("Intake/Pivot/Extended/Kd",
+      IntakeConstants.extendedKd);
+
+  private LoggedTunableNumber mHomedKp = new LoggedTunableNumber("Intake/Pivot/Homed/Kp", IntakeConstants.homedKp);
+  private LoggedTunableNumber mHomedKi = new LoggedTunableNumber("Intake/Pivot/Homed/Ki", IntakeConstants.homedKi);
+  private LoggedTunableNumber mHomedKd = new LoggedTunableNumber("Intake/Pivot/Homed/Kd", IntakeConstants.homedKd);
 
   @AutoLogOutput(key = "Intake/Pivot/Setpoint")
   private double setpoint = IntakeConstants.intakeHomedPosition;
@@ -58,8 +70,19 @@ public class IntakePivotSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake/Pivot", inputs);
+    LoggedTunableNumber.ifChanged(hashCode(), pid -> setExtendedPID(pid[0], pid[1], pid[2]), mExtendedKp,
+        mExtendedKi, mExtendedKd);
+    LoggedTunableNumber.ifChanged(hashCode(), pid -> setHomedPID(pid[0], pid[1], pid[2]), mHomedKp, mHomedKi, mHomedKd);
 
     computePID(mState == IntakePivotState.HOMED);
+  }
+
+  public void setExtendedPID(double kp, double ki, double kd) {
+    mExtendedPivotController.setPID(kp, ki, kd);
+  }
+
+  public void setHomedPID(double kp, double ki, double kd) {
+    mHomedPivotController.setPID(kp, ki, kd);
   }
 
   public void changeIntakePivotState(IntakePivotState intakePivotState) {
@@ -87,7 +110,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   private void computePID(boolean equalOutput) {
-    double output = equalOutput ? mHomedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint)
+    double output = equalOutput
+        ? mHomedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint)
         : mExtendedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
 
     double feedforwardValue = equalOutput ? output : -output * 2.1;
