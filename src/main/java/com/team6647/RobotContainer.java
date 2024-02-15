@@ -20,6 +20,7 @@ import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
 import com.team6647.subsystems.elevator.ElevatorIOSim;
+import com.team6647.subsystems.elevator.ElevatorIOSparkMax;
 import com.team6647.subsystems.elevator.ElevatorSubsystem;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
@@ -43,6 +44,7 @@ import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
@@ -97,6 +99,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSparkMax());
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSparkMax());
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSparkMax());
+                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSparkMax());
                                 break;
                         case SIM:
                                 andromedaSwerve = AndromedaSwerve.getInstance(new GyroIO() {
@@ -111,6 +114,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSim());
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSim());
+                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
                                 break;
 
                         default:
@@ -137,10 +141,12 @@ public class RobotContainer extends SuperRobotContainer {
                                 });
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIO() {
                                 });
+                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIO() {
+                                });
                                 break;
                 }
-
                 superStructure = SuperStructure.getInstance();
+                // configSysIdBindings();
         }
 
         @Override
@@ -153,31 +159,21 @@ public class RobotContainer extends SuperRobotContainer {
                                                 () -> -OperatorConstants.driverController1.getRightX(),
                                                 () -> OperatorConstants.driverController1.leftStick().getAsBoolean()));
 
-                /*
-                 * OperatorConstants.driverController2.a().whileTrue(
-                 * new InstantCommand(() ->c
-                 * elevatorSubsystem.changeElevatorState(ElevatorState.TOP)));
-                 * OperatorConstants.driverController2.b().whileTrue(
-                 * new InstantCommand(() ->|
-                 * elevatorSubsystem.changeElevatorState(ElevatorState.HOMED)));
-                 */
-
-                OperatorConstants.TOGGLE_INTAKE
-                                .whileTrue(superStructure.update(SuperStructureState.INTAKING));
-
+                OperatorConstants.TOGGLE_INTAKE.whileTrue(superStructure.update(SuperStructureState.INTAKING))
+                                .onFalse(superStructure.update(SuperStructureState.IDLE));
         }
 
         public void configSysIdBindings() {
-                /*
-                 * OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                 * .whileTrue(intakePivotSubsystem.sysIdQuasistatic(Direction.kForward));
-                 * OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                 * .whileTrue(intakePivotSubsystem.sysIdQuasistatic(Direction.kReverse));
-                 * OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                 * .whileTrue(intakePivotSubsystem.sysIdDynamic(Direction.kForward));
-                 * OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                 * .whileTrue(intakePivotSubsystem.sysIdDynamic(Direction.kReverse));
-                 */
+
+                OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
+                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kForward));
+                OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
+                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kReverse));
+                OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
+                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kForward));
+                OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
+                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kReverse));
+
         }
 
         @Override

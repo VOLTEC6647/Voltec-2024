@@ -17,7 +17,6 @@ import com.team6647.util.Constants.RobotConstants.RollerState;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class SuperStructure {
 
@@ -37,7 +36,7 @@ public class SuperStructure {
         IDLE, INTAKING, SHOOTING_SPEAKER, SHOOTING_AMP, SHOOTING_TRAP, SHOOTING_MOVING, CLIMBING
     }
 
-    public Command update(SuperStructureState newState, Trigger trigger) {
+    public Command update(SuperStructureState newState) {
         switch (newState) {
             case IDLE:
                 return idleCommand();
@@ -55,7 +54,7 @@ public class SuperStructure {
                 break;
         }
 
-        return Commands.waitSeconds(0.0);
+        return Commands.waitSeconds(0);
     }
 
     private Command intakingCommand() {
