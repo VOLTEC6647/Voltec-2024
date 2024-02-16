@@ -10,8 +10,12 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
 import com.andromedalib.robot.SuperRobot;
 import com.team6647.util.Constants.RobotConstants;
+
+import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 
 public class Robot extends SuperRobot {
 
@@ -19,7 +23,7 @@ public class Robot extends SuperRobot {
 
   @Override
   public void robotInit() {
-    //Pathfinding.setPathfinder(new LocalADStarAK());
+    // Pathfinding.setPathfinder(new LocalADStarAK());
 
     System.out.println("[Init] Starting AdvantageKit");
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
@@ -42,7 +46,7 @@ public class Robot extends SuperRobot {
     // Set up data receivers & replay source
     switch (RobotConstants.currentMode) {
       case REAL:
-       Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         break;
 
@@ -61,9 +65,15 @@ public class Robot extends SuperRobot {
 
     AutoLogOutputManager.addPackage("com.andromedalib");
 
+    // Default to blue alliance in sim
+    if (RobotConstants.getMode() == Mode.SIM) {
+      DriverStationSim.setAllianceStationId(AllianceStationID.Red1);
+    }
+
     // Start AdvantageKit Logger, no more fields can be added
     Logger.start();
 
+    System.out.println("[Init] Instantiating RobotContainer");
     container = RobotContainer.getInstance();
     super.setRobotContainer(container, false);
     super.robotInit();
