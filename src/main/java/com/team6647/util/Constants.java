@@ -197,6 +197,10 @@ public class Constants {
                 public static final double rollerExhaustingVelocity = -0.25;
                 public static final double rollerIdleVelocity = 0.1;
 
+                public static final double shooterExhaustSpeed = 1000;
+                public static final double shooterIdleSpeed = 2000;
+                public static final double shooterStoppedSpeed = 0.0;
+
                 public static final InterpolatingDoubleTreeMap shooterRPMMap = new InterpolatingDoubleTreeMap();
 
                 static {
