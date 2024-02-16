@@ -26,4 +26,7 @@ public interface ShooterIO {
 
     public default void setRollerVelocity(double velocity) {
     }
+
+    public default void setPIDF(double p, double i, double d, double f) {
+    }
 }

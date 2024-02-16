@@ -35,7 +35,9 @@ public class Constants {
                 public static final Trigger FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.y(),
                                 BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.a(),
                                 FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.b(),
-                                BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.x();
+                                BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.x(),
+                                GO_TO_AMP = driverController1.a(),
+                                GO_TO_SPEAKER = driverController1.b();
 
                 /* Driver 2 */
 
@@ -46,7 +48,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.REAL;
+                public static final Mode currentMode = Mode.SIM;
 
                 public static final boolean tuningMode = true;
 
@@ -159,21 +161,17 @@ public class Constants {
                 public static final int flywheelTopMotorID = 22;
                 public static final int shooterRollerMotorID = 23;
 
-                public static final double shooterKp = 0;
+                public static final double shooterKp = 0.0000092;
                 public static final double shooterKi = 0;
-                public static final double shooterKd = 0;
-                public static final double shooterFF = 0.0;
+                public static final double shooterKd = 0.01;
+                public static final double shooterKf = 0.0002;
 
                 public static final double shooterTolerance = 0.0;
 
-                public static final double pivotKp = 0.19;
-                public static final double pivotKi = 0.0050;
-                public static final double pivotKd = 0.00002;
-
-                public static final double revPivotKp = 0.02;
-                public static final double revPivotKi = 0.0;
-                public static final double revPivotKd = 0.0;
-                public static final double revPivotKf = 0.0003;
+                public static final double pivotKp = 0.02;
+                public static final double pivotKi = 0.0;
+                public static final double pivotKd = 0.0;
+                public static final double pivotKf = 0.0003;
                 public static final double positionTolerance = 0.5;
 
                 public static final double pivotParallelFloorOffset = 203.0478515625;

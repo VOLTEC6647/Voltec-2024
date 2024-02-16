@@ -8,6 +8,7 @@ package com.team6647.subsystems.shooter;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
@@ -26,7 +27,14 @@ public class ShooterSubsystem extends SubsystemBase {
   private ShooterIO io;
   private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
+  @AutoLogOutput(key = "Shooter/Flywheel/Setpoint")
   private double mVelocitySetpoint = 0.0;
+
+  private LoggedTunableNumber shooterKp = new LoggedTunableNumber("Shooter/Flywheel/kp", ShooterConstants.shooterKp);
+  private LoggedTunableNumber shooterKi = new LoggedTunableNumber("Shooter/Flywheel/ki", ShooterConstants.shooterKi);
+  private LoggedTunableNumber shooterKd = new LoggedTunableNumber("Shooter/Flywheel/kd", ShooterConstants.shooterKd);
+  private LoggedTunableNumber shooterKf = new LoggedTunableNumber("Shooter/Flywheel/kf", ShooterConstants.shooterKf);
+  private LoggedTunableNumber shooterVelocity = new LoggedTunableNumber("Shooter/Flywheel/velocity", 0.0);
 
   private ShooterSubsystem(ShooterIO io) {
     this.io = io;
@@ -50,6 +58,12 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Flywheel", inputs);
+
+    LoggedTunableNumber.ifChanged(hashCode(), pid -> {
+      io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
+
+      setShooterSpeed(pid[4]);
+    }, shooterKp, shooterKi, shooterKd, shooterKf, shooterVelocity);
   }
 
   /**
@@ -97,7 +111,6 @@ public class ShooterSubsystem extends SubsystemBase {
         io.setRollerVelocity(ShooterConstants.rollerIdleVelocity);
         break;
     }
-
   }
 
   /**
@@ -106,6 +119,7 @@ public class ShooterSubsystem extends SubsystemBase {
    * @param speed Desired speedƒ
    */
   private void setShooterSpeed(double speed) {
+    mVelocitySetpoint = speed;
     io.setShooterVelocity(speed);
   }
 
