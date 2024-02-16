@@ -16,7 +16,7 @@ import com.team6647.util.Constants.ShooterConstants;
 
 public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
-    private SuperSparkMax shooterPivotLeftMotor = new SuperSparkMax(
+    private SuperSparkMax shooterPivotMotor = new SuperSparkMax(
             ShooterConstants.shooterPivotMotorID,
             GlobalIdleMode.Brake, ShooterConstants.shooterPivotMotorInverted,
             ShooterConstants.shooterMotorCurrentLimit,
@@ -27,44 +27,47 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
     private static AbsoluteEncoder pivotEncoder;
     private static SparkPIDController pivotController;
 
+    private double setpoint;
+
     public ShooterPivotIOSparkMax() {
-        pivotEncoder = shooterPivotLeftMotor.getAbsoluteEncoder(Type.kDutyCycle);
-        pivotController = shooterPivotLeftMotor.getPIDController();
+        pivotEncoder = shooterPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
+        pivotController = shooterPivotMotor.getPIDController();
 
         pivotController.setFeedbackDevice(pivotEncoder);
 
-        pivotController.setP(ShooterConstants.revPivotKp);
-        pivotController.setP(ShooterConstants.revPivotKi);
-        pivotController.setP(ShooterConstants.revPivotKd);
-        pivotController.setP(ShooterConstants.revPivotKf);
+        pivotController.setP(ShooterConstants.pivotKp);
+        pivotController.setP(ShooterConstants.pivotKi);
+        pivotController.setP(ShooterConstants.pivotKd);
+        pivotController.setP(ShooterConstants.pivotKf);
+
+        pivotController.setReference(0, ControlType.kVelocity);
     }
 
     @Override
     public void updateInputs(ShooterPivotIOInputs inputs) {
         inputs.shooterAbsoluteEncoderPosition = pivotEncoder.getPosition();
-        inputs.pivotMotorPosition = shooterPivotLeftMotor.getPosition();
+        inputs.pivotMotorPosition = shooterPivotMotor.getPosition();
         inputs.shooterAbsoluteEncoderVelocity = pivotEncoder.getVelocity();
 
-        inputs.shooterPivotAppliedVolts = shooterPivotLeftMotor.getAppliedOutput()
-                * shooterPivotLeftMotor.getBusVoltage();
+        inputs.shooterPivotAppliedVolts = shooterPivotMotor.getAppliedOutput()
+                * shooterPivotMotor.getBusVoltage();
 
-    }
-
-    @Override
-    public void setShooterVoltage(double volts) {
-        // shooterPivotLeftMotor.setVoltage(volts);
+        inputs.inTolerance = Math
+                .abs(shooterPivotMotor.getPosition() - setpoint) < ShooterConstants.positionTolerance;
     }
 
     @Override
     public void setShooterReference(double setpoint) {
+        this.setpoint = setpoint;
         pivotController.setReference(setpoint, ControlType.kPosition);
     }
 
     @Override
-    public void setPID(double p, double i, double d, double f) {
+    public void setPIDF(double p, double i, double d, double f) {
         pivotController.setP(p);
         pivotController.setI(i);
         pivotController.setD(d);
         pivotController.setFF(f);
     }
+
 }

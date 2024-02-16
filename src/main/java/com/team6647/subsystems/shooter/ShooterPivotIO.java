@@ -18,17 +18,16 @@ public interface ShooterPivotIO {
         public double shooterPivotAppliedVolts = 0.0;
 
         public double pivotMotorPosition = 0.0;
+
+        public boolean inTolerance = false;
     }
 
     public default void updateInputs(ShooterPivotIOInputs inputs) {
     }
 
-    public default void setShooterVoltage(double volts) {
-    }
-
     public default void setShooterReference(double setpoint) {
     }
 
-    public default void setPID(double p, double i, double d, double f) {
+    public default void setPIDF(double p, double i, double d, double f) {
     }
 }

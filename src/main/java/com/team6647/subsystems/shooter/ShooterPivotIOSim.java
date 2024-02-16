@@ -21,8 +21,4 @@ public class ShooterPivotIOSim implements ShooterPivotIO {
         inputs.pivotMotorPosition = pivotMotorSim.getAngularPositionRotations();
     }
 
-    @Override
-    public void setShooterVoltage(double volts) {
-        pivotMotorSim.setInputVoltage(volts);
-    }
 }
