@@ -15,12 +15,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ShooterIOSparkMax implements ShooterIO {
 
-        private static SuperSparkMax rollerMotor = new SuperSparkMax(
-                        ShooterConstants.shooterRollerMotorID,
-                        GlobalIdleMode.Coast,
-                        true,
-                        ShooterConstants.rollerMotorCurrentLimit);
-
         private static SuperSparkMax topFlywheelMotor = new SuperSparkMax(
                         ShooterConstants.flywheelTopMotorID,
                         GlobalIdleMode.Coast,
@@ -64,10 +58,5 @@ public class ShooterIOSparkMax implements ShooterIO {
         public void setShooterVelocity(double velocity) {
                 topFlywheelPID.setReference(velocity, ControlType.kVelocity);
                 bottomFlywheelPID.setReference(velocity, ControlType.kVelocity);
-        }
-
-        @Override
-        public void setRollerVelocity(double velocity) {
-                rollerMotor.set(velocity);
         }
 }

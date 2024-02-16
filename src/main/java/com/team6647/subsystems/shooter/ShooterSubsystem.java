@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
-import com.team6647.util.Constants.RobotConstants.RollerState;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -20,9 +19,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput(key = "Shooter/Flywheel/State")
   private FlywheelState mFlywheelState = FlywheelState.STOPPED;
-
-  @AutoLogOutput(key = "Shooter/Rollers/State")
-  private RollerState mRollerState = RollerState.STOPPED;
 
   private ShooterIO io;
   private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
@@ -92,26 +88,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
   }
 
-  public void changeRollerState(RollerState rollerState) {
-    switch (rollerState) {
-      case STOPPED:
-        mRollerState = RollerState.STOPPED;
-        io.setRollerVelocity(0);
-        break;
-      case EXHAUSTING:
-        mRollerState = RollerState.EXHAUSTING;
-        io.setRollerVelocity(ShooterConstants.rollerExhaustingVelocity);
-        break;
-      case INTAKING:
-        mRollerState = RollerState.INTAKING;
-        io.setRollerVelocity(ShooterConstants.rollerIntakingVelocity);
-        break;
-      case IDLE:
-        mRollerState = RollerState.IDLE;
-        io.setRollerVelocity(ShooterConstants.rollerIdleVelocity);
-        break;
-    }
-  }
 
   /**
    * Sets the shooter to the desired speed

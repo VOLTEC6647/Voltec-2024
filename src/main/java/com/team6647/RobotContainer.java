@@ -31,12 +31,16 @@ import com.team6647.subsystems.intake.IntakePivotIOSparkMax;
 import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakeSubsystem;
 import com.team6647.subsystems.shooter.ShooterIO;
+import com.team6647.subsystems.shooter.ShooterIORollerSim;
+import com.team6647.subsystems.shooter.ShooterIORollerSparkMax;
 import com.team6647.subsystems.shooter.ShooterIOSim;
 import com.team6647.subsystems.shooter.ShooterIOSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotIO;
 import com.team6647.subsystems.shooter.ShooterPivotIOSim;
 import com.team6647.subsystems.shooter.ShooterPivotIOSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
+import com.team6647.subsystems.shooter.ShooterRollerIO;
+import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
 import com.team6647.subsystems.shooter.ShooterSubsystem;
 import com.team6647.subsystems.vision.VisionAutoSubsystem;
 import com.team6647.util.Constants.DriveConstants;
@@ -53,6 +57,7 @@ public class RobotContainer extends SuperRobotContainer {
         public static IntakeSubsystem intakeSubsystem;
         public static ShooterPivotSubsystem shooterPivotSubsystem;
         public static ShooterSubsystem shooterSubsystem;
+        public static ShooterRollerSubsystem shooterRollerSubsystem;
         public static VisionAutoSubsystem visionAutoSubsystem;
         public static ElevatorSubsystem elevatorSubsystem;
 
@@ -98,6 +103,8 @@ public class RobotContainer extends SuperRobotContainer {
                                 intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSparkMax());
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSparkMax());
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSparkMax());
+                                shooterRollerSubsystem = ShooterRollerSubsystem
+                                                .getInstance(new ShooterIORollerSparkMax());
                                 elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSparkMax());
                                 break;
                         case SIM:
@@ -113,6 +120,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSim());
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSim());
+                                shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterIORollerSim());
                                 elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
                                 break;
 
@@ -139,6 +147,8 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIO() {
                                 });
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIO() {
+                                });
+                                shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterRollerIO() {
                                 });
                                 elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIO() {
                                 });
