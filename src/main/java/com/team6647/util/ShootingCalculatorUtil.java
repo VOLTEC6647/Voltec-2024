@@ -24,7 +24,7 @@ public class ShootingCalculatorUtil {
             double flywheelRPM) {
     }
 
-    public ShootingParameters calculateShootingParameters(Pose2d robotPositionField, ChassisSpeeds currentRobotSpeed,
+    public static ShootingParameters calculateShootingParameters(Pose2d robotPositionField, ChassisSpeeds currentRobotSpeed,
             Rotation2d robotAngle) {
 
         Rotation2d speakerToRobotAngle = robotPositionField.getTranslation()
