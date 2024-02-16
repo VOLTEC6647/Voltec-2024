@@ -16,6 +16,7 @@ import com.team6647.RobotContainer;
 import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.subsystems.shooter.ShooterCommands;
+import com.team6647.subsystems.shooter.ShooterSubsystem;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
 import com.team6647.util.AllianceFlipUtil;
 import com.team6647.util.ShootingCalculatorUtil;
@@ -34,8 +35,6 @@ public class SuperStructure {
 
     @AutoLogOutput(key = "SuperStructure/State")
     private SuperStructureState mRobotState = SuperStructureState.IDLE;
-
-    private ShootingParameters currentParameters;
 
     public static SuperStructure getInstance() {
         if (instance == null) {
@@ -94,7 +93,7 @@ public class SuperStructure {
                 andromedaSwerve.getPose(),
                 andromedaSwerve.getFieldRelativeChassisSpeeds(), andromedaSwerve.getSwerveAngle());
 
-        this.currentParameters = shootingParams;
+        updateShootingParameters(shootingParams);
 
         return Commands.parallel(
                 new SwerveDriveCommand(
@@ -114,7 +113,7 @@ public class SuperStructure {
                 .toPose2d(AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d())));
     }
 
-    public ShootingParameters getCurrentParameters() {
-        return currentParameters;
+    public void updateShootingParameters(ShootingParameters newParameters) {
+        ShooterSubsystem.updateShootingParameters(newParameters);
     }
 }
