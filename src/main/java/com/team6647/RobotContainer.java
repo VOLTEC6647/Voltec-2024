@@ -44,7 +44,6 @@ import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
@@ -159,21 +158,16 @@ public class RobotContainer extends SuperRobotContainer {
                                                 () -> -OperatorConstants.driverController1.getRightX(),
                                                 () -> OperatorConstants.driverController1.leftStick().getAsBoolean()));
 
+                /* Driver 1 */
+                OperatorConstants.GO_TO_AMP.whileTrue(superStructure.goToAmp());
+                OperatorConstants.GO_TO_SPEAKER.whileTrue(superStructure.goToSpeaker());
+
+                /* Driver 2 */
                 OperatorConstants.TOGGLE_INTAKE.whileTrue(superStructure.update(SuperStructureState.INTAKING))
                                 .onFalse(superStructure.update(SuperStructureState.IDLE));
         }
 
         public void configSysIdBindings() {
-
-                OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kForward));
-                OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kReverse));
-                OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kForward));
-                OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kReverse));
-
         }
 
         @Override
