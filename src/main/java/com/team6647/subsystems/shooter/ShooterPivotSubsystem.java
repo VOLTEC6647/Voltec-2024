@@ -25,13 +25,16 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private ShooterPivotIO io;
   private ShooterPivotIOInputsAutoLogged inputs = new ShooterPivotIOInputsAutoLogged();
 
-  @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
-  private double setpoint = ShooterConstants.pivotIndexingPosition;
+  // @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
+  // private double setpoint = ShooterConstants.pivotIndexingPosition;
 
   private LoggedTunableNumber pivotKp = new LoggedTunableNumber("Shooter/Pivot/kp", ShooterConstants.pivotKp);
   private LoggedTunableNumber pivotKi = new LoggedTunableNumber("Shooter/Pivot/ki", ShooterConstants.pivotKi);
   private LoggedTunableNumber pivotKd = new LoggedTunableNumber("Shooter/Pivot/kd", ShooterConstants.pivotKd);
   private LoggedTunableNumber pivotKf = new LoggedTunableNumber("Shooter/Pivot/kf", ShooterConstants.pivotKf);
+
+  private LoggedTunableNumber pivotSetpoint = new LoggedTunableNumber("Shooter/Pivot/Setpoint",
+      ShooterConstants.pivotIndexingPosition);
 
   /** Creates a new ShooterPivotSubsystem. */
   private ShooterPivotSubsystem(
@@ -53,7 +56,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
       io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
-    }, pivotKp, pivotKi, pivotKd, pivotKf);
+
+      io.setShooterReference(pid[4]);
+    }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
   }
 
   public enum ShooterPivotState {
@@ -79,18 +84,14 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
   }
 
-  public void calculateShooterAngle() {
-
-  }
-
   private void changeSetpoint(double newSetpoint) {
     if (newSetpoint > ShooterConstants.pivotMaxPosition || newSetpoint < ShooterConstants.pivotMinPosition) {
       newSetpoint = Functions.clamp(newSetpoint, ShooterConstants.pivotMinPosition,
           ShooterConstants.pivotMaxPosition);
     }
 
-    setpoint = newSetpoint;
-    io.setShooterReference(setpoint);
+    // setpoint = newSetpoint;
+    // io.setShooterReference(setpoint);
   }
 
   public boolean inTolerance() {
