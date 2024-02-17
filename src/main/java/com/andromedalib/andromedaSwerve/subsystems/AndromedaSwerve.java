@@ -14,6 +14,9 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.team6647.util.AllianceFlipUtil;
+import com.team6647.util.Constants.FieldConstants;
+
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -157,6 +160,11 @@ public class AndromedaSwerve extends SubsystemBase {
     Logger.recordOutput("Swerve/ChassisSpeeds", getFieldRelativeChassisSpeeds());
 
     updateOdometry();
+
+    double robotToSpeakerDistance = getPose().getTranslation()
+        .getDistance(AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()));
+
+    Logger.recordOutput("Swerve/Distance", robotToSpeakerDistance);
   }
 
   /**
