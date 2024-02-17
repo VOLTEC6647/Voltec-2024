@@ -57,7 +57,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
       io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
 
-      io.setShooterReference(pid[4]);
+      changeSetpoint(pid[4]);
+
     }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
   }
 
@@ -91,7 +92,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     // setpoint = newSetpoint;
-    // io.setShooterReference(setpoint);
+    io.setShooterReference(newSetpoint);
   }
 
   public boolean inTolerance() {

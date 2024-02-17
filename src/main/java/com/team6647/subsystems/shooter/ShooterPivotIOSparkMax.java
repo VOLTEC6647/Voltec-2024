@@ -10,6 +10,7 @@ import com.andromedalib.motorControllers.SuperSparkMax;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.team6647.util.Constants.ShooterConstants;
@@ -41,6 +42,9 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
         pivotController.setP(ShooterConstants.pivotKf);
 
         pivotController.setReference(0, ControlType.kVelocity);
+
+        shooterPivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) ShooterConstants.pivotMaxPosition);
+        shooterPivotMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) ShooterConstants.pivotMinPosition);
     }
 
     @Override

@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
+import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -31,6 +32,8 @@ public class ShooterSubsystem extends SubsystemBase {
   private LoggedTunableNumber shooterKd = new LoggedTunableNumber("Shooter/Flywheel/kd", ShooterConstants.shooterKd);
   private LoggedTunableNumber shooterKf = new LoggedTunableNumber("Shooter/Flywheel/kf", ShooterConstants.shooterKf);
   private LoggedTunableNumber shooterVelocity = new LoggedTunableNumber("Shooter/Flywheel/velocity", 0.0);
+
+  private static ShootingParameters currentParameters;
 
   private ShooterSubsystem(ShooterIO io) {
     this.io = io;
@@ -71,32 +74,35 @@ public class ShooterSubsystem extends SubsystemBase {
     switch (rollerState) {
       case STOPPED:
         mFlywheelState = FlywheelState.STOPPED;
-        setShooterSpeed(0);
+        setShooterSpeed(ShooterConstants.shooterStoppedSpeed);
         break;
       case EXHAUSTING:
         mFlywheelState = FlywheelState.EXHAUSTING;
-        setShooterSpeed(0);
+        setShooterSpeed(ShooterConstants.shooterExhaustSpeed);
         break;
       case SHOOTING:
         mFlywheelState = FlywheelState.SHOOTING;
-        setShooterSpeed(0);
+        setShooterSpeed(currentParameters.flywheelRPM());
         break;
       case IDLE:
         mFlywheelState = FlywheelState.IDLE;
-        setShooterSpeed(0);
+        setShooterSpeed(ShooterConstants.shooterIdleSpeed);
         break;
     }
   }
 
-
   /**
-   * Sets the shooter to the desired speed
+   * Sets the shooter to the desired speed in RPMs
    * 
-   * @param speed Desired speedƒ
+   * @param speed Desired speed
    */
   private void setShooterSpeed(double speed) {
     mVelocitySetpoint = speed;
     io.setShooterVelocity(speed);
+  }
+
+  public static void updateShootingParameters(ShootingParameters newParameters) {
+    currentParameters = newParameters;
   }
 
   @AutoLogOutput(key = "Shooter/Flywheel/topInTolerance")
