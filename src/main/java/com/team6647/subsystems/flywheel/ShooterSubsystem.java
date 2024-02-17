@@ -3,11 +3,12 @@
  *            Juan Pablo Gutiérrez
  */
 
-package com.team6647.subsystems.shooter;
+package com.team6647.subsystems.flywheel;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.team6647.subsystems.shooter.ShooterIOInputsAutoLogged;
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
