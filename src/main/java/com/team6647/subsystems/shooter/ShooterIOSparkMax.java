@@ -36,10 +36,10 @@ public class ShooterIOSparkMax implements ShooterIO {
                 topFlywheelPID = topFlywheelMotor.getPIDController();
                 bottomFlywheelPID = bottomFlywheelMotor.getPIDController();
 
-                topFlywheelPID.setP(ShooterConstants.shooterKp);
-                topFlywheelPID.setI(ShooterConstants.shooterKi);
-                topFlywheelPID.setD(ShooterConstants.shooterKd);
-                topFlywheelPID.setFF(ShooterConstants.shooterKf);
+                topFlywheelPID.setP(ShooterConstants.topShooterKp);
+                topFlywheelPID.setI(ShooterConstants.topShooterKi);
+                topFlywheelPID.setD(ShooterConstants.topShooterKd);
+                topFlywheelPID.setFF(ShooterConstants.topShooterKf);
 
                 bottomFlywheelPID.setP(ShooterConstants.shooterKp);
                 bottomFlywheelPID.setI(ShooterConstants.shooterKi);

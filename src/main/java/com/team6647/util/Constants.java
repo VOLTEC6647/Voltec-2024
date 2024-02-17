@@ -166,6 +166,11 @@ public class Constants {
                 public static final double shooterKd = 0.01;
                 public static final double shooterKf = 0.0002;
 
+                public static final double topShooterKp = 0.0000092;
+                public static final double topShooterKi = 0;
+                public static final double topShooterKd = 0.01;
+                public static final double topShooterKf = 0.0002;
+
                 public static final double shooterTolerance = 0.0;
 
                 public static final double pivotKp = 0.02;
@@ -206,6 +211,8 @@ public class Constants {
                 static {
                         shooterRPMMap.put(1.594144790344313, 3000.0);
                         shooterRPMMap.put(2.6240367261815623, 3000.0);
+                        shooterRPMMap.put(2.6713558167223432, 3000.0);
+                        shooterRPMMap.put(3.7240374297194996, 3200.0);
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
@@ -214,6 +221,8 @@ public class Constants {
                         // Distance, Angle
                         shooterPivotMap.put(1.594144790344313, 90.0);
                         shooterPivotMap.put(2.6240367261815623, 108.0);
+                        shooterPivotMap.put(2.6713558167223432, 110.0);
+                        shooterPivotMap.put(3.7240374297194996, 116.0);
 
                 }
         }
