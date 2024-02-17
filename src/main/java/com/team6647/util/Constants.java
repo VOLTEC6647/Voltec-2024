@@ -48,7 +48,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.SIM;
+                public static final Mode currentMode = Mode.REAL;
 
                 public static final boolean tuningMode = true;
 
@@ -188,10 +188,10 @@ public class Constants {
                 public static final boolean armEncoderInverted = true;
                 public static final boolean shooterPivotMotorInverted = true;
 
-                public static final double pivotMinPosition = 115;
-                public static final double pivotMaxPosition = 257.750;
-                public static final double pivotHomedPosition = 116.5;
-                public static final double pivotIndexingPosition = 152;
+                public static final double pivotMinPosition = 52;
+                public static final double pivotMaxPosition = 240;
+                public static final double pivotHomedPosition = 53;
+                public static final double pivotIndexingPosition = 80;
 
                 public static final double rollerIntakingVelocity = 0.25;
                 public static final double rollerExhaustingVelocity = -0.25;
@@ -204,13 +204,17 @@ public class Constants {
                 public static final InterpolatingDoubleTreeMap shooterRPMMap = new InterpolatingDoubleTreeMap();
 
                 static {
-                        shooterRPMMap.put(0., 0.);
+                        shooterRPMMap.put(1.594144790344313, 3000.0);
+                        shooterRPMMap.put(2.6240367261815623, 3000.0);
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {
-                        shooterPivotMap.put(0., 0.);
+                        // Distance, Angle
+                        shooterPivotMap.put(1.594144790344313, 90.0);
+                        shooterPivotMap.put(2.6240367261815623, 108.0);
+
                 }
         }
 
@@ -275,11 +279,16 @@ public class Constants {
                 public static final int intakeMotorsCurrentLimit = 80;
 
                 public static final double intakeStoppedVelocity = 0.0;
-                public static final double intakeIntakingVelocity = -0.5;
+                public static final double intakeIntakingVelocity = -0.7;
                 public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = 0.1;
 
                 public static final int intakeBeamBrakeChannel = 9;
+        }
+
+        public static class VisionConstants {
+                public static final String aprilLimeNTName = "limelight-backcam";
+                public static final String neuralLimeNTName = "limelight-intake";
         }
 
         public static class DriveConstants {

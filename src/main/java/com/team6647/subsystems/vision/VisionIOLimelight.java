@@ -7,73 +7,69 @@ package com.team6647.subsystems.vision;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.vision.LimelightHelpers;
+import com.team6647.util.Constants.VisionConstants;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class VisionIOLimelight implements VisionIO {
 
-    private Alliance alliance;
-
     // how many degrees back is your limelight rotated from perfectly vertical?
-    private double limelightMountAngleDegrees = -30;
+    private double limelightMountAngleDegrees = -104;
 
     // distance from the center of the Limelight lens to the floor
-    private double limelightLensHeightMeters = 0.6;
+    private double limelightLensHeightMeters = 0.19685;
 
     AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
-    public VisionIOLimelight(Alliance alliance) {
-        this.alliance = alliance;
+    public VisionIOLimelight() {
     }
 
     @Override
     public synchronized void updateInputs(VisionIOInputs inputs) {
+        LimelightHelpers.Results result = LimelightHelpers
+                .getLatestResults(VisionConstants.aprilLimeNTName).targetingResults;
 
-        inputs.targetDistance = computeDistance();
-
-        LimelightHelpers.Results result = LimelightHelpers.getLatestResults("limelight").targetingResults;
-
-        inputs.TA = LimelightHelpers.getTA("limelight");
+        inputs.TA = LimelightHelpers.getTA(VisionConstants.aprilLimeNTName);
 
         if (!(result.botpose[0] == 0 && result.botpose[1] == 0) &&
-                LimelightHelpers.getTA("limelight") > 0.1) {
+                LimelightHelpers.getTA(VisionConstants.aprilLimeNTName) > 0.1) {
             inputs.hasTarget = true;
 
-            inputs.observedPose2d = alliance == Alliance.Blue ? LimelightHelpers.toPose2D(result.botpose_wpiblue)
-                    : LimelightHelpers.toPose2D(result.botpose_wpired);
+            inputs.observedPose2d = isRed() ? LimelightHelpers.toPose2D(result.botpose_wpired)
+                    : LimelightHelpers.toPose2D(result.botpose_wpiblue);
 
             inputs.timestampLatency = Logger.getRealTimestamp()
                     - (result.latency_capture + result.latency_pipeline / 1000.0);
+            inputs.targetDistance = computeTagDistance();
 
         } else {
             inputs.observedPose2d = new Pose2d();
             inputs.timestampLatency = 0;
             inputs.hasTarget = false;
+            inputs.targetDistance = 0.0;
         }
     }
 
-    public double computeDistance() {
-        double targetOffsetVertical = LimelightHelpers.getTY("limelight");
-
-        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetVertical;
-        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
-
-        return (0.142 - limelightLensHeightMeters)
-                / Math.tan(angleToGoalRadians);
-    }
-
     public double computeTagDistance() {
-        double id = LimelightHelpers.getFiducialID("limelight");
+        double id = LimelightHelpers.getFiducialID(VisionConstants.aprilLimeNTName);
 
-        double targetOffsetVertical = LimelightHelpers.getTY("limelight");
+        double targetOffsetVertical = LimelightHelpers.getTY(VisionConstants.aprilLimeNTName);
 
         double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetVertical;
         double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
 
         return (layout.getTagPose((int) id).get().getY() - limelightLensHeightMeters)
                 / Math.tan(angleToGoalRadians);
+    }
+
+    public static boolean isRed() {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+            return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return true;
     }
 }

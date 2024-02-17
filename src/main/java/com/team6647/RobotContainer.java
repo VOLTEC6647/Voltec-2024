@@ -43,10 +43,12 @@ import com.team6647.subsystems.shooter.ShooterRollerIO;
 import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
 import com.team6647.subsystems.shooter.ShooterSubsystem;
 import com.team6647.subsystems.vision.VisionAutoSubsystem;
+import com.team6647.subsystems.vision.VisionIOLimelight;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer extends SuperRobotContainer {
@@ -106,6 +108,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterRollerSubsystem = ShooterRollerSubsystem
                                                 .getInstance(new ShooterIORollerSparkMax());
                                 elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSparkMax());
+                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(new VisionIOLimelight(), andromedaSwerve);
                                 break;
                         case SIM:
                                 andromedaSwerve = AndromedaSwerve.getInstance(new GyroIO() {
