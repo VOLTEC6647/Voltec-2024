@@ -22,6 +22,10 @@ import com.team6647.subsystems.elevator.ElevatorIO;
 import com.team6647.subsystems.elevator.ElevatorIOSim;
 import com.team6647.subsystems.elevator.ElevatorIOSparkMax;
 import com.team6647.subsystems.elevator.ElevatorSubsystem;
+import com.team6647.subsystems.flywheel.ShooterIO;
+import com.team6647.subsystems.flywheel.ShooterIOSim;
+import com.team6647.subsystems.flywheel.ShooterIOSparkMax;
+import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
 import com.team6647.subsystems.intake.IntakeIOTalonFX;
@@ -30,25 +34,21 @@ import com.team6647.subsystems.intake.IntakePivotIOSim;
 import com.team6647.subsystems.intake.IntakePivotIOSparkMax;
 import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakeSubsystem;
-import com.team6647.subsystems.shooter.ShooterIO;
 import com.team6647.subsystems.shooter.ShooterIORollerSim;
 import com.team6647.subsystems.shooter.ShooterIORollerSparkMax;
-import com.team6647.subsystems.shooter.ShooterIOSim;
-import com.team6647.subsystems.shooter.ShooterIOSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotIO;
 import com.team6647.subsystems.shooter.ShooterPivotIOSim;
 import com.team6647.subsystems.shooter.ShooterPivotIOSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
 import com.team6647.subsystems.shooter.ShooterRollerIO;
 import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
-import com.team6647.subsystems.shooter.ShooterSubsystem;
 import com.team6647.subsystems.vision.VisionAutoSubsystem;
+import com.team6647.subsystems.vision.VisionIO;
 import com.team6647.subsystems.vision.VisionIOLimelight;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class RobotContainer extends SuperRobotContainer {
@@ -108,7 +108,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterRollerSubsystem = ShooterRollerSubsystem
                                                 .getInstance(new ShooterIORollerSparkMax());
                                 elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSparkMax());
-                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(new VisionIOLimelight(), andromedaSwerve);
+                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(new VisionIOLimelight());
                                 break;
                         case SIM:
                                 andromedaSwerve = AndromedaSwerve.getInstance(new GyroIO() {
@@ -154,6 +154,8 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterRollerIO() {
                                 });
                                 elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIO() {
+                                });
+                                visionAutoSubsystem = VisionAutoSubsystem.getInstance(new VisionIO() {
                                 });
                                 break;
                 }

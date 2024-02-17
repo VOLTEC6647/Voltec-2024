@@ -15,16 +15,12 @@ public class VisionAutoSubsystem extends SubsystemBase {
 
   private static VisionAutoSubsystem instance;
 
-  private final AndromedaSwerve andromedaSwerve;
-
   private VisionIO io;
   private VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
 
   /** Creates a new VisionSubsystem. */
   private VisionAutoSubsystem(VisionIO io, AndromedaSwerve swerve) {
     this.io = io;
-
-    this.andromedaSwerve = swerve;
   }
 
   public static VisionAutoSubsystem getInstance(VisionIO io, AndromedaSwerve swerve) {
@@ -45,7 +41,7 @@ public class VisionAutoSubsystem extends SubsystemBase {
   public void computeVisionMeasurements() {
     if (inputs.hasTarget) {
       if (inputs.targetDistance < 1.5) {
-        andromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
+        AndromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
       }
     }
   }

@@ -54,7 +54,7 @@ public class AndromedaSwerve extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
-  private SwerveDrivePoseEstimator poseEstimator;
+  private static SwerveDrivePoseEstimator poseEstimator;
 
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
@@ -161,6 +161,7 @@ public class AndromedaSwerve extends SubsystemBase {
 
     updateOdometry();
 
+    //TODO REMOVE
     double robotToSpeakerDistance = getPose().getTranslation()
         .getDistance(AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()));
 
@@ -267,7 +268,7 @@ public class AndromedaSwerve extends SubsystemBase {
     poseEstimator.updateWithTime(Logger.getRealTimestamp(), getSwerveAngle(), getPositions());
   }
 
-  public void addVisionMeasurements(Pose2d visionMeasurement, double timestampSeconds) {
+  public static void addVisionMeasurements(Pose2d visionMeasurement, double timestampSeconds) {
     poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
   }
 
