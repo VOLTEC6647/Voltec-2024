@@ -67,7 +67,7 @@ public class Robot extends SuperRobot {
 
     // Default to blue alliance in sim
     if (RobotConstants.getMode() == Mode.SIM) {
-      DriverStationSim.setAllianceStationId(AllianceStationID.Red1);
+      DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
     }
 
     // Start AdvantageKit Logger, no more fields can be added
