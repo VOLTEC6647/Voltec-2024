@@ -19,13 +19,13 @@ public class VisionAutoSubsystem extends SubsystemBase {
   private VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
 
   /** Creates a new VisionSubsystem. */
-  private VisionAutoSubsystem(VisionIO io, AndromedaSwerve swerve) {
+  private VisionAutoSubsystem(VisionIO io) {
     this.io = io;
   }
 
-  public static VisionAutoSubsystem getInstance(VisionIO io, AndromedaSwerve swerve) {
+  public static VisionAutoSubsystem getInstance(VisionIO io) {
     if (instance == null) {
-      instance = new VisionAutoSubsystem(io, swerve);
+      instance = new VisionAutoSubsystem(io);
     }
 
     return instance;
