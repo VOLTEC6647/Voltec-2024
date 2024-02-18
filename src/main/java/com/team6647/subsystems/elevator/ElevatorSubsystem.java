@@ -9,9 +9,9 @@ package com.team6647.subsystems.elevator;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.andromedalib.math.Functions;
 import com.team6647.util.Constants.ElevatorConstants;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,9 +28,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   private ProfiledPIDController elevatorPIDController = new ProfiledPIDController(ElevatorConstants.elevatorKp,
       ElevatorConstants.elevatorKi, ElevatorConstants.elevatorKd, new TrapezoidProfile.Constraints(1, 1));
 
+  @AutoLogOutput(key = "Elevator/Setpoint")
+  private double setpoint = ElevatorConstants.elevatorHomedPosition;
+
   /** Creates a new ElevatorSubsystem. */
   private ElevatorSubsystem(ElevatorIO io) {
     this.io = io;
+
+    elevatorPIDController.reset(inputs.elevatorAbsoluteEncoderPosition);
   }
 
   public static ElevatorSubsystem getInstance(ElevatorIO io) {
@@ -43,31 +48,52 @@ public class ElevatorSubsystem extends SubsystemBase {
   public enum ElevatorState {
     HOMED,
     TOP,
+    AMP,
   }
 
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Elevator", inputs);
+
+    computePID();
   }
 
   public void changeElevatorState(ElevatorState state) {
     switch (state) {
       case HOMED:
         mState = ElevatorState.HOMED;
-        setElevatorPosition(ElevatorConstants.elevatorMinPosition);
+        changeSetpoint(ElevatorConstants.elevatorHomedPosition);
         break;
       case TOP:
         mState = ElevatorState.TOP;
-        setElevatorPosition(ElevatorConstants.elevatorMaxPosition);
+        changeSetpoint(ElevatorConstants.elevatorTopPosition);
         break;
+      case AMP:
+        mState = ElevatorState.AMP;
+        changeSetpoint(ElevatorConstants.elevatorAmpPosition);
     }
   }
 
-  private void setElevatorPosition(double setpoint) {
-    double volts = elevatorPIDController
-        .calculate(inputs.elevatorPosition, setpoint);
-    volts = MathUtil.clamp(volts, -12.0, 12.0);
-    io.setElevatorVoltage(setpoint);
+  private void changeSetpoint(double newSetpoint) {
+    if (newSetpoint < ElevatorConstants.elevatorMaxPosition || newSetpoint > ElevatorConstants.elevatorMinPosition) {
+      newSetpoint = Functions.clamp(newSetpoint, ElevatorConstants.elevatorMinPosition,
+          ElevatorConstants.elevatorMaxPosition);
+    }
+
+    setpoint = newSetpoint;
+  }
+
+  private void computePID() {
+    double volts = elevatorPIDController.calculate(inputs.elevatorPosition, setpoint);
+
+    Logger.recordOutput("Elevator/Output", volts);
+
+    io.setElevatorVoltage(volts);
+  }
+
+  @AutoLogOutput(key = "InTolerance")
+  public boolean inTolerance() {
+    return elevatorPIDController.atGoal();
   }
 }

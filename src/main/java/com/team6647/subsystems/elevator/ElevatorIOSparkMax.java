@@ -10,19 +10,20 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.revrobotics.CANSparkBase.SoftLimitDirection;
 import com.andromedalib.motorControllers.SuperSparkMax;
 import com.team6647.util.Constants.ElevatorConstants;
 
 public class ElevatorIOSparkMax implements ElevatorIO {
     private static SuperSparkMax elevatorTopMotor = new SuperSparkMax(
             ElevatorConstants.elevatorTopMotorID,
-            GlobalIdleMode.Coast,
+            GlobalIdleMode.Brake,
             ElevatorConstants.elevatorTopMotorInverted,
             ElevatorConstants.elevatorMotorCurrentLimit);
 
     private static SuperSparkMax elevatorBottomMotor = new SuperSparkMax(
             ElevatorConstants.elevatorBoottomMotorID,
-            GlobalIdleMode.Coast,
+            GlobalIdleMode.Brake,
             ElevatorConstants.elevatorTopMotorInverted,
             ElevatorConstants.elevatorMotorCurrentLimit);
 
@@ -31,8 +32,11 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     public ElevatorIOSparkMax() {
         configCANCoder();
 
-        elevatorTopMotor.setPositionConversionFactor(ElevatorConstants.elevatorGearRatio);
-        elevatorBottomMotor.setPositionConversionFactor(ElevatorConstants.elevatorGearRatio);
+        elevatorTopMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) ElevatorConstants.elevatorMaxPosition);
+        elevatorTopMotor.setSoftLimit(SoftLimitDirection.kForward, (float) ElevatorConstants.elevatorMinPosition);
+
+        elevatorBottomMotor.setSoftLimit(SoftLimitDirection.kForward, (float) ElevatorConstants.elevatorMaxPosition);
+        elevatorBottomMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) ElevatorConstants.elevatorMinPosition);
 
         setElevatorPosition();
     }
@@ -61,6 +65,8 @@ public class ElevatorIOSparkMax implements ElevatorIO {
     }
 
     public void setElevatorPosition() {
+        elevatorTopMotor.setPosition(0);
+
         double absPos = elevatorCANCoder.getAbsolutePosition().getValueAsDouble();
 
         elevatorTopMotor.setPosition(absPos);
