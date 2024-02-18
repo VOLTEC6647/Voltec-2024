@@ -44,7 +44,6 @@ public class VisionIOLimelight implements VisionIO {
             inputs.timestampLatency = Logger.getRealTimestamp()
                     - (result.latency_capture + result.latency_pipeline / 1000.0);
             inputs.targetDistance = computeTagDistance();
-
         } else {
             inputs.observedPose2d = new Pose2d();
             inputs.timestampLatency = 0;
