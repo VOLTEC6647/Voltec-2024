@@ -8,7 +8,6 @@ package com.team6647.subsystems.flywheel;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.team6647.subsystems.shooter.ShooterIOInputsAutoLogged;
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
@@ -114,6 +113,10 @@ public class ShooterSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Flywheel/bottomInTolerance")
   public boolean bottomInTolerance() {
     return Math.abs(inputs.topMotorVelocity - mVelocitySetpoint) < ShooterConstants.shooterTolerance;
+  }
+
+  public boolean getBeamBrake() {
+    return inputs.beamBrake;
   }
 
 }
