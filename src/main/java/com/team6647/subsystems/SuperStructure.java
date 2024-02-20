@@ -37,8 +37,6 @@ import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class SuperStructure {
 
