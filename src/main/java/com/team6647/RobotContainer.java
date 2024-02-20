@@ -16,16 +16,24 @@ import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.AndromedaPr
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.team6647.commands.ShootingStationary;
+import com.team6647.commands.ShootingWhileMoving;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
 import com.team6647.subsystems.elevator.ElevatorIOSim;
 import com.team6647.subsystems.elevator.ElevatorIOSparkMax;
 import com.team6647.subsystems.elevator.ElevatorSubsystem;
+import com.team6647.subsystems.elevator.ElevatorSubsystem.ElevatorState;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterIOSparkMax;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
+import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
 import com.team6647.subsystems.intake.IntakeIOTalonFX;
@@ -34,6 +42,8 @@ import com.team6647.subsystems.intake.IntakePivotIOSim;
 import com.team6647.subsystems.intake.IntakePivotIOSparkMax;
 import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakeSubsystem;
+import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
+import com.team6647.subsystems.shooter.ShooterCommands;
 import com.team6647.subsystems.shooter.ShooterIORollerSim;
 import com.team6647.subsystems.shooter.ShooterIORollerSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotIO;
@@ -48,8 +58,12 @@ import com.team6647.subsystems.vision.VisionIOLimelight;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
+import com.team6647.util.Constants.RobotConstants.RollerState;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
@@ -111,13 +125,15 @@ public class RobotContainer extends SuperRobotContainer {
                                 visionAutoSubsystem = VisionAutoSubsystem.getInstance(new VisionIOLimelight());
                                 break;
                         case SIM:
-                                andromedaSwerve = AndromedaSwerve.getInstance(new GyroIO() {
-                                }, new AndromedaModuleIO[] {
-                                                new AndromedaModuleIOSim(0.1),
-                                                new AndromedaModuleIOSim(0.1),
-                                                new AndromedaModuleIOSim(0.1),
-                                                new AndromedaModuleIOSim(0.1),
-                                }, DriveConstants.andromedaSwerveConfig, DriveConstants.holonomicPathConfig);
+                                andromedaSwerve = AndromedaSwerve.getInstance(
+                                                new GyroIO() {
+                                                }, new AndromedaModuleIO[] {
+                                                                new AndromedaModuleIOSim(0.1),
+                                                                new AndromedaModuleIOSim(0.1),
+                                                                new AndromedaModuleIOSim(0.1),
+                                                                new AndromedaModuleIOSim(0.1),
+                                                }, DriveConstants.andromedaSwerveConfig,
+                                                DriveConstants.holonomicPathConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOSim());
                                 elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
                                 intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
@@ -161,6 +177,13 @@ public class RobotContainer extends SuperRobotContainer {
                 }
                 superStructure = SuperStructure.getInstance();
                 // configSysIdBindings();
+
+                NamedCommands.registerCommand("ShootStay",
+                                superStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(4));
+                NamedCommands.registerCommand("GrabPiece", superStructure.update(SuperStructureState.INTAKING));
+                NamedCommands.registerCommand("Idle", superStructure.update(SuperStructureState.IDLE));
+                NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
+
         }
 
         @Override
@@ -174,12 +197,44 @@ public class RobotContainer extends SuperRobotContainer {
                                                 () -> OperatorConstants.driverController1.leftStick().getAsBoolean()));
 
                 /* Driver 1 */
-                OperatorConstants.GO_TO_AMP.whileTrue(superStructure.goToAmp());
-                OperatorConstants.GO_TO_SPEAKER.whileTrue(superStructure.goToSpeaker());
-
+                /*
+                 * OperatorConstants.GO_TO_AMP.whileTrue(superStructure.goToAmp());
+                 * OperatorConstants.GO_TO_SPEAKER.whileTrue(superStructure.goToSpeaker());
+                 */
                 /* Driver 2 */
                 OperatorConstants.TOGGLE_INTAKE.whileTrue(superStructure.update(SuperStructureState.INTAKING))
                                 .onFalse(superStructure.update(SuperStructureState.IDLE));
+
+                /*
+                 * OperatorConstants.driverController2.a()
+                 * .whileTrue(new ShootingWhileMoving(andromedaSwerve, superStructure));
+                 */
+
+                OperatorConstants.driverController2.b()
+                                .whileTrue(superStructure.update(SuperStructureState.SHOOTING_SPEAKER))
+                                .onFalse(superStructure.update(SuperStructureState.IDLE));
+
+                OperatorConstants.driverController2.x()
+                                .whileTrue(superStructure.update(SuperStructureState.SCORING_AMP))
+                                .onFalse(superStructure.update(SuperStructureState.IDLE));
+
+                /*
+                 * .whileTrue(superStructure.update(SuperStructureState.SHOOTING_SPEAKER))
+                 * .onFalse(superStructure.update(SuperStructureState.IDLE));
+                 */
+
+                /*
+                 * OperatorConstants.driverController2.povLeft()
+                 * .whileTrue(ElevatorCommands.getElevatorTargetCommand(ElevatorState.TOP));
+                 * OperatorConstants.driverController2.povUp()
+                 * .whileTrue(ElevatorCommands.getElevatorTargetCommand(ElevatorState.HOMED));
+                 */
+                /*
+                 * OperatorConstants.driverController2.povLeft()
+                 * .whileTrue(ShooterCommands.getTargetRollersCommand(RollerState.INTAKING))
+                 * .whileFalse(ShooterCommands.getTargetRollersCommand(RollerState.STOPPED));
+                 */
+
         }
 
         public void configSysIdBindings() {
@@ -187,6 +242,8 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return null;
+                andromedaSwerve.resetPose(new Pose2d(1.44, 7.32, andromedaSwerve.getSwerveAngle()));
+
+                return new PathPlannerAuto("2 Piece");
         }
 }
