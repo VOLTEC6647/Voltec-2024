@@ -49,13 +49,12 @@ public class ShootingStationary extends Command {
         Speaker.centerSpeakerOpening.toTranslation2d());
 
     superStructure.updateShootingParameters(parameters);
-
   }
 
   @Override
   public void execute() {
     swerve.driveSetpoint(parameters.robotAngle());
-    flywheelSubsystem.changeFlywheelState(FlywheelState.STOPPED);
+    flywheelSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
     pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
 
     if (flywheelSubsystem.topInTolerance() && flywheelSubsystem.bottomInTolerance()) {

@@ -12,6 +12,7 @@ import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterSubsystem extends SubsystemBase {
@@ -33,7 +34,7 @@ public class ShooterSubsystem extends SubsystemBase {
   private LoggedTunableNumber shooterKf = new LoggedTunableNumber("Shooter/Flywheel/kf", ShooterConstants.shooterKf);
   private LoggedTunableNumber shooterVelocity = new LoggedTunableNumber("Shooter/Flywheel/velocity", 0.0);
 
-  private static ShootingParameters currentParameters;
+  private static ShootingParameters currentParameters = new ShootingParameters(new Rotation2d(), 0, 0);
 
   private ShooterSubsystem(ShooterIO io) {
     this.io = io;
