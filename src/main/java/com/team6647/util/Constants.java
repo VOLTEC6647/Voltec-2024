@@ -48,7 +48,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.REAL;
+                public static final Mode currentMode = Mode.SIM;
 
                 public static final boolean tuningMode = true;
 
@@ -151,6 +151,9 @@ public class Constants {
                         /** Center of the speaker opening (blue alliance) */
                         public static Translation3d centerSpeakerOpening = bottomLeftSpeaker
                                         .interpolate(topRightSpeaker, 0.5);
+
+                        public static Translation2d TargetLocation = new Translation2d(0.06, 5.55);
+
                 }
 
         }
@@ -162,16 +165,16 @@ public class Constants {
                 public static final int shooterRollerMotorID = 23;
 
                 public static final double shooterKp = 0.0000092;
-                public static final double shooterKi = 0;
+                public static final double shooterKi = 0.00000000;
                 public static final double shooterKd = 0.01;
-                public static final double shooterKf = 0.0002;
+                public static final double shooterKf = 0.000195;
 
                 public static final double topShooterKp = 0.0000092;
-                public static final double topShooterKi = 0;
+                public static final double topShooterKi = 0.00000000;
                 public static final double topShooterKd = 0.01;
-                public static final double topShooterKf = 0.0002;
+                public static final double topShooterKf = 0.000198;
 
-                public static final double shooterTolerance = 0.0;
+                public static final double shooterTolerance = 100.0;
 
                 public static final double pivotKp = 0.02;
                 public static final double pivotKi = 0.0;
@@ -189,16 +192,19 @@ public class Constants {
                 public static final int rollerMotorCurrentLimit = 80;
 
                 public static final double armEncoderPositionConversionFactor = 360;
-                public static final double armEncoderZeroOffset = 320;
+                public static final double armEncoderZeroOffset = 22;
                 public static final boolean armEncoderInverted = true;
                 public static final boolean shooterPivotMotorInverted = true;
 
                 public static final double pivotMinPosition = 52;
-                public static final double pivotMaxPosition = 240;
+                public static final double pivotMaxPosition = 200;
                 public static final double pivotHomedPosition = 53;
-                public static final double pivotIndexingPosition = 80;
+                public static final double pivotIndexingPosition = 95;
+                public static final double pivotAmpPosition = 170;
 
-                public static final double rollerIntakingVelocity = 0.25;
+                public static final double flywheelAmpRPM = 1000;
+
+                public static final double rollerIntakingVelocity = 0.3;
                 public static final double rollerExhaustingVelocity = -0.25;
                 public static final double rollerIdleVelocity = 0.1;
 
@@ -206,24 +212,61 @@ public class Constants {
                 public static final double shooterIdleSpeed = 2000;
                 public static final double shooterStoppedSpeed = 0.0;
 
+                public static final int forwardLimitSwitchID = 7;
+
                 public static final InterpolatingDoubleTreeMap shooterRPMMap = new InterpolatingDoubleTreeMap();
 
                 static {
-                        shooterRPMMap.put(1.594144790344313, 3000.0);
-                        shooterRPMMap.put(2.6240367261815623, 3000.0);
-                        shooterRPMMap.put(2.6713558167223432, 3000.0);
-                        shooterRPMMap.put(3.7240374297194996, 3200.0);
+                        // Distance, RPM
+                        shooterRPMMap.put(1.1606907311012329, 3000.0);
+                        shooterRPMMap.put(2.372361506185718, 3000.0);
+                        shooterRPMMap.put(2.9329428736294854, 3000.0);
+                        shooterRPMMap.put(2.973930915315643, 3000.0);
+                        shooterRPMMap.put(3.043542538690709, 3000.0);
+                        shooterRPMMap.put(3.325061309137313, 3500.0);
+                        shooterRPMMap.put(3.2972176668926267, 3000.0);
+                        shooterRPMMap.put(3.390555349041457, 3500.0);
+                        shooterRPMMap.put(3.940075975126223, 3500.0);
+                        shooterRPMMap.put(4.240222191581462, 4500.0);
+                        shooterRPMMap.put(4.400554945694464, 4200.0);
+                        shooterRPMMap.put(5.587686401566018, 5500.0);
+
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {
                         // Distance, Angle
-                        shooterPivotMap.put(1.594144790344313, 90.0);
-                        shooterPivotMap.put(2.6240367261815623, 108.0);
-                        shooterPivotMap.put(2.6713558167223432, 110.0);
-                        shooterPivotMap.put(3.7240374297194996, 116.0);
+                        shooterPivotMap.put(1.1606907311012329, 81.0);
+                        shooterPivotMap.put(2.372361506185718, 108.0);
+                        shooterPivotMap.put(2.9329428736294854, 111.0);
+                        shooterPivotMap.put(2.973930915315643, 115.0);
+                        shooterPivotMap.put(3.043542538690709, 115.0);
+                        shooterPivotMap.put(3.325061309137313, 116.0);
+                        shooterPivotMap.put(3.2972176668926267, 115.0);
+                        shooterPivotMap.put(3.390555349041457, 117.0);
+                        shooterPivotMap.put(3.940075975126223, 118.0);
+                        shooterPivotMap.put(4.240222191581462, 120.1);
+                        shooterPivotMap.put(4.400554945694464, 121.0);
+                        shooterPivotMap.put(5.587686401566018, 124.113);
+                }
 
+                public static final InterpolatingDoubleTreeMap shooterTimeMap = new InterpolatingDoubleTreeMap();
+
+                static {
+                        // Distance, Seconds
+                        shooterTimeMap.put(1.160690731101232, 0.30);
+                        shooterTimeMap.put(2.372361506185718, 0.33);
+                        shooterTimeMap.put(2.9329428736294854, 0.32);
+                        shooterTimeMap.put(2.973930915315643, 0.32);
+                        shooterTimeMap.put(3.043542538690709, 0.32);
+                        shooterTimeMap.put(3.2972176668926267, 0.32);
+                        shooterTimeMap.put(3.390555349041457, 0.34);
+                        shooterTimeMap.put(3.325061309137313, 0.35);
+                        shooterTimeMap.put(3.940075975126223, 0.40);
+                        shooterTimeMap.put(4.240222191581462, 0.42);
+                        shooterTimeMap.put(4.400554945694464, 0.39);
+                        shooterTimeMap.put(5.587686401566018, 0.38);
                 }
         }
 
@@ -235,19 +278,20 @@ public class Constants {
 
                 public static final double elevatorCANCoderOffset = -0.940000;
 
-                public static final boolean elevatorTopMotorInverted = false;
-                public static final boolean elevatorBottomMotorInverted = true;
+                public static final boolean elevatorTopMotorInverted = true;
+                public static final boolean elevatorBottomMotorInverted = false;
                 public static final int elevatorMotorCurrentLimit = 80;
                 public static final double elevatorGearRatio = 24.6;
 
-                public static final double elevatorKp = 0.01;
-                public static final double elevatorKi = 0;
-                public static final double elevatorKd = 0.00000000000000001;
+                public static final double elevatorKp = 1.79;
+                public static final double elevatorKi = 0.015;
+                public static final double elevatorKd = 0.0; // 0.00000000000000001;
 
-                public static final double elevatorMinPosition = 0.64;
-                public static final double elevatorMaxPosition = 0.8;
-                public static final double elevatorHomedPosition = 0.1;
-                public static final double elevatorShootingPosition = 0.70;
+                public static final double elevatorMinPosition = 0.24;
+                public static final double elevatorMaxPosition = 42.5;
+                public static final double elevatorTopPosition = 42;
+                public static final double elevatorHomedPosition = 0.24;
+                public static final double elevatorAmpPosition = 2;
 
                 public static final SensorDirectionValue elevatorCANCoderSensorValue = SensorDirectionValue.CounterClockwise_Positive;
         }
@@ -262,6 +306,9 @@ public class Constants {
                 public static final double extendedKp = 0.005;
                 public static final double extendedKi = 0.0;
                 public static final double extendedKd = 0.0;
+
+                public static final double homedTolerance = 2;
+                public static final double extendedTolerance = 2;
 
                 public static final double extendedPIDMaxVelocity = 4500.0;
                 public static final double extendedPIDMaxAcceleration = 4500.0;
@@ -288,9 +335,9 @@ public class Constants {
                 public static final int intakeMotorsCurrentLimit = 80;
 
                 public static final double intakeStoppedVelocity = 0.0;
-                public static final double intakeIntakingVelocity = -0.7;
+                public static final double intakeIntakingVelocity = -0.4;
                 public static final double intakeExhaustingVelocity = 0.5;
-                public static final double intakeIdleVelocity = 0.1;
+                public static final double intakeIdleVelocity = -0.1;
 
                 public static final int intakeBeamBrakeChannel = 9;
         }

@@ -5,24 +5,27 @@ package com.andromedalib.andromedaSwerve.subsystems;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModule;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIOInputsAutoLogged;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
+import com.andromedalib.util.AllianceFlipUtil;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PathPlannerLogging;
-import com.team6647.util.AllianceFlipUtil;
 import com.team6647.util.Constants.FieldConstants;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -90,6 +93,12 @@ public class AndromedaSwerve extends SubsystemBase {
           },
           this));
 
+  private PIDController angleController = new PIDController(3, 0.0, 0.00001);
+  private SwerveModulePosition[] lastPositions = new SwerveModulePosition[4];
+  private Rotation2d rawGyroRotation;
+
+  Rotation2d angle = new Rotation2d();
+
   private AndromedaSwerve(GyroIO gyro, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig profileConfig,
       HolonomicPathFollowerConfig pathConfig) {
     this.andromedaProfile = profileConfig;
@@ -99,6 +108,7 @@ public class AndromedaSwerve extends SubsystemBase {
     modules[3] = new AndromedaModule(3, "Front Left", andromedaProfile, modulesIO[3]);
 
     this.gyroIO = gyro;
+    this.rawGyroRotation = new Rotation2d();
 
     poseEstimator = new SwerveDrivePoseEstimator(profileConfig.swerveKinematics, new Rotation2d(),
         new SwerveModulePosition[] { new SwerveModulePosition(),
@@ -106,6 +116,14 @@ public class AndromedaSwerve extends SubsystemBase {
             new SwerveModulePosition(),
             new SwerveModulePosition() },
         new Pose2d(), stateStandardDeviations, visionmeasurementStandardDeviations);
+
+    lastPositions = // For delta tracking
+        new SwerveModulePosition[] {
+            new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition()
+        };
 
     AutoBuilder.configureHolonomic(
         this::getPose,
@@ -129,6 +147,8 @@ public class AndromedaSwerve extends SubsystemBase {
         (targetPose) -> {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
+
+    angleController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   public static AndromedaSwerve getInstance(GyroIO gyro, AndromedaModuleIO[] modules,
@@ -159,13 +179,38 @@ public class AndromedaSwerve extends SubsystemBase {
 
     Logger.recordOutput("Swerve/ChassisSpeeds", getFieldRelativeChassisSpeeds());
 
+    for (int i = 0; i < 4; i++) {
+      // Read wheel positions and deltas from each module
+      SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+      SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+        modulePositions[moduleIndex] = modules[moduleIndex].getPosition();
+        moduleDeltas[moduleIndex] = new SwerveModulePosition(
+            modulePositions[moduleIndex].distanceMeters
+                - lastPositions[moduleIndex].distanceMeters,
+            modulePositions[moduleIndex].angle);
+        lastPositions[moduleIndex] = modulePositions[moduleIndex];
+      }
+      if (gyroInputs.connected) {
+        // Use the real gyro angle
+        rawGyroRotation = gyroInputs.yawPosition;
+      } else {
+        // Use the angle delta from the kinematics and module deltas
+        Twist2d twist = andromedaProfile.swerveKinematics.toTwist2d(moduleDeltas);
+        rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+      }
+    }
+
+    Logger.recordOutput("Swerve/rotation", rawGyroRotation.getDegrees());
+
     updateOdometry();
 
-    //TODO REMOVE
+    // Update gyro angle
+    // TODO REMOVE
     double robotToSpeakerDistance = getPose().getTranslation()
         .getDistance(AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()));
 
-    Logger.recordOutput("Swerve/Distance", robotToSpeakerDistance);
+    Logger.recordOutput("Swerve/RobotSpeakerDistane", robotToSpeakerDistance);
   }
 
   /**
@@ -197,6 +242,15 @@ public class AndromedaSwerve extends SubsystemBase {
     Logger.recordOutput("Swerve/DesiredChassisSpeeds", chassisSpeeds);
 
     setModuleStates(swerveModuleStates);
+  }
+
+  public void driveSetpoint(Rotation2d angle) {
+    double output = angleController.calculate(getSwerveAngle().getRadians(),
+        angle.getRadians());
+
+    Logger.recordOutput("Swerve/SpeakerAngle", angle);
+
+    drive(new Translation2d(), output, false);
   }
 
   /**
@@ -235,7 +289,7 @@ public class AndromedaSwerve extends SubsystemBase {
    * @return
    */
   public Rotation2d getSwerveAngle() {
-    return gyroInputs.yawPosition;
+    return rawGyroRotation;
   }
 
   /**

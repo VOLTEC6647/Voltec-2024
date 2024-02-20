@@ -50,6 +50,10 @@ public class IntakePivotSubsystem extends SubsystemBase {
     this.io = io;
 
     mExtendedPivotController.setTolerance(IntakeConstants.intakePivotPositionTolerance);
+
+    mExtendedPivotController.setTolerance(IntakeConstants.extendedTolerance);
+    mHomedPivotController.setTolerance(IntakeConstants.homedTolerance);
+
   }
 
   public static IntakePivotSubsystem getInstance(IntakePivotIO io) {
@@ -125,7 +129,10 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   @AutoLogOutput(key = "Intake/Pivot/InTolerance")
   public boolean inTolerance() {
-    return mExtendedPivotController.atSetpoint();
+    return mExtendedPivotController.atSetpoint() || mHomedPivotController.atSetpoint();
   }
 
+  public boolean getBeamBrake() {
+    return inputs.intakeBeamBrake;
+  }
 }
