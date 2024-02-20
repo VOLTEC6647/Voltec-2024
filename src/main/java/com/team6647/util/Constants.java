@@ -218,18 +218,17 @@ public class Constants {
 
                 static {
                         // Distance, RPM
-                        shooterRPMMap.put(1.1606907311012329, 3000.0);
-                        shooterRPMMap.put(2.372361506185718, 3000.0);
-                        shooterRPMMap.put(2.9329428736294854, 3000.0);
-                        shooterRPMMap.put(2.973930915315643, 3000.0);
-                        shooterRPMMap.put(3.043542538690709, 3000.0);
-                        shooterRPMMap.put(3.325061309137313, 3500.0);
-                        shooterRPMMap.put(3.2972176668926267, 3000.0);
-                        shooterRPMMap.put(3.390555349041457, 3500.0);
-                        shooterRPMMap.put(3.940075975126223, 3500.0);
-                        shooterRPMMap.put(4.240222191581462, 4500.0);
-                        shooterRPMMap.put(4.400554945694464, 4200.0);
-                        shooterRPMMap.put(5.587686401566018, 5500.0);
+                        shooterRPMMap.put(1.018170626, 3000.0);
+                        shooterRPMMap.put(1.136725279, 3000.0);
+                        shooterRPMMap.put(1.547120287, 3000.0);
+                        shooterRPMMap.put(2.18457, 3000.0);
+                        shooterRPMMap.put(2.4435, 3000.0);
+                        shooterRPMMap.put(2.805406493, 3000.0);
+                        shooterRPMMap.put(3.031418358, 3000.0);
+                        shooterRPMMap.put(3.392893597, 3200.0);
+                        shooterRPMMap.put(3.812472063, 3400.0);
+                        shooterRPMMap.put(3.970896016, 3500.0);
+                        shooterRPMMap.put(4.311056677, 4500.0);
 
                 }
 
@@ -237,36 +236,34 @@ public class Constants {
 
                 static {
                         // Distance, Angle
-                        shooterPivotMap.put(1.1606907311012329, 81.0);
-                        shooterPivotMap.put(2.372361506185718, 108.0);
-                        shooterPivotMap.put(2.9329428736294854, 111.0);
-                        shooterPivotMap.put(2.973930915315643, 115.0);
-                        shooterPivotMap.put(3.043542538690709, 115.0);
-                        shooterPivotMap.put(3.325061309137313, 116.0);
-                        shooterPivotMap.put(3.2972176668926267, 115.0);
-                        shooterPivotMap.put(3.390555349041457, 117.0);
-                        shooterPivotMap.put(3.940075975126223, 118.0);
-                        shooterPivotMap.put(4.240222191581462, 120.1);
-                        shooterPivotMap.put(4.400554945694464, 121.0);
-                        shooterPivotMap.put(5.587686401566018, 124.113);
+                        shooterPivotMap.put(1.018170626, 90.0);
+                        shooterPivotMap.put(1.136725279, 95.0);
+                        shooterPivotMap.put(1.547120287, 102.0);
+                        shooterPivotMap.put(2.18457, 108.0);
+                        shooterPivotMap.put(2.4435, 111.0);
+                        shooterPivotMap.put(2.805406493, 114.0);
+                        shooterPivotMap.put(3.031418358, 115.0);
+                        shooterPivotMap.put(3.392893597, 118.0);
+                        shooterPivotMap.put(3.812472063, 119.0);
+                        shooterPivotMap.put(3.970896016, 119.0);
+                        shooterPivotMap.put(4.311056677, 119.8);
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterTimeMap = new InterpolatingDoubleTreeMap();
 
                 static {
                         // Distance, Seconds
-                        shooterTimeMap.put(1.160690731101232, 0.30);
-                        shooterTimeMap.put(2.372361506185718, 0.33);
-                        shooterTimeMap.put(2.9329428736294854, 0.32);
-                        shooterTimeMap.put(2.973930915315643, 0.32);
-                        shooterTimeMap.put(3.043542538690709, 0.32);
-                        shooterTimeMap.put(3.2972176668926267, 0.32);
-                        shooterTimeMap.put(3.390555349041457, 0.34);
-                        shooterTimeMap.put(3.325061309137313, 0.35);
-                        shooterTimeMap.put(3.940075975126223, 0.40);
-                        shooterTimeMap.put(4.240222191581462, 0.42);
-                        shooterTimeMap.put(4.400554945694464, 0.39);
-                        shooterTimeMap.put(5.587686401566018, 0.38);
+                        shooterTimeMap.put(1.018170626, 0.16);
+                        shooterTimeMap.put(1.136725279, 0.2);
+                        shooterTimeMap.put(1.547120287, 0.23);
+                        shooterTimeMap.put(2.18457, 0.23);
+                        shooterTimeMap.put(2.4435, 0.34);
+                        shooterTimeMap.put(2.805406493, 0.27);
+                        shooterTimeMap.put(3.031418358, 0.3);
+                        shooterTimeMap.put(3.392893597, 0.34);
+                        shooterTimeMap.put(3.812472063, 0.37);
+                        shooterTimeMap.put(3.970896016, 0.39);
+                        shooterTimeMap.put(4.311056677, 0.403);
                 }
         }
 
