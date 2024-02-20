@@ -14,7 +14,7 @@ public class ShooterIORollerSparkMax implements ShooterRollerIO {
 
     private static SuperSparkMax rollerMotor = new SuperSparkMax(
             ShooterConstants.shooterRollerMotorID,
-            GlobalIdleMode.Coast,
+            GlobalIdleMode.Brake,
             true,
             ShooterConstants.rollerMotorCurrentLimit);
 
