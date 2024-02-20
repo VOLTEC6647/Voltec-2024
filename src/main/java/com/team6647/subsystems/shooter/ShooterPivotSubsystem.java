@@ -12,7 +12,9 @@ import org.littletonrobotics.junction.Logger;
 import com.andromedalib.math.Functions;
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
+import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ShooterPivotSubsystem extends SubsystemBase {
@@ -20,13 +22,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private static ShooterPivotSubsystem instance;
 
   @AutoLogOutput(key = "Shooter/Pivot/State")
-  private static ShooterPivotState mState = ShooterPivotState.INDEXING;
+  private static ShooterPivotState mState = ShooterPivotState.HOMED;
 
   private ShooterPivotIO io;
   private ShooterPivotIOInputsAutoLogged inputs = new ShooterPivotIOInputsAutoLogged();
-
-  // @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
-  // private double setpoint = ShooterConstants.pivotIndexingPosition;
 
   private LoggedTunableNumber pivotKp = new LoggedTunableNumber("Shooter/Pivot/kp", ShooterConstants.pivotKp);
   private LoggedTunableNumber pivotKi = new LoggedTunableNumber("Shooter/Pivot/ki", ShooterConstants.pivotKi);
@@ -34,7 +33,12 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private LoggedTunableNumber pivotKf = new LoggedTunableNumber("Shooter/Pivot/kf", ShooterConstants.pivotKf);
 
   private LoggedTunableNumber pivotSetpoint = new LoggedTunableNumber("Shooter/Pivot/Setpoint",
-      ShooterConstants.pivotIndexingPosition);
+      ShooterConstants.pivotHomedPosition);
+
+  private static ShootingParameters currentParameters;
+
+  @AutoLogOutput(key = "Shooter/Pivot/Emergency Disable")
+  private boolean emergencyDisable = false;
 
   /** Creates a new ShooterPivotSubsystem. */
   private ShooterPivotSubsystem(
@@ -54,6 +58,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
 
+    emergencyCheck();
+
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
       io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
 
@@ -65,7 +71,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   public enum ShooterPivotState {
     HOMED,
     SHOOTING,
+    AMP,
     INDEXING,
+    DISABLED,
   }
 
   public void setShooterPivotState(ShooterPivotState state) {
@@ -76,7 +84,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         break;
       case SHOOTING:
         mState = ShooterPivotState.SHOOTING;
+        changeSetpoint(currentParameters.pivotAngle());
         break;
+      case AMP:
+        mState = ShooterPivotState.AMP;
+        changeSetpoint(ShooterConstants.pivotAmpPosition);
       case INDEXING:
         mState = ShooterPivotState.INDEXING;
         changeSetpoint(ShooterConstants.pivotIndexingPosition);
@@ -91,7 +103,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
           ShooterConstants.pivotMaxPosition);
     }
 
-    // setpoint = newSetpoint;
     io.setShooterReference(newSetpoint);
   }
 
@@ -99,4 +110,15 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     return inputs.inTolerance;
   }
 
+  public void emergencyCheck() {
+    if (inputs.shooterPivotAppliedVolts < 0 && inputs.limitSwitchPressed) {
+      emergencyDisable = true;
+      DriverStation.reportError("Shooter Pivot Emergency Disabled", false);
+      io.setShooterReference(inputs.shooterAbsoluteEncoderPosition);
+    }
+  }
+
+  public static void updateShootingParameters(ShootingParameters newParameters) {
+    currentParameters = newParameters;
+  }
 }

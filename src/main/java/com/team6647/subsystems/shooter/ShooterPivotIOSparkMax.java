@@ -15,6 +15,8 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.team6647.util.Constants.ShooterConstants;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
     private SuperSparkMax shooterPivotMotor = new SuperSparkMax(
@@ -27,6 +29,8 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
     private static AbsoluteEncoder pivotEncoder;
     private static SparkPIDController pivotController;
+
+    private static DigitalInput forwardLimitSwitch;
 
     private double setpoint;
 
@@ -45,6 +49,9 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
         shooterPivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) ShooterConstants.pivotMaxPosition);
         shooterPivotMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) ShooterConstants.pivotMinPosition);
+        shooterPivotMotor.stopMotor();
+
+        forwardLimitSwitch = new DigitalInput(ShooterConstants.forwardLimitSwitchID);
     }
 
     @Override
@@ -58,6 +65,8 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
         inputs.inTolerance = Math
                 .abs(shooterPivotMotor.getPosition() - setpoint) < ShooterConstants.positionTolerance;
+
+        inputs.limitSwitchPressed = !forwardLimitSwitch.get();
     }
 
     @Override

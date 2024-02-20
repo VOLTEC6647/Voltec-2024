@@ -20,6 +20,8 @@ public interface ShooterPivotIO {
         public double pivotMotorPosition = 0.0;
 
         public boolean inTolerance = false;
+
+        public boolean limitSwitchPressed = false;
     }
 
     public default void updateInputs(ShooterPivotIOInputs inputs) {
