@@ -19,16 +19,19 @@ import com.team6647.commands.IntakeRollerTarget;
 import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.ShootingStationary;
+import com.team6647.commands.VisionIntakeAlign;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakeSubsystem;
 import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
+import com.team6647.subsystems.neural.NeuralVisionSubsystem;
 import com.team6647.subsystems.shooter.ShooterCommands;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
 import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
+import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.util.Constants.FieldConstants;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.Constants.RobotConstants.RollerState;
@@ -42,15 +45,17 @@ public class SuperStructure {
 
     private static SuperStructure instance;
 
-    private AndromedaSwerve andromedaSwerve = RobotContainer.andromedaSwerve;
-    private ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
-    private ShooterRollerSubsystem rollerSubsystem = RobotContainer.shooterRollerSubsystem;
-    private ShooterPivotSubsystem shooterPivotSubsystem = RobotContainer.shooterPivotSubsystem;
-    private IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
-    private IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
+    private static AndromedaSwerve andromedaSwerve = RobotContainer.andromedaSwerve;
+    private static ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
+    private static ShooterRollerSubsystem rollerSubsystem = RobotContainer.shooterRollerSubsystem;
+    private static ShooterPivotSubsystem shooterPivotSubsystem = RobotContainer.shooterPivotSubsystem;
+    private static IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
+    private static IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
+    private static VisionSubsystem visionSubsystem = RobotContainer.visionSubsytem;
+    private static NeuralVisionSubsystem neuralVisionSubsystem = RobotContainer.neuralVisionSubsystem;
 
     @AutoLogOutput(key = "SuperStructure/State")
-    private SuperStructureState mRobotState = SuperStructureState.IDLE;
+    private static SuperStructureState mRobotState = SuperStructureState.IDLE;
 
     public static SuperStructure getInstance() {
         if (instance == null) {
@@ -60,10 +65,10 @@ public class SuperStructure {
     }
 
     public enum SuperStructureState {
-        IDLE, INTAKING, SHOOTING_SPEAKER, SCORING_AMP, SHOOTING_TRAP, SHOOTING_MOVING, CLIMBING
+        IDLE, INTAKING, SHOOTING_SPEAKER, SCORING_AMP, SHOOTING_TRAP, SHOOTING_MOVING, CLIMBING, INTAKE_ALIGN
     }
 
-    public Command update(SuperStructureState newState) {
+    public static Command update(SuperStructureState newState) {
         switch (newState) {
             case IDLE:
                 return idleCommand();
@@ -79,12 +84,15 @@ public class SuperStructure {
                 return shootingWhileMoving();
             case CLIMBING:
                 break;
+            case INTAKE_ALIGN:
+                return new VisionIntakeAlign(neuralVisionSubsystem, intakePivotSubsystem, intakeSubsystem,
+                        andromedaSwerve);
         }
 
         return Commands.waitSeconds(0);
     }
 
-    private Command intakingCommand() {
+    private static Command intakingCommand() {
         mRobotState = SuperStructureState.INTAKING;
 
         return Commands.deadline(
@@ -92,7 +100,7 @@ public class SuperStructure {
                 IntakeCommands.getIntakeCommand());
     }
 
-    private Command idleCommand() {
+    private static Command idleCommand() {
         mRobotState = SuperStructureState.INTAKING;
 
         return Commands.parallel(
@@ -103,27 +111,22 @@ public class SuperStructure {
                 new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED));
     }
 
-    public Command shootingWhileMoving() {
+    private static Command shootingWhileMoving() {
         return Commands.waitSeconds(0);
     }
 
-    public Command shootingStationary() {
+    private static Command shootingStationary() {
         return new ShootingStationary(andromedaSwerve, shooterSubsystem, shooterPivotSubsystem, rollerSubsystem,
-                instance);
+                visionSubsystem);
     }
 
     /* Pathfinding */
 
     public Command goToAmp() {
-        return andromedaSwerve.getPathFindPath(GeomUtil.toPose2d(AllianceFlipUtil.apply(FieldConstants.ampCenter)));
+        return andromedaSwerve.getPathFindPath(AllianceFlipUtil.apply(FieldConstants.amp));
     }
 
-    public Command goToSpeaker() {
-        return andromedaSwerve.getPathFindPath(GeomUtil
-                .toPose2d(AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d())));
-    }
-
-    public Command scoreAmp() {
+    private static Command scoreAmp() {
 
         ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), ShooterConstants.pivotAmpPosition,
                 ShooterConstants.flywheelAmpRPM);
@@ -138,7 +141,7 @@ public class SuperStructure {
 
     /* Util */
 
-    public void updateShootingParameters(ShootingParameters newParameters) {
+    public static void updateShootingParameters(ShootingParameters newParameters) {
         ShooterSubsystem.updateShootingParameters(newParameters);
         ShooterPivotSubsystem.updateShootingParameters(newParameters);
     }
