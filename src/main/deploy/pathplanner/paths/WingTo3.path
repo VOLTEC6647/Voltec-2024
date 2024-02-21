@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.336417793205957,
-        "y": 2.1703802481679046
+        "x": 3.584784575819152,
+        "y": 3.0052819207200923
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.336417793205956,
-        "y": 1.6703802481679046
+        "x": 4.694723139446279,
+        "y": 2.749042041052832
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.24068312025513,
-        "y": 0.6164692283088276
+        "x": 8.062869590582931,
+        "y": 4.103696203486158
       },
       "prevControl": {
-        "x": 7.247835704004741,
-        "y": 0.6696182466439006
+        "x": 5.57978790957582,
+        "y": 4.550888406464314
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,17 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "ShootStay",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "GrabPiece",
+      "name": "IntakeAlign",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",

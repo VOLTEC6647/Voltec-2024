@@ -244,13 +244,20 @@ public class AndromedaSwerve extends SubsystemBase {
     setModuleStates(swerveModuleStates);
   }
 
-  public void driveSetpoint(Rotation2d angle) {
+  public void driveSetpoint(Rotation2d angle, boolean stopped) {
     double output = angleController.calculate(getSwerveAngle().getRadians(),
         angle.getRadians());
 
     Logger.recordOutput("Swerve/SpeakerAngle", angle);
 
-    drive(new Translation2d(), output, false);
+    if (stopped) {
+      drive(new Translation2d(), output, false);
+    } else {
+      ChassisSpeeds speeds = getFieldRelativeChassisSpeeds();
+      speeds.omegaRadiansPerSecond = output;
+
+      drive(speeds);
+    }
   }
 
   /**
