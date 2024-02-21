@@ -10,6 +10,8 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -96,8 +98,7 @@ public class Constants {
                 public static double podiumX = Units.inchesToMeters(126.75);
                 public static double startingLineX = Units.inchesToMeters(74.111);
 
-                public static Translation2d ampCenter = new Translation2d(Units.inchesToMeters(72.455),
-                                Units.inchesToMeters(322.996));
+                public static Pose2d amp = new Pose2d(new Translation2d(1.80, 7.62), Rotation2d.fromDegrees(-90));
 
                 /** Staging locations for each note */
                 public static final class StagingLocations {
@@ -296,11 +297,11 @@ public class Constants {
         public static class IntakeConstants {
                 public static final int intakeMotorID = 16;
 
-                public static final double homedKp = 0.004;
+                public static final double homedKp = 0.08;
                 public static final double homedKi = 0.00004;
                 public static final double homedKd = 0.0;
 
-                public static final double extendedKp = 0.005;
+                public static final double extendedKp = 0.04;
                 public static final double extendedKi = 0.0;
                 public static final double extendedKd = 0.0;
 
@@ -316,7 +317,7 @@ public class Constants {
                 public static final double minIntakePivotPosition = 137.400;
                 public static final double maxIntakePivotPosition = 197.040;
                 public static final double intakePivotPositionTolerance = 0.4;
-                public static final double intakeHomedPosition = 136.342;
+                public static final double intakeHomedPosition = 140.00;
                 public static final double intakeExtendedPosition = 195.000;
 
                 public static final int intakePivotLeftMotorID = 14;
@@ -329,7 +330,7 @@ public class Constants {
                 public static final boolean intakePivotLeftMotorInverted = false;
                 public static final boolean intakePivotRightMotorInverted = true;
 
-                public static final int intakeMotorsCurrentLimit = 80;
+                public static final int intakeMotorsCurrentLimit = 30;
 
                 public static final double intakeStoppedVelocity = 0.0;
                 public static final double intakeIntakingVelocity = -0.4;
@@ -342,6 +343,12 @@ public class Constants {
         public static class VisionConstants {
                 public static final String aprilLimeNTName = "limelight-backcam";
                 public static final String neuralLimeNTName = "limelight-intake";
+
+                public static final int speakerBlueCenterTagID = 7;
+                public static final int speakerRedCentgerTagID = 4;
+
+                public static final int speakerPipelineNumber = 0;
+                public static final int odometryPipelineNumber = 1;
         }
 
         public static class DriveConstants {
