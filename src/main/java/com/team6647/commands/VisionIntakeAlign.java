@@ -46,22 +46,17 @@ public class VisionIntakeAlign extends Command {
     targetingYVel *= -1;
 
     andromedaSwerve.drive(new Translation2d(targetingYVel, 0), targetingXVel, false);
-
-    if (neuralVisionSubsystem.getTY() < -12) {
-      SuperStructure.update(SuperStructureState.INTAKING);
-    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SuperStructure.update(SuperStructureState.IDLE);
-
+    SuperStructure.update(SuperStructureState.INTAKING);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !neuralVisionSubsystem.hasTarget();
+    return !neuralVisionSubsystem.hasTarget() || neuralVisionSubsystem.getTY() < -12;
   }
 }
