@@ -92,7 +92,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     io.setElevatorVoltage(volts);
   }
 
-  @AutoLogOutput(key = "InTolerance")
+  @AutoLogOutput(key = "Elevator/InTolerance")
   public boolean inTolerance() {
     return elevatorPIDController.atGoal();
   }
