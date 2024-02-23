@@ -43,10 +43,10 @@ public class Constants {
 
                 /* Driver 2 */
 
-                public static final Trigger RUN_INTAKE_FORWARD = driverController2.rightTrigger(),
-                                RUN_INTAKE_BACKWARD = driverController2.leftTrigger(),
-                                TOGGLE_INTAKE = driverController2.povRight(),
-                                EXTEND_INTAKE = driverController2.povLeft();
+                public static final Trigger TOGGLE_INTAKE = driverController2.povRight(),
+                                TOGGLE_AMP = driverController2.x(),
+                                SHOOT_SPEAKER = driverController2.b(),
+                                CLIMB_TOP = driverController2.y();
         }
 
         public static class RobotConstants {
@@ -198,10 +198,11 @@ public class Constants {
                 public static final boolean shooterPivotMotorInverted = true;
 
                 public static final double pivotMinPosition = 52;
-                public static final double pivotMaxPosition = 200;
+                public static final double pivotMaxPosition = 201;
                 public static final double pivotHomedPosition = 53;
                 public static final double pivotIndexingPosition = 95;
                 public static final double pivotAmpPosition = 170;
+                public static final double pivotClimbPosition = 200;
 
                 public static final double flywheelAmpRPM = 1000;
 
@@ -215,56 +216,57 @@ public class Constants {
 
                 public static final int forwardLimitSwitchID = 7;
 
-                public static final InterpolatingDoubleTreeMap shooterRPMMap = new InterpolatingDoubleTreeMap();
-
-                static {
-                        // Distance, RPM
-                        shooterRPMMap.put(1.018170626, 3000.0);
-                        shooterRPMMap.put(1.136725279, 3000.0);
-                        shooterRPMMap.put(1.547120287, 3000.0);
-                        shooterRPMMap.put(2.18457, 3000.0);
-                        shooterRPMMap.put(2.4435, 3000.0);
-                        shooterRPMMap.put(2.805406493, 3000.0);
-                        shooterRPMMap.put(3.031418358, 3000.0);
-                        shooterRPMMap.put(3.392893597, 3200.0);
-                        shooterRPMMap.put(3.812472063, 3400.0);
-                        shooterRPMMap.put(3.970896016, 3500.0);
-                        shooterRPMMap.put(4.311056677, 4500.0);
-
-                }
-
+                public static final double shootingRPM = 5000;
+                /*
+                 * public static final InterpolatingDoubleTreeMap shooterRPMMap = new
+                 * InterpolatingDoubleTreeMap();
+                 * 
+                 * static {
+                 * // Distance, RPM
+                 * shooterRPMMap.put(1.018170626, 3000.0);
+                 * shooterRPMMap.put(1.136725279, 3000.0);
+                 * shooterRPMMap.put(1.547120287, 3000.0);
+                 * shooterRPMMap.put(2.18457, 3000.0);
+                 * shooterRPMMap.put(2.4435, 3000.0);
+                 * shooterRPMMap.put(2.805406493, 3000.0);
+                 * shooterRPMMap.put(3.031418358, 3000.0);
+                 * shooterRPMMap.put(3.392893597, 3200.0);
+                 * shooterRPMMap.put(3.812472063, 3400.0);
+                 * shooterRPMMap.put(3.970896016, 3500.0);
+                 * shooterRPMMap.put(4.311056677, 4500.0);
+                 * 
+                 * }
+                 */
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {
                         // Distance, Angle
-                        shooterPivotMap.put(1.018170626, 90.0);
-                        shooterPivotMap.put(1.136725279, 95.0);
-                        shooterPivotMap.put(1.547120287, 102.0);
-                        shooterPivotMap.put(2.18457, 108.0);
-                        shooterPivotMap.put(2.4435, 111.0);
-                        shooterPivotMap.put(2.805406493, 114.0);
-                        shooterPivotMap.put(3.031418358, 115.0);
-                        shooterPivotMap.put(3.392893597, 118.0);
-                        shooterPivotMap.put(3.812472063, 119.0);
-                        shooterPivotMap.put(3.970896016, 119.0);
-                        shooterPivotMap.put(4.311056677, 119.8);
+                        shooterPivotMap.put(1.13166, 90.0);
+                        shooterPivotMap.put(1.34509, 95.0);
+                        shooterPivotMap.put(1.52726, 100.0);
+                        shooterPivotMap.put(1.88464, 105.0);
+                        shooterPivotMap.put(2.22834, 110.0);
+                        shooterPivotMap.put(2.5641, 113.0);
+                        shooterPivotMap.put(2.86391, 115.0);
+                        shooterPivotMap.put(3.14579, 118.0);
+                        shooterPivotMap.put(3.56278, 119.0);
+                        shooterPivotMap.put(3.96404, 119.5);
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterTimeMap = new InterpolatingDoubleTreeMap();
 
                 static {
                         // Distance, Seconds
-                        shooterTimeMap.put(1.018170626, 0.16);
-                        shooterTimeMap.put(1.136725279, 0.2);
-                        shooterTimeMap.put(1.547120287, 0.23);
-                        shooterTimeMap.put(2.18457, 0.23);
-                        shooterTimeMap.put(2.4435, 0.34);
-                        shooterTimeMap.put(2.805406493, 0.27);
-                        shooterTimeMap.put(3.031418358, 0.3);
-                        shooterTimeMap.put(3.392893597, 0.34);
-                        shooterTimeMap.put(3.812472063, 0.37);
-                        shooterTimeMap.put(3.970896016, 0.39);
-                        shooterTimeMap.put(4.311056677, 0.403);
+                        shooterTimeMap.put(1.13166, 90.0);
+                        shooterTimeMap.put(1.34509, 95.0);
+                        shooterTimeMap.put(1.52726, 100.0);
+                        shooterTimeMap.put(1.88464, 105.0);
+                        shooterTimeMap.put(2.22834, 110.0);
+                        shooterTimeMap.put(2.5641, 113.0);
+                        shooterTimeMap.put(2.86391, 115.0);
+                        shooterTimeMap.put(3.14579, 118.0);
+                        shooterTimeMap.put(3.56278, 119.0);
+                        shooterTimeMap.put(3.96404, 119.5);
                 }
         }
 
@@ -286,8 +288,8 @@ public class Constants {
                 public static final double elevatorKd = 0.0; // 0.00000000000000001;
 
                 public static final double elevatorMinPosition = 0.24;
-                public static final double elevatorMaxPosition = 42.5;
-                public static final double elevatorTopPosition = 42;
+                public static final double elevatorMaxPosition = 44.5;
+                public static final double elevatorTopPosition = 44;
                 public static final double elevatorHomedPosition = 0.24;
                 public static final double elevatorAmpPosition = 2;
 
@@ -297,15 +299,15 @@ public class Constants {
         public static class IntakeConstants {
                 public static final int intakeMotorID = 16;
 
-                public static final double homedKp = 0.08;
+                public static final double homedKp = 0.1;
                 public static final double homedKi = 0.00004;
                 public static final double homedKd = 0.0;
 
-                public static final double extendedKp = 0.04;
+                public static final double extendedKp = 0.1;
                 public static final double extendedKi = 0.0;
                 public static final double extendedKd = 0.0;
 
-                public static final double homedTolerance = 2;
+                public static final double homedTolerance = 5;
                 public static final double extendedTolerance = 2;
 
                 public static final double extendedPIDMaxVelocity = 4500.0;
@@ -316,7 +318,6 @@ public class Constants {
 
                 public static final double minIntakePivotPosition = 137.400;
                 public static final double maxIntakePivotPosition = 197.040;
-                public static final double intakePivotPositionTolerance = 0.4;
                 public static final double intakeHomedPosition = 140.00;
                 public static final double intakeExtendedPosition = 195.000;
 
@@ -327,17 +328,17 @@ public class Constants {
                 public static final double intakePivotEncoderZeroOffset = 0.0;
 
                 public static final boolean intakePivotEncoderInverted = true;
-                public static final boolean intakePivotLeftMotorInverted = false;
+                public static final boolean intakePivotLeftMotorInverted = true;
                 public static final boolean intakePivotRightMotorInverted = true;
 
                 public static final int intakeMotorsCurrentLimit = 30;
 
                 public static final double intakeStoppedVelocity = 0.0;
-                public static final double intakeIntakingVelocity = -0.4;
+                public static final double intakeIntakingVelocity = -0.3;
                 public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = -0.1;
 
-                public static final int intakeBeamBrakeChannel = 9;
+                public static final int intakeUltrasonicChannel = 3;
         }
 
         public static class VisionConstants {

@@ -32,11 +32,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private LoggedTunableNumber pivotKd = new LoggedTunableNumber("Shooter/Pivot/kd", ShooterConstants.pivotKd);
   private LoggedTunableNumber pivotKf = new LoggedTunableNumber("Shooter/Pivot/kf", ShooterConstants.pivotKf);
 
-  /*
-   * private LoggedTunableNumber pivotSetpoint = new
-   * LoggedTunableNumber("Shooter/Pivot/Setpoint",
-   * ShooterConstants.pivotHomedPosition);
-   */
+  private LoggedTunableNumber pivotSetpoint = new LoggedTunableNumber("Shooter/Pivot/Setpoint",
+      ShooterConstants.pivotHomedPosition);
+
   private static ShootingParameters currentParameters;
 
   @AutoLogOutput(key = "Shooter/Pivot/Emergency Disable")
@@ -68,9 +66,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
       io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
 
-      // changeSetpoint(pid[4]);
+      changeSetpoint(pid[4]);
 
-    }, pivotKp, pivotKi, pivotKd, pivotKf);
+    }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
 
   }
 
@@ -79,7 +77,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     SHOOTING,
     AMP,
     INDEXING,
-    DISABLED,
+    CLIMBING,
   }
 
   public void setShooterPivotState(ShooterPivotState state) {
@@ -100,15 +98,14 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         mState = ShooterPivotState.INDEXING;
         changeSetpoint(ShooterConstants.pivotIndexingPosition);
         break;
-      default:
+      case CLIMBING:
+        mState = ShooterPivotState.CLIMBING;
+        changeSetpoint(ShooterConstants.pivotClimbPosition);
         break;
     }
   }
 
   private void changeSetpoint(double newSetpoint) {
-
-    System.out.println(newSetpoint);
-
     if (newSetpoint > ShooterConstants.pivotMaxPosition || newSetpoint < ShooterConstants.pivotMinPosition) {
       newSetpoint = Functions.clamp(newSetpoint, ShooterConstants.pivotMinPosition,
           ShooterConstants.pivotMaxPosition);

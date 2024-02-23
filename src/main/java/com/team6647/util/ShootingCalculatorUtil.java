@@ -88,7 +88,7 @@ public class ShootingCalculatorUtil {
                 Rotation2d angle = robotToTarget.getAngle().rotateBy(Rotation2d.fromDegrees(180));
 
                 return new ShootingParameters(angle, ShooterConstants.shooterPivotMap.get(distance),
-                                ShooterConstants.shooterRPMMap.get(distance));
+                                ShooterConstants.shootingRPM);
 
         }
 

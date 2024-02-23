@@ -21,12 +21,11 @@ public class VisionIntakeAlign extends Command {
   private AndromedaSwerve andromedaSwerve;
 
   /** Creates a new IntakeAlign. */
-  public VisionIntakeAlign(NeuralVisionSubsystem neuralVisionSubsystem, IntakePivotSubsystem intakePivotSubsystem,
-      IntakeSubsystem intakeSubsystem, AndromedaSwerve andromedaSwerve) {
+  public VisionIntakeAlign(NeuralVisionSubsystem neuralVisionSubsystem, AndromedaSwerve andromedaSwerve) {
     this.neuralVisionSubsystem = neuralVisionSubsystem;
     this.andromedaSwerve = andromedaSwerve;
 
-    addRequirements(intakePivotSubsystem, intakePivotSubsystem, neuralVisionSubsystem, andromedaSwerve);
+    addRequirements(neuralVisionSubsystem, andromedaSwerve);
   }
 
   @Override
@@ -51,7 +50,6 @@ public class VisionIntakeAlign extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    SuperStructure.update(SuperStructureState.INTAKING);
   }
 
   // Returns true when the command should end.

@@ -26,7 +26,7 @@ public class IntakePivotIOSim implements IntakePivotIO {
         inputs.intakePivotLeftMotorPosition = leftMotorSim.getAngularPositionRotations();
         inputs.intakePivotLeftMotorVelocity = leftMotorSim.getAngularVelocityRPM();
 
-        inputs.intakePivotAbsoluteEncoderPosition = leftMotorSim.getAngularPositionRotations() + IntakeConstants.intakeHomedPosition - 30;
+        inputs.intakePivotAbsoluteEncoderPosition = rightMotorSim.getAngularPositionRotations() + IntakeConstants.intakeHomedPosition - 30;
 
         inputs.intakePivotRightMotorAppliedVoltage = 0.0;
         inputs.intakePivotRightMotorPosition = rightMotorSim.getAngularPositionRotations();
@@ -34,8 +34,7 @@ public class IntakePivotIOSim implements IntakePivotIO {
     }
 
     @Override
-    public void setIntakeVoltage(double leftMotorVolts, double rightMotorVolts) {
-        leftMotorSim.setInputVoltage(leftMotorVolts);
+    public void setIntakeVoltage(double rightMotorVolts) {
         rightMotorSim.setInputVoltage(rightMotorVolts);
     }
 }

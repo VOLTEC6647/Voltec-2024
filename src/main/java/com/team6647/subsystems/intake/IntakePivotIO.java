@@ -26,12 +26,15 @@ public interface IntakePivotIO {
 
         public double intakePivotAbsoluteEncoderPosition = 0.0;
 
-        public boolean intakeBeamBrake = false;
+        public double intakeUltrasonicDistance = 0.0;
     }
 
     public default void updateInputs(IntakePivoIOInputs inputs) {
     }
 
-    public default void setIntakeVoltage(double leftMotorVolts, double rightMotorVolts) {
+    public default void setIntakeVoltage(double rightMotorVolts) {
+    }
+
+    public default void setPushingPercent(double newSetpoint) {
     }
 }

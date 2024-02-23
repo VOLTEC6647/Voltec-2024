@@ -13,6 +13,7 @@ import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.math.GeomUtil;
 import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.RobotContainer;
+import com.team6647.commands.ElevatorTarget;
 import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.IntakePivotTarget;
 import com.team6647.commands.IntakeRollerTarget;
@@ -20,6 +21,8 @@ import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.ShootingStationary;
 import com.team6647.commands.VisionIntakeAlign;
+import com.team6647.subsystems.elevator.ElevatorSubsystem;
+import com.team6647.subsystems.elevator.ElevatorSubsystem.ElevatorState;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.IntakeCommands;
@@ -53,6 +56,7 @@ public class SuperStructure {
     private static IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
     private static VisionSubsystem visionSubsystem = RobotContainer.visionSubsytem;
     private static NeuralVisionSubsystem neuralVisionSubsystem = RobotContainer.neuralVisionSubsystem;
+    private static ElevatorSubsystem elevatorSubsystem = RobotContainer.elevatorSubsystem;
 
     @AutoLogOutput(key = "SuperStructure/State")
     private static SuperStructureState mRobotState = SuperStructureState.IDLE;
@@ -71,21 +75,28 @@ public class SuperStructure {
     public static Command update(SuperStructureState newState) {
         switch (newState) {
             case IDLE:
+                mRobotState = SuperStructureState.IDLE;
                 return idleCommand();
             case INTAKING:
+                mRobotState = SuperStructureState.INTAKING;
                 return intakingCommand();
             case SHOOTING_SPEAKER:
+                mRobotState = SuperStructureState.SHOOTING_SPEAKER;
                 return shootingStationary();
             case SCORING_AMP:
+                mRobotState = SuperStructureState.SCORING_AMP;
                 return scoreAmp();
             case SHOOTING_TRAP:
-                break;
+                return Commands.waitSeconds(0);
             case SHOOTING_MOVING:
+                mRobotState = SuperStructureState.SHOOTING_MOVING;
                 return shootingWhileMoving();
             case CLIMBING:
-                break;
+                mRobotState = SuperStructureState.CLIMBING;
+                return elevatorClimb();
             case INTAKE_ALIGN:
-                return new VisionIntakeAlign(neuralVisionSubsystem, intakePivotSubsystem, intakeSubsystem,
+                mRobotState = SuperStructureState.INTAKE_ALIGN;
+                return new VisionIntakeAlign(neuralVisionSubsystem,
                         andromedaSwerve);
         }
 
@@ -93,7 +104,6 @@ public class SuperStructure {
     }
 
     private static Command intakingCommand() {
-        mRobotState = SuperStructureState.INTAKING;
 
         return Commands.deadline(
                 ShooterCommands.getShooterIntakingCommand(),
@@ -101,7 +111,6 @@ public class SuperStructure {
     }
 
     private static Command idleCommand() {
-        mRobotState = SuperStructureState.INTAKING;
 
         return Commands.parallel(
                 new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.HOMED),
@@ -112,22 +121,23 @@ public class SuperStructure {
     }
 
     private static Command shootingWhileMoving() {
+
         return Commands.waitSeconds(0);
     }
 
     private static Command shootingStationary() {
+
         return new ShootingStationary(andromedaSwerve, shooterSubsystem, shooterPivotSubsystem, rollerSubsystem,
                 visionSubsystem);
     }
 
     /* Pathfinding */
 
-    public Command goToAmp() {
+    public static Command goToAmp() {
         return andromedaSwerve.getPathFindPath(AllianceFlipUtil.apply(FieldConstants.amp));
     }
 
     private static Command scoreAmp() {
-
         ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), ShooterConstants.pivotAmpPosition,
                 ShooterConstants.flywheelAmpRPM);
 
@@ -137,6 +147,12 @@ public class SuperStructure {
                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP),
                 new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING));
+    }
+
+    private static Command elevatorClimb() {
+        return Commands.parallel(
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.CLIMBING),
+                new ElevatorTarget(elevatorSubsystem, ElevatorState.TOP));
     }
 
     /* Util */

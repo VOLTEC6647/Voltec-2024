@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * {@link DifferentialDrivePoseEstimator} class
  * 
  */
+
+@Deprecated
 public class DifferentialRobotPose extends SubsystemBase {
   static DifferentialDrivePoseEstimator poseEstimator;
 
@@ -40,7 +42,8 @@ public class DifferentialRobotPose extends SubsystemBase {
    * Publishes data and information to SmartDashboard. Override this method to
    * include custom information
    */
-  public void outputTelemetry() {}
+  public void outputTelemetry() {
+  }
 
   /**
    * Gets the estimated position of the robot

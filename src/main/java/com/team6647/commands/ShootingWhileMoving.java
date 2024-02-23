@@ -9,6 +9,8 @@ import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.util.Constants.FieldConstants.Speaker;
+import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
+import com.team6647.util.ShootingCalculatorUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,14 +40,24 @@ public class ShootingWhileMoving extends Command {
   @Override
   public void execute() {
     Pose2d robotPose = swerve.getPose();
+    /*
+     * Translation2d speakerLoc = Speaker.centerSpeakerOpening.toTranslation2d();
+     * Translation2d robotTranslation = robotPose.getTranslation();
+     * 
+     * Translation2d chassisToTarget = speakerLoc.minus(robotTranslation);
+     * Rotation2d angle =
+     * chassisToTarget.getAngle().rotateBy(Rotation2d.fromDegrees(180));
+     */
 
-    Translation2d speakerLoc = Speaker.centerSpeakerOpening.toTranslation2d();
-    Translation2d robotTranslation = robotPose.getTranslation();
+    Translation2d speakerLoc = ShootingCalculatorUtil.calculateShootingWhileDriving(robotPose,
+        swerve.getFieldRelativeChassisSpeeds());
 
-    Translation2d chassisToTarget = speakerLoc.minus(robotTranslation);
-    Rotation2d angle = chassisToTarget.getAngle().rotateBy(Rotation2d.fromDegrees(180));
+    ShootingParameters parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
+        speakerLoc);
 
-    swerve.driveSetpoint(angle);
+    SuperStructure.updateShootingParameters(parameters);
+
+    swerve.driveSetpoint(parameters.robotAngle(), false);
   }
 
   @Override

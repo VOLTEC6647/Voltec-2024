@@ -8,16 +8,16 @@ package com.team6647.subsystems.intake;
 
 import com.team6647.RobotContainer;
 import com.team6647.commands.IntakePivotTarget;
-import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.IntakeRollerTarget;
+import com.team6647.commands.IntakeTriggerCommand;
 import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class IntakeCommands {
 
@@ -25,28 +25,22 @@ public class IntakeCommands {
         private static IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
 
         public static final Command getIntakeCommand() {
-                Trigger beamBrakeTrigger = new Trigger(() -> intakeSubsystem.getAmps() > 20);
 
-                return Commands.sequence(
-                                Commands.deadline(
-                                                new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.EXTENDED),
-                                                new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING)),
+                return new SequentialCommandGroup(
+                                new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING),
+                                new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.EXTENDED),
+                                new IntakeTriggerCommand().withTimeout(3),
+                                new IntakePivotTarget(
+                                                intakePivotSubsystem,
+                                                IntakePivotState.HOMED),
+                                new IntakeRollerTarget(
+                                                intakeSubsystem,/*  */
+                                                RollerState.STOPPED),
                                 Commands.waitSeconds(0.5),
-                                new RunCommand(() -> {
-                                        beamBrakeTrigger
-                                                        .onTrue(
-                                                                        Commands.sequence(
-                                                                                        new IntakePivotTarget(
-                                                                                                        intakePivotSubsystem,
-                                                                                                        IntakePivotState.HOMED),
-                                                                                        new IntakeRollerTarget(
-                                                                                                        intakeSubsystem,
-                                                                                                        RollerState.IDLE),
-                                                                                        Commands.waitSeconds(0.5),
-                                                                                        new IntakeRollerTarget(
-                                                                                                        intakeSubsystem,
-                                                                                                        RollerState.INTAKING)));
-                                }, intakePivotSubsystem, intakeSubsystem));
+                                new IntakeRollerTarget(
+                                                intakeSubsystem,
+                                                RollerState.INTAKING));
+
         }
 
 }

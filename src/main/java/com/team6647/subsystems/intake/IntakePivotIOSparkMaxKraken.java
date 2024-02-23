@@ -13,6 +13,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.team6647.util.Constants.IntakeConstants;
 
+import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
@@ -32,10 +33,12 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
 
     private static AbsoluteEncoder pivotEncoder;
 
-    private static DigitalInput beamBrake = new DigitalInput(IntakeConstants.intakeBeamBrakeChannel);
+    private AnalogPotentiometer ultrasonicSensor = new AnalogPotentiometer(IntakeConstants.intakeUltrasonicChannel, 1024);
 
     public IntakePivotIOSparkMaxKraken() {
+        leftIntakePivotMotor.setSmartCurrentLimit(10);
         pivotEncoder = leftIntakePivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
+
     }
 
     @Override
@@ -52,12 +55,16 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
         inputs.intakePivotRightMotorPosition = rightIntakePivotMotor.getPosition().getValueAsDouble();
         inputs.intakePivtoRightMotorCurrent = rightIntakePivotMotor.getStatorCurrent().getValueAsDouble();
 
-        inputs.intakeBeamBrake = beamBrake.get();
+        inputs.intakeUltrasonicDistance = ultrasonicSensor.get();
     }
 
     @Override
-    public void setIntakeVoltage(double leftMotorVolts, double rightMotorVolts) {
-        leftIntakePivotMotor.setVoltage(leftMotorVolts);
+    public void setIntakeVoltage(double rightMotorVolts) {
         rightIntakePivotMotor.setVoltage(rightMotorVolts);
+    }
+
+    @Override
+    public void setPushingPercent(double percent) {
+        leftIntakePivotMotor.set(percent);
     }
 }

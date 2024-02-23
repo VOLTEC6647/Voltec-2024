@@ -10,8 +10,9 @@ import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
-public class IntakePivotTarget extends Command {
+public class IntakePivotTarget extends InstantCommand {
 
   private IntakePivotSubsystem intakePivotSubsystem;
   private IntakePivotState intakePivotState;
@@ -26,18 +27,5 @@ public class IntakePivotTarget extends Command {
   @Override
   public void initialize() {
     intakePivotSubsystem.changeIntakePivotState(intakePivotState);
-  }
-
-  @Override
-  public void execute() {
-  }
-
-  @Override
-  public void end(boolean interrupted) {
-  }
-
-  @Override
-  public boolean isFinished() {
-    return intakePivotSubsystem.inTolerance();
   }
 }

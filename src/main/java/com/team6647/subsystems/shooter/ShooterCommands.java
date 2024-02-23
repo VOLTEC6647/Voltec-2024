@@ -7,9 +7,11 @@
 package com.team6647.subsystems.shooter;
 
 import com.team6647.RobotContainer;
+import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
+import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
@@ -23,9 +25,10 @@ public class ShooterCommands {
 
     public static final Command getShooterIntakingCommand() {
         return Commands.deadline(
-                Commands.waitUntil(() -> !shooterSubsystem.getBeamBrake()),
+                Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
                 new ShooterPivotTarget(pivotSubsystem, ShooterPivotState.INDEXING),
-                new ShooterRollerTarget(rollerSubsystem, RollerState.IDLE));
+                new ShooterRollerTarget(rollerSubsystem, RollerState.IDLE),
+                new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED));
 
     }
 

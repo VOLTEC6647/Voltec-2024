@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.Logger;
 import com.andromedalib.math.Functions;
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.IntakeConstants;
+import com.team6647.util.Constants.ShooterConstants;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,18 +26,11 @@ public class IntakePivotSubsystem extends SubsystemBase {
   private IntakePivotIO io;
   private IntakePivoIOInputsAutoLogged inputs = new IntakePivoIOInputsAutoLogged();
 
-  private PIDController mExtendedPivotController = new PIDController(IntakeConstants.extendedKp,
-      IntakeConstants.extendedKi, IntakeConstants.extendedKd);
-
-  private PIDController mHomedPivotController = new PIDController(IntakeConstants.homedKp,
+  private PIDController mController = new PIDController(IntakeConstants.homedKp,
       IntakeConstants.homedKi, IntakeConstants.homedKd);
 
-  private LoggedTunableNumber mExtendedKp = new LoggedTunableNumber("Intake/Pivot/Extended/Kp",
-      IntakeConstants.extendedKp);
-  private LoggedTunableNumber mExtendedKi = new LoggedTunableNumber("Intake/Pivot/Extended/Ki",
-      IntakeConstants.extendedKi);
-  private LoggedTunableNumber mExtendedKd = new LoggedTunableNumber("Intake/Pivot/Extended/Kd",
-      IntakeConstants.extendedKd);
+  private PIDController mExtendedController = new PIDController(IntakeConstants.extendedKp,
+      IntakeConstants.extendedKi, IntakeConstants.extendedKd);
 
   private LoggedTunableNumber mHomedKp = new LoggedTunableNumber("Intake/Pivot/Homed/Kp", IntakeConstants.homedKp);
   private LoggedTunableNumber mHomedKi = new LoggedTunableNumber("Intake/Pivot/Homed/Ki", IntakeConstants.homedKi);
@@ -49,11 +43,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
   private IntakePivotSubsystem(IntakePivotIO io) {
     this.io = io;
 
-    mExtendedPivotController.setTolerance(IntakeConstants.intakePivotPositionTolerance);
-
-    mExtendedPivotController.setTolerance(IntakeConstants.extendedTolerance);
-    mHomedPivotController.setTolerance(IntakeConstants.homedTolerance);
-
+    mController.setTolerance(IntakeConstants.homedTolerance);
   }
 
   public static IntakePivotSubsystem getInstance(IntakePivotIO io) {
@@ -72,19 +62,21 @@ public class IntakePivotSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake/Pivot", inputs);
-    LoggedTunableNumber.ifChanged(hashCode(), pid -> setExtendedPID(pid[0], pid[1], pid[2]), mExtendedKp,
-        mExtendedKi, mExtendedKd);
     LoggedTunableNumber.ifChanged(hashCode(), pid -> setHomedPID(pid[0], pid[1], pid[2]), mHomedKp, mHomedKi, mHomedKd);
 
     computePID(mState == IntakePivotState.HOMED);
-  }
 
-  public void setExtendedPID(double kp, double ki, double kd) {
-    mExtendedPivotController.setPID(kp, ki, kd);
+    if (getCurrentCommand() != null) {
+      Logger.recordOutput("Intake/Pivot/CurrentCommand", getCurrentCommand().getName());
+    } else {
+      Logger.recordOutput("Intake/Pivot/CurrentCommand", "");
+
+    }
+
   }
 
   public void setHomedPID(double kp, double ki, double kd) {
-    mHomedPivotController.setPID(kp, ki, kd);
+    mController.setPID(kp, ki, kd);
   }
 
   public void changeIntakePivotState(IntakePivotState intakePivotState) {
@@ -103,7 +95,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   private void changeSetpoint(double newSetpoint) {
-    if (newSetpoint < IntakeConstants.maxIntakePivotPosition || newSetpoint > IntakeConstants.minIntakePivotPosition) {
+    if (newSetpoint > IntakeConstants.maxIntakePivotPosition || newSetpoint < IntakeConstants.minIntakePivotPosition) {
       newSetpoint = Functions.clamp(newSetpoint, IntakeConstants.minIntakePivotPosition,
           IntakeConstants.maxIntakePivotPosition);
     }
@@ -112,24 +104,29 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   private void computePID(boolean equalOutput) {
-    double output = equalOutput
-        ? mHomedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint)
-        : mExtendedPivotController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
+    double output = equalOutput ? mController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint)
+        : mExtendedController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
 
-    double feedforwardValue = equalOutput ? output : -output * 0.004;
+    double feedforwardValue = equalOutput ? output : -output * 2.1;
 
     Logger.recordOutput("Intake/Pivot/output", output);
     Logger.recordOutput("Intake/Pivot/feedforward", feedforwardValue);
 
-    io.setIntakeVoltage(feedforwardValue, output);
+    if (!equalOutput && inputs.intakePivotAbsoluteEncoderPosition < 160) {
+      io.setPushingPercent(0.2);
+    } else {
+      io.setPushingPercent(0);
+    }
+
+    io.setIntakeVoltage(output);
   }
 
   @AutoLogOutput(key = "Intake/Pivot/InTolerance")
   public boolean inTolerance() {
-    return mExtendedPivotController.atSetpoint() || mHomedPivotController.atSetpoint();
+    return Math.abs(inputs.intakePivotAbsoluteEncoderPosition - setpoint) < IntakeConstants.homedTolerance;
   }
 
-  public boolean getBeamBrake() {
-    return inputs.intakeBeamBrake;
+  public double getUltrasonicSensorReading() {
+    return inputs.intakeUltrasonicDistance;
   }
 }

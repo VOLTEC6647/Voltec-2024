@@ -18,6 +18,7 @@ public class ElevatorTarget extends Command {
 
   public ElevatorTarget(ElevatorSubsystem elevatorSubsystem, ElevatorState elevatorState) {
     this.elevatorSubsystem = elevatorSubsystem;
+    this.elevatorState = elevatorState;
 
     addRequirements(elevatorSubsystem);
   }

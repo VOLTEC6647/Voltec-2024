@@ -10,12 +10,15 @@ import com.andromedalib.motorControllers.SuperSparkMax;
 import com.team6647.util.Constants.IntakeConstants;
 
 public class IntakeIOSparkMax implements IntakeIO {
-
     private SuperSparkMax intakeMotor = new SuperSparkMax(IntakeConstants.intakeMotorID, false);
+
+    public IntakeIOSparkMax() {
+        intakeMotor.setSmartCurrentLimit(5);
+    }
 
     @Override
     public void updateInputs(IntakeIOInputs inputs) {
-        inputs.intakeMotorAppliedVoltage  = intakeMotor.getBusVoltage();
+        inputs.intakeMotorAppliedVoltage = intakeMotor.getBusVoltage();
         inputs.intakeMotorVelocity = intakeMotor.getVelocity();
         inputs.intakeMotorCurrent = intakeMotor.getOutputCurrent();
     }

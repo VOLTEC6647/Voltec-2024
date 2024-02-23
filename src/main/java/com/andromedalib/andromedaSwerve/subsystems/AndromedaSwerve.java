@@ -20,7 +20,7 @@ import com.team6647.util.Constants.FieldConstants;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -31,6 +31,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
@@ -93,7 +94,8 @@ public class AndromedaSwerve extends SubsystemBase {
           },
           this));
 
-  private PIDController angleController = new PIDController(3, 0.0, 0.00001);
+  private ProfiledPIDController angleController = new ProfiledPIDController(3, 0.0, 0.00001,
+      new TrapezoidProfile.Constraints(10, 10));
   private SwerveModulePosition[] lastPositions = new SwerveModulePosition[4];
   private Rotation2d rawGyroRotation;
 
@@ -111,7 +113,8 @@ public class AndromedaSwerve extends SubsystemBase {
     this.rawGyroRotation = new Rotation2d();
 
     poseEstimator = new SwerveDrivePoseEstimator(profileConfig.swerveKinematics, new Rotation2d(),
-        new SwerveModulePosition[] { new SwerveModulePosition(),
+        new SwerveModulePosition[] {
+            new SwerveModulePosition(),
             new SwerveModulePosition(),
             new SwerveModulePosition(),
             new SwerveModulePosition() },

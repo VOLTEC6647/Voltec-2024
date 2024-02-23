@@ -50,7 +50,7 @@ public class ShootingStationary extends Command {
     stageID = AllianceFlipUtil.shouldFlip() ? VisionConstants.speakerRedCentgerTagID
         : VisionConstants.speakerBlueCenterTagID;
 
-    //visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
+    visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
   }
 
   // Called when the command is initially scheduled.
@@ -86,7 +86,7 @@ public class ShootingStationary extends Command {
 
       swerve.drive(new Translation2d(), targetingAngularVelocity, true);
     } else {
-      swerve.driveSetpoint(parameters.robotAngle(), false);
+      swerve.driveSetpoint(parameters.robotAngle(), true);
     }
 
     flywheelSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
