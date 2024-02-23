@@ -41,6 +41,6 @@ public class IntakeTriggerCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (RobotContainer.intakeSubsystem.getAmps() > 5) && (durationTimer.get() > 0.1);
+    return (RobotContainer.intakeSubsystem.getAmps() > 5) && (durationTimer.get() > 0.2);
   }
 }

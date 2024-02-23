@@ -26,7 +26,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private ElevatorState mState = ElevatorState.HOMED;
 
   private ProfiledPIDController elevatorPIDController = new ProfiledPIDController(ElevatorConstants.elevatorKp,
-      ElevatorConstants.elevatorKi, ElevatorConstants.elevatorKd, new TrapezoidProfile.Constraints(1, 1));
+      ElevatorConstants.elevatorKi, ElevatorConstants.elevatorKd, new TrapezoidProfile.Constraints(10, 10));
 
   @AutoLogOutput(key = "Elevator/Setpoint")
   private double setpoint = ElevatorConstants.elevatorHomedPosition;

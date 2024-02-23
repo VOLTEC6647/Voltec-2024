@@ -16,7 +16,7 @@ import com.team6647.util.Constants.RobotConstants.RollerState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class IntakeCommands {
@@ -26,15 +26,36 @@ public class IntakeCommands {
 
         public static final Command getIntakeCommand() {
 
-                return new SequentialCommandGroup(
+                return Commands.sequence(
                                 new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING),
                                 new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.EXTENDED),
-                                new IntakeTriggerCommand().withTimeout(3),
-                                new IntakePivotTarget(
-                                                intakePivotSubsystem,
-                                                IntakePivotState.HOMED),
+                                new IntakeTriggerCommand(),
+                                new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.HOMED),
                                 new IntakeRollerTarget(
-                                                intakeSubsystem,/*  */
+                                                intakeSubsystem,
+                                                RollerState.STOPPED),
+                                Commands.waitSeconds(0.5),
+                                new IntakeRollerTarget(
+                                                intakeSubsystem,
+                                                RollerState.INTAKING));
+                /*
+                 * new IntakeRollerTarget(
+                 * intakeSubsystem,
+                 * RollerState.INTAKING)
+                 */
+
+        }
+
+        public static Command getIntakingCommandPart1() {
+                return Commands.sequence(
+                                new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING),
+                                new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.EXTENDED));
+        }
+
+        public static final Command getIntakingCommandPart2() {
+                return Commands.sequence(new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.HOMED),
+                                new IntakeRollerTarget(
+                                                intakeSubsystem,
                                                 RollerState.STOPPED),
                                 Commands.waitSeconds(0.5),
                                 new IntakeRollerTarget(

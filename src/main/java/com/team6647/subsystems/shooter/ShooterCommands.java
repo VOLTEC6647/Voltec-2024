@@ -25,7 +25,7 @@ public class ShooterCommands {
 
     public static final Command getShooterIntakingCommand() {
         return Commands.deadline(
-                Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
+                Commands.waitUntil(() -> !shooterSubsystem.getBeamBrake()),
                 new ShooterPivotTarget(pivotSubsystem, ShooterPivotState.INDEXING),
                 new ShooterRollerTarget(rollerSubsystem, RollerState.IDLE),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED));

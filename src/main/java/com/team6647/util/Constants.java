@@ -199,7 +199,7 @@ public class Constants {
 
                 public static final double pivotMinPosition = 52;
                 public static final double pivotMaxPosition = 201;
-                public static final double pivotHomedPosition = 53;
+                public static final double pivotHomedPosition = 54;
                 public static final double pivotIndexingPosition = 95;
                 public static final double pivotAmpPosition = 170;
                 public static final double pivotClimbPosition = 200;
@@ -207,7 +207,7 @@ public class Constants {
                 public static final double flywheelAmpRPM = 1000;
 
                 public static final double rollerIntakingVelocity = 0.3;
-                public static final double rollerExhaustingVelocity = -0.25;
+                public static final double rollerExhaustingVelocity = -0.1;
                 public static final double rollerIdleVelocity = 0.1;
 
                 public static final double shooterExhaustSpeed = 1000;
@@ -334,7 +334,7 @@ public class Constants {
                 public static final int intakeMotorsCurrentLimit = 30;
 
                 public static final double intakeStoppedVelocity = 0.0;
-                public static final double intakeIntakingVelocity = -0.3;
+                public static final double intakeIntakingVelocity = -0.7;
                 public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = -0.1;
 

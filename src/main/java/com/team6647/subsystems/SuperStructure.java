@@ -10,7 +10,6 @@ package com.team6647.subsystems;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
-import com.andromedalib.math.GeomUtil;
 import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.RobotContainer;
 import com.team6647.commands.ElevatorTarget;

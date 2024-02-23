@@ -21,6 +21,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.ElevatorTarget;
 import com.team6647.commands.IntakePivotTarget;
 import com.team6647.commands.IntakeTriggerCommand;
+import com.team6647.commands.ShootingStationary;
 import com.team6647.commands.VisionIntakeAlign;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
@@ -33,6 +34,7 @@ import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterIOSparkMax;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
+import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
 import com.team6647.subsystems.intake.IntakeIOTalonFX;
@@ -45,6 +47,7 @@ import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.subsystems.neural.NeuralVisionIO;
 import com.team6647.subsystems.neural.NeuralVisionIOLimelight;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
+import com.team6647.subsystems.shooter.ShooterCommands;
 import com.team6647.subsystems.shooter.ShooterIORollerSim;
 import com.team6647.subsystems.shooter.ShooterIORollerSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotIO;
@@ -223,6 +226,13 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
+                OperatorConstants.driverController2.povLeft()
+                                .whileTrue(ShooterCommands.getShooterIntakingCommand()
+                                                .alongWith(IntakeCommands.getIntakingCommandPart1()))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE))
+                                .and(OperatorConstants.driverController2.a())
+                                .whileTrue(IntakeCommands.getIntakingCommandPart2());
+
                 OperatorConstants.SHOOT_SPEAKER
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
@@ -231,7 +241,8 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
-                OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(SuperStructureState.CLIMBING)).onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
+                OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(SuperStructureState.CLIMBING))
+                                .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
 
                 /*
                  * OperatorConstants.driverController2.povLeft()
@@ -277,6 +288,6 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return AutoBuilder.buildAuto("Bottom");
+                return Commands.waitSeconds(0);
         }
 }

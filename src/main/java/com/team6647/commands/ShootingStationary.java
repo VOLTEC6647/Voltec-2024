@@ -56,8 +56,12 @@ public class ShootingStationary extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+
+    
     this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
-        Speaker.centerSpeakerOpening.toTranslation2d());
+    Speaker.centerSpeakerOpening.toTranslation2d());
+    
+    this.parameters = new ShootingParameters(parameters.robotAngle(), 90.0, 5000);
 
     SuperStructure.updateShootingParameters(parameters);
   }
