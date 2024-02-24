@@ -165,22 +165,27 @@ public class Constants {
                 public static final int flywheelTopMotorID = 22;
                 public static final int shooterRollerMotorID = 23;
 
-                public static final double shooterKp = 0.0000092;
-                public static final double shooterKi = 0.00000000;
-                public static final double shooterKd = 0.01;
-                public static final double shooterKf = 0.000195;
+                public static final double bottomShooterKp = 10;
+                public static final double bottomShooterKi = 0.00000000;
+                public static final double bottomShooterKd = 0.01;
+                public static final double bottomShooterKs = 0.0;
+                public static final double bottomShooterKv = 0.0;
+                public static final double bottomShooterKa = 0.0;
+                public static final double bottomShooterKf = 0.000195;
 
-                public static final double topShooterKp = 0.0000092;
+                public static final double topShooterKp = 1;
                 public static final double topShooterKi = 0.00000000;
                 public static final double topShooterKd = 0.01;
+                public static final double topShooterKs = 0.0;
+                public static final double topShooterKv = 0.0;
+                public static final double topShooterKa = 0.0;
                 public static final double topShooterKf = 0.000198;
-
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 0.02;
+                public static final double pivotKp = 0.0019;
                 public static final double pivotKi = 0.0;
                 public static final double pivotKd = 0.0;
-                public static final double pivotKf = 0.0003;
+                public static final double pivotKf = 0.000235;
                 public static final double positionTolerance = 0.5;
 
                 public static final double pivotParallelFloorOffset = 203.0478515625;
@@ -197,12 +202,12 @@ public class Constants {
                 public static final boolean armEncoderInverted = true;
                 public static final boolean shooterPivotMotorInverted = true;
 
-                public static final double pivotMinPosition = 52;
-                public static final double pivotMaxPosition = 201;
-                public static final double pivotHomedPosition = 54;
-                public static final double pivotIndexingPosition = 95;
-                public static final double pivotAmpPosition = 170;
-                public static final double pivotClimbPosition = 200;
+                public static final double pivotMinPosition = 113;
+                public static final double pivotMaxPosition = 264;
+                public static final double pivotHomedPosition = 115;
+                public static final double pivotIndexingPosition = 154;
+                public static final double pivotAmpPosition = 229;
+                public static final double pivotClimbPosition = 235;
 
                 public static final double flywheelAmpRPM = 1000;
 
