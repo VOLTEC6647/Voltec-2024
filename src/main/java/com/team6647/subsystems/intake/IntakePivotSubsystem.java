@@ -14,6 +14,7 @@ import com.team6647.util.Constants.IntakeConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivotSubsystem extends SubsystemBase {
@@ -55,7 +56,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   public enum IntakePivotState {
     HOMED,
-    EXTENDED
+    EXTENDED,
+    EMERGENCY_DISABLED
   }
 
   @Override
@@ -64,13 +66,18 @@ public class IntakePivotSubsystem extends SubsystemBase {
     Logger.processInputs("Intake/Pivot", inputs);
     LoggedTunableNumber.ifChanged(hashCode(), pid -> setHomedPID(pid[0], pid[1], pid[2]), mHomedKp, mHomedKi, mHomedKd);
 
-    computePID(mState == IntakePivotState.HOMED);
+    if (inputs.intakePivotAbsoluteEncoderPosition == 0 || mState == IntakePivotState.EMERGENCY_DISABLED) {
+      mState = IntakePivotState.EMERGENCY_DISABLED;
+      DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
+          true);
+    } else {
+      computePID(mState == IntakePivotState.HOMED);
+    }
 
     if (getCurrentCommand() != null) {
       Logger.recordOutput("Intake/Pivot/CurrentCommand", getCurrentCommand().getName());
     } else {
       Logger.recordOutput("Intake/Pivot/CurrentCommand", "");
-
     }
 
   }
@@ -89,7 +96,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
         mState = IntakePivotState.EXTENDED;
         changeSetpoint(IntakeConstants.intakeExtendedPosition);
         break;
-      default:
+      case EMERGENCY_DISABLED:
+        mState = IntakePivotState.EMERGENCY_DISABLED;
         break;
     }
   }
@@ -112,13 +120,13 @@ public class IntakePivotSubsystem extends SubsystemBase {
     Logger.recordOutput("Intake/Pivot/output", output);
     Logger.recordOutput("Intake/Pivot/feedforward", feedforwardValue);
 
-    if (!equalOutput && inputs.intakePivotAbsoluteEncoderPosition < 160) {
+/*     if (!equalOutput && inputs.intakePivotAbsoluteEncoderPosition < 160) {
       io.setPushingPercent(0.2);
     } else {
       io.setPushingPercent(0);
     }
 
-    io.setIntakeVoltage(output);
+    io.setIntakeVoltage(output); */
   }
 
   @AutoLogOutput(key = "Intake/Pivot/InTolerance")

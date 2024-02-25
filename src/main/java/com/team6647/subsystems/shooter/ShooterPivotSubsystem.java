@@ -69,7 +69,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
       changeSetpoint(pid[4]);
 
     }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
-
   }
 
   public enum ShooterPivotState {
@@ -78,6 +77,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     AMP,
     INDEXING,
     CLIMBING,
+    EMERGENCY_DISABLED
   }
 
   public void setShooterPivotState(ShooterPivotState state) {
@@ -102,6 +102,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         mState = ShooterPivotState.CLIMBING;
         changeSetpoint(ShooterConstants.pivotClimbPosition);
         break;
+      case EMERGENCY_DISABLED:
+        mState = ShooterPivotState.EMERGENCY_DISABLED;
+        io.disablePivot();
+        break;
     }
   }
 
@@ -125,6 +129,13 @@ public class ShooterPivotSubsystem extends SubsystemBase {
       emergencyDisable = true;
       DriverStation.reportError("Shooter Pivot Emergency Disabled", false);
       io.setShooterReference(inputs.shooterAbsoluteEncoderPosition);
+      mState = ShooterPivotState.EMERGENCY_DISABLED;
+    }
+
+    if (inputs.shooterAbsoluteEncoderPosition == 0) {
+      DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
+          true);
+      io.disablePivot();
     }
   }
 
