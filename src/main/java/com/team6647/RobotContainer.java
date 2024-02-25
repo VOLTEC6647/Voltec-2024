@@ -31,6 +31,7 @@ import com.team6647.subsystems.elevator.ElevatorIOSparkMax;
 import com.team6647.subsystems.elevator.ElevatorSubsystem;
 import com.team6647.subsystems.elevator.ElevatorSubsystem.ElevatorState;
 import com.team6647.subsystems.flywheel.ShooterIO;
+import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterIOSparkMax;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
@@ -125,7 +126,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 intakePivotSubsystem = IntakePivotSubsystem
                                                 .getInstance(new IntakePivotIOSparkMaxKraken());
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSparkMax());
-                                shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSparkMax());
+                                shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOKraken());
                                 shooterRollerSubsystem = ShooterRollerSubsystem
                                                 .getInstance(new ShooterIORollerSparkMax());
                                 elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSparkMax());
