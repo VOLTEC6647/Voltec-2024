@@ -83,4 +83,10 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
         pivotController.setFF(f);
     }
 
+    @Override
+    public void disablePivot() {
+        shooterPivotMotor.disable();
+        shooterPivotMotor.stopMotor();
+    }
+
 }

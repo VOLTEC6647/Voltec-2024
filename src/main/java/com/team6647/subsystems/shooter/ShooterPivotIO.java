@@ -32,4 +32,8 @@ public interface ShooterPivotIO {
 
     public default void setPIDF(double p, double i, double d, double f) {
     }
+
+    public default void disablePivot() {
+
+    }
 }
