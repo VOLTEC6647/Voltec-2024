@@ -10,7 +10,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
  * A class that represents revs through bore encoder in the form of an absolute
  * encoder. Connect the PWM cable to the Rio's DIO port 
  */
-public class RevAbsoluteEncoder {
+public class RevAbsoluteEncoderRIO {
     private DutyCycleEncoder encoder;
 
     /**
@@ -18,7 +18,7 @@ public class RevAbsoluteEncoder {
      * 
      * @param dioChannel Connected DIO Channel
      */
-    public RevAbsoluteEncoder(int dioChannel) {
+    public RevAbsoluteEncoderRIO(int dioChannel) {
         encoder = new DutyCycleEncoder(dioChannel);
         encoder.setDutyCycleRange(1.0 / 1024.0, 1023.0 / 1024.0);
         encoder.setDistancePerRotation(360);
