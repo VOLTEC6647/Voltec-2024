@@ -24,6 +24,9 @@ public interface ShooterIO {
     public default void setShooterVelocity(double velocity) {
     }
 
-    public default void setPIDF(double p, double i, double d, double f) {
+    public default void setTopPIDF(double p, double i, double d, double s, double v, double a) {
+    }
+
+    public default void setBottomPIDF(double p, double i, double d, double s, double v, double a) {
     }
 }

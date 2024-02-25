@@ -28,10 +28,32 @@ public class ShooterSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Flywheel/Setpoint")
   private double mVelocitySetpoint = 0.0;
 
-  private LoggedTunableNumber shooterKp = new LoggedTunableNumber("Shooter/Flywheel/kp", ShooterConstants.shooterKp);
-  private LoggedTunableNumber shooterKi = new LoggedTunableNumber("Shooter/Flywheel/ki", ShooterConstants.shooterKi);
-  private LoggedTunableNumber shooterKd = new LoggedTunableNumber("Shooter/Flywheel/kd", ShooterConstants.shooterKd);
-  private LoggedTunableNumber shooterKf = new LoggedTunableNumber("Shooter/Flywheel/kf", ShooterConstants.shooterKf);
+  private LoggedTunableNumber bottomShooterKp = new LoggedTunableNumber("Shooter/Flywheel/bottomKp",
+      ShooterConstants.bottomShooterKp);
+  private LoggedTunableNumber bottomShooterKi = new LoggedTunableNumber("Shooter/Flywheel/bottomKi",
+      ShooterConstants.bottomShooterKi);
+  private LoggedTunableNumber bottomShooterKd = new LoggedTunableNumber("Shooter/Flywheel/bottomKd",
+      ShooterConstants.bottomShooterKd);
+  private LoggedTunableNumber bottomShooterKs = new LoggedTunableNumber("Shooter/Flywheel/bottomKs",
+      ShooterConstants.bottomShooterKs);
+  private LoggedTunableNumber bottomShooterKv = new LoggedTunableNumber("Shooter/Flywheel/bottomKv",
+      ShooterConstants.bottomShooterKv);
+  private LoggedTunableNumber bottomShooterKa = new LoggedTunableNumber("Shooter/Flywheel/bottomKd",
+      ShooterConstants.bottomShooterKa);
+
+  private LoggedTunableNumber topShooterKp = new LoggedTunableNumber("Shooter/Flywheel/topKp",
+      ShooterConstants.topShooterKp);
+  private LoggedTunableNumber topShooterKi = new LoggedTunableNumber("Shooter/Flywheel/topKi",
+      ShooterConstants.topShooterKi);
+  private LoggedTunableNumber topShooterKd = new LoggedTunableNumber("Shooter/Flywheel/topKd",
+      ShooterConstants.topShooterKd);
+  private LoggedTunableNumber topShooterKs = new LoggedTunableNumber("Shooter/Flywheel/topKs",
+      ShooterConstants.topShooterKs);
+  private LoggedTunableNumber topShooterKv = new LoggedTunableNumber("Shooter/Flywheel/topKv",
+      ShooterConstants.topShooterKv);
+  private LoggedTunableNumber topShooterKa = new LoggedTunableNumber("Shooter/Flywheel/topKd",
+      ShooterConstants.topShooterKa);
+
   private LoggedTunableNumber shooterVelocity = new LoggedTunableNumber("Shooter/Flywheel/velocity", 0.0);
 
   private static ShootingParameters currentParameters = new ShootingParameters(new Rotation2d(), 0, 0);
@@ -60,10 +82,14 @@ public class ShooterSubsystem extends SubsystemBase {
     Logger.processInputs("Shooter/Flywheel", inputs);
 
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
-      io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
+      io.setBottomPIDF(pid[0], pid[1], pid[2], pid[3], pid[4], pid[5]);
 
-      setShooterSpeed(pid[4]);
-    }, shooterKp, shooterKi, shooterKd, shooterKf, shooterVelocity);
+      io.setTopPIDF(pid[6], pid[7], pid[8], pid[9], pid[10], pid[11]);
+
+      setShooterSpeed(pid[12]);
+    }, bottomShooterKp, bottomShooterKi, bottomShooterKd, bottomShooterKs, bottomShooterKv, bottomShooterKa,
+        topShooterKp, topShooterKi, topShooterKd, topShooterKs, topShooterKv, topShooterKa,
+        shooterVelocity);
   }
 
   /**
@@ -83,7 +109,7 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case SHOOTING:
         mFlywheelState = FlywheelState.SHOOTING;
-        setShooterSpeed(currentParameters.flywheelRPM());
+        setShooterSpeed(1000);
         break;
       case IDLE:
         mFlywheelState = FlywheelState.IDLE;
