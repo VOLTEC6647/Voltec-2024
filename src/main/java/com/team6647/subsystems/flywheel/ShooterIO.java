@@ -14,6 +14,13 @@ public interface ShooterIO {
         public double topMotorVelocity = 0.0;
         public double bottomMotorVelocity = 0.0;
 
+        public double topMotorCurrent = 0.0;
+        public double bottomMotorCurrent = 0.0;
+        public double topMotorVoltage = 0.0;
+        public double bottomMotorVoltage = 0.0;
+        public double topMotorTemperature = 0.0;
+        public double bottomMotorTemperature = 0.0;
+
         public boolean beamBrake = false;
     }
 
