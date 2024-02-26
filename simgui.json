@@ -2,7 +2,8 @@
   "NTProvider": {
     "types": {
       "/AdvantageKit/RealOutputs/Elevator/Mechanism2D": "Mechanism2d",
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     }
   },
   "NetworkTables": {
