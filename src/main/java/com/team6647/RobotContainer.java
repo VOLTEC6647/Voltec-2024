@@ -17,6 +17,7 @@ import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
 import com.team6647.commands.ElevatorTarget;
+import com.team6647.commands.ShootingWhileMoving;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
@@ -240,20 +241,11 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
                                 SuperStructureState.CLIMBING))
                                 .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
-                /*
-                 * OperatorConstants.driverController2.y().whileTrue(new
-                 * VisionIntakeAlign(neuralVisionSubsystem,
-                 * andromedaSwerve))
-                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-                 * 
-                 * OperatorConstants.driverController1.a()
-                 * .whileTrue(new ShootingWhileMoving(andromedaSwerve, superStructure));
-                 * 
-                 * OperatorConstants.driverController2.y().whileTrue(new
-                 * VisionIntakeAlign(neuralVisionSubsystem,
-                 * andromedaSwerve));
-                 */
 
+                OperatorConstants.driverController1.a()
+                                .whileTrue(new ShootingWhileMoving(
+                                                andromedaSwerve,
+                                                superStructure));
         }
 
         public void configSysIdBindings() {
