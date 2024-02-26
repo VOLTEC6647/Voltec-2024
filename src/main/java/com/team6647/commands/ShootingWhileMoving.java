@@ -8,12 +8,10 @@ import static edu.wpi.first.units.Units.Meters;
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.subsystems.SuperStructure;
-import com.team6647.util.Constants.FieldConstants.Speaker;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 import com.team6647.util.ShootingCalculatorUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 

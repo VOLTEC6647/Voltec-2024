@@ -5,7 +5,6 @@ package com.team6647.commands;
 
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.util.AllianceFlipUtil;
-import com.andromedalib.vision.LimelightHelpers;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
@@ -20,7 +19,6 @@ import com.team6647.util.Constants.RobotConstants.RollerState;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -57,10 +55,9 @@ public class ShootingStationary extends Command {
   @Override
   public void initialize() {
 
-    
     this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
-    Speaker.centerSpeakerOpening.toTranslation2d());
-    
+        Speaker.centerSpeakerOpening.toTranslation2d());
+
     this.parameters = new ShootingParameters(parameters.robotAngle(), 90.0, 5000);
 
     SuperStructure.updateShootingParameters(parameters);

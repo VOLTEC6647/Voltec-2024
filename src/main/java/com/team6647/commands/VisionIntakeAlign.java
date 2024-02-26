@@ -6,10 +6,6 @@
 package com.team6647.commands;
 
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
-import com.team6647.subsystems.SuperStructure;
-import com.team6647.subsystems.SuperStructure.SuperStructureState;
-import com.team6647.subsystems.intake.IntakePivotSubsystem;
-import com.team6647.subsystems.intake.IntakeSubsystem;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
 import com.team6647.util.Constants.DriveConstants;
 

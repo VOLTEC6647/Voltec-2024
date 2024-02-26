@@ -13,11 +13,8 @@ import com.team6647.commands.IntakeTriggerCommand;
 import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class IntakeCommands {
 
@@ -38,12 +35,6 @@ public class IntakeCommands {
                                 new IntakeRollerTarget(
                                                 intakeSubsystem,
                                                 RollerState.INTAKING));
-                /*
-                 * new IntakeRollerTarget(
-                 * intakeSubsystem,
-                 * RollerState.INTAKING)
-                 */
-
         }
 
         public static Command getIntakingCommandPart1() {

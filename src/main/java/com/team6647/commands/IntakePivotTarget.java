@@ -8,7 +8,6 @@ package com.team6647.commands;
 
 import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
-import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj2.command.Command;
 

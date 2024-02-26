@@ -6,7 +6,6 @@
 package com.team6647.commands;
 
 import com.team6647.RobotContainer;
-import com.team6647.subsystems.intake.IntakeSubsystem;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;

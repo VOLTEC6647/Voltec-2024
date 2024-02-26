@@ -15,9 +15,6 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.team6647.util.Constants.IntakeConstants;
 
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.DigitalInput;
-
 public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
 
     private static SuperSparkMax leftIntakePivotMotor = new SuperSparkMax(

@@ -16,16 +16,9 @@ import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.AndromedaPr
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.ElevatorTarget;
-import com.team6647.commands.IntakeExtend;
 import com.team6647.commands.IntakeHome;
-import com.team6647.commands.IntakePivotTarget;
-import com.team6647.commands.IntakeTriggerCommand;
 import com.team6647.commands.ShooterPivotTarget;
-import com.team6647.commands.ShootingStationary;
-import com.team6647.commands.VisionIntakeAlign;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
@@ -36,7 +29,6 @@ import com.team6647.subsystems.elevator.ElevatorSubsystem.ElevatorState;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
-import com.team6647.subsystems.flywheel.ShooterIOSparkMax;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakeIO;
@@ -47,7 +39,6 @@ import com.team6647.subsystems.intake.IntakePivotIOSim;
 import com.team6647.subsystems.intake.IntakePivotIOSparkMaxKraken;
 import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakeSubsystem;
-import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.subsystems.neural.NeuralVisionIO;
 import com.team6647.subsystems.neural.NeuralVisionIOLimelight;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
@@ -210,6 +201,7 @@ public class RobotContainer extends SuperRobotContainer {
                  */
 
                 configSysIdBindings();
+                configTuningBindings();
         }
 
         @Override
@@ -232,50 +224,34 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.INDEXING))
                                 .onFalse(new IntakeHome(intakePivotSubsystem));
 
-                /*
-                 * OperatorConstants.driverController2.povLeft()
-                 * .whileTrue(ShooterCommands.getShooterIntakingCommand()
-                 * .alongWith(IntakeCommands.getIntakingCommandPart1()))
-                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE))
-                 * .and(OperatorConstants.driverController2.a())
-                 * .whileTrue(IntakeCommands.getIntakingCommandPart2());
-                 * 
-                 * OperatorConstants.SHOOT_SPEAKER
-                 * .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
-                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-                 * 
-                 * OperatorConstants.TOGGLE_AMP
-                 * .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
-                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-                 * 
-                 * OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
-                 * SuperStructureState.CLIMBING))
-                 * .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
-                 */
-
                 OperatorConstants.driverController2.povLeft()
-                                .whileTrue(new InstantCommand(
-                                                () -> shooterRollerSubsystem.changeRollerState(RollerState.INTAKING)))
-                                .onFalse(new InstantCommand(
-                                                () -> shooterRollerSubsystem.changeRollerState(RollerState.STOPPED)));
+                                .whileTrue(ShooterCommands.getShooterIntakingCommand()
+                                                .alongWith(IntakeCommands.getIntakingCommandPart1()))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE))
+                                .and(OperatorConstants.driverController2.a())
+                                .whileTrue(IntakeCommands.getIntakingCommandPart2());
 
-                /*
-                 * OperatorConstants.driverController2.y().whileTrue(new
-                 * VisionIntakeAlign(neuralVisionSubsystem,
-                 * andromedaSwerve))
-                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-                 */
+                OperatorConstants.SHOOT_SPEAKER
+                                .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
-                /*
-                 * OperatorConstants.driverController1.a()
-                 * .whileTrue(new ShootingWhileMoving(andromedaSwerve, superStructure));
-                 */
+                OperatorConstants.TOGGLE_AMP
+                                .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
-                /*
-                 * OperatorConstants.driverController2.y().whileTrue(new
-                 * VisionIntakeAlign(neuralVisionSubsystem,
-                 * andromedaSwerve));
-                 */
+                OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
+                                SuperStructureState.CLIMBING))
+                                .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
+/* 
+                OperatorConstants.driverController2.y().whileTrue(new VisionIntakeAlign(neuralVisionSubsystem,
+                                andromedaSwerve))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                OperatorConstants.driverController1.a()
+                                .whileTrue(new ShootingWhileMoving(andromedaSwerve, superStructure));
+
+                OperatorConstants.driverController2.y().whileTrue(new VisionIntakeAlign(neuralVisionSubsystem,
+                                andromedaSwerve)); */
 
         }
 
@@ -290,6 +266,14 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(shooterSubsystem.sysIdDynamic(Direction.kForward));
                 OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
                                 .whileTrue(shooterSubsystem.sysIdDynamic(Direction.kReverse));
+        }
+
+        public void configTuningBindings() {
+                OperatorConstants.driverController2.povLeft()
+                                .whileTrue(new InstantCommand(
+                                                () -> shooterRollerSubsystem.changeRollerState(RollerState.INTAKING)))
+                                .onFalse(new InstantCommand(
+                                                () -> shooterRollerSubsystem.changeRollerState(RollerState.STOPPED)));
 
         }
 
