@@ -25,6 +25,7 @@ public class ShootingWhileMoving extends Command {
   public ShootingWhileMoving(AndromedaSwerve swerve, SuperStructure superStructure) {
     this.swerve = swerve;
     this.superStructure = superStructure;
+
     targetLocation = new Translation2d(Meters.of(0.06), Meters.of(5.54));
 
     targetLocation = AllianceFlipUtil.apply(targetLocation);
@@ -32,20 +33,12 @@ public class ShootingWhileMoving extends Command {
 
   @Override
   public void initialize() {
-
+    swerve.setHeadingOverride(true);
   }
 
   @Override
   public void execute() {
     Pose2d robotPose = swerve.getPose();
-    /*
-     * Translation2d speakerLoc = Speaker.centerSpeakerOpening.toTranslation2d();
-     * Translation2d robotTranslation = robotPose.getTranslation();
-     * 
-     * Translation2d chassisToTarget = speakerLoc.minus(robotTranslation);
-     * Rotation2d angle =
-     * chassisToTarget.getAngle().rotateBy(Rotation2d.fromDegrees(180));
-     */
 
     Translation2d speakerLoc = ShootingCalculatorUtil.calculateShootingWhileDriving(robotPose,
         swerve.getFieldRelativeChassisSpeeds());
@@ -55,11 +48,12 @@ public class ShootingWhileMoving extends Command {
 
     SuperStructure.updateShootingParameters(parameters);
 
-    swerve.driveSetpoint(parameters.robotAngle(), false);
+    swerve.setTargetHeading(parameters.robotAngle());
   }
 
   @Override
   public void end(boolean interrupted) {
+    swerve.setHeadingOverride(false);
   }
 
   @Override

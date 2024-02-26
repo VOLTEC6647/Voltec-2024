@@ -94,12 +94,14 @@ public class AndromedaSwerve extends SubsystemBase {
           },
           this));
 
-  private ProfiledPIDController angleController = new ProfiledPIDController(3, 0.0, 0.00001,
+  private ProfiledPIDController headingController = new ProfiledPIDController(3, 0.0, 0.00001,
       new TrapezoidProfile.Constraints(10, 10));
   private SwerveModulePosition[] lastPositions = new SwerveModulePosition[4];
   private Rotation2d rawGyroRotation;
 
   Rotation2d angle = new Rotation2d();
+
+  private boolean headingOverride = false;
 
   private AndromedaSwerve(GyroIO gyro, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig profileConfig,
       HolonomicPathFollowerConfig pathConfig) {
@@ -151,7 +153,7 @@ public class AndromedaSwerve extends SubsystemBase {
           Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
         });
 
-    angleController.enableContinuousInput(-Math.PI, Math.PI);
+    headingController.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   public static AndromedaSwerve getInstance(GyroIO gyro, AndromedaModuleIO[] modules,
@@ -240,6 +242,12 @@ public class AndromedaSwerve extends SubsystemBase {
    * @param chassisSpeeds The desired ChassisSpeeds
    */
   public void drive(ChassisSpeeds chassisSpeeds) {
+    if (headingOverride) {
+      double output = headingController.calculate(getSwerveAngle().getRadians());
+
+      chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, output);
+    }
+
     SwerveModuleState[] swerveModuleStates = andromedaProfile.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
     Logger.recordOutput("Swerve/DesiredChassisSpeeds", chassisSpeeds);
@@ -247,20 +255,13 @@ public class AndromedaSwerve extends SubsystemBase {
     setModuleStates(swerveModuleStates);
   }
 
-  public void driveSetpoint(Rotation2d angle, boolean stopped) {
-    double output = angleController.calculate(getSwerveAngle().getRadians(),
-        angle.getRadians());
+  public void setHeadingOverride(boolean override) {
+    headingOverride = override;
+    headingController.reset(getPose().getRotation().getRadians());
+  }
 
-    Logger.recordOutput("Swerve/SpeakerAngle", angle);
-
-    if (stopped) {
-      drive(new Translation2d(), output, false);
-    } else {
-      ChassisSpeeds speeds = getFieldRelativeChassisSpeeds();
-      speeds.omegaRadiansPerSecond = output;
-
-      drive(speeds);
-    }
+  public void setTargetHeading(Rotation2d target) {
+    headingController.setGoal(target.getRadians());
   }
 
   /**
