@@ -14,6 +14,9 @@ public interface ShooterIO {
         public double topMotorVelocity = 0.0;
         public double bottomMotorVelocity = 0.0;
 
+        public double topMotorPosition = 0.0;
+        public double bottomMotorPosition = 0.0;
+
         public double topMotorCurrent = 0.0;
         public double bottomMotorCurrent = 0.0;
         public double topMotorVoltage = 0.0;
@@ -35,5 +38,8 @@ public interface ShooterIO {
     }
 
     public default void setBottomPIDF(double p, double i, double d, double s, double v, double a) {
+    }
+
+    public default void runFlywheelCharacterization(double volts){
     }
 }

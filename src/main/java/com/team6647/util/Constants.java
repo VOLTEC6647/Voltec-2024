@@ -165,21 +165,24 @@ public class Constants {
                 public static final int flywheelTopMotorID = 22;
                 public static final int shooterRollerMotorID = 23;
 
-                public static final double bottomShooterKp = 10;
-                public static final double bottomShooterKi = 0.00000000;
-                public static final double bottomShooterKd = 0.01;
-                public static final double bottomShooterKs = 0.0;
-                public static final double bottomShooterKv = 0.0;
-                public static final double bottomShooterKa = 0.0;
+                public static final double bottomShooterKp = 0.44998;
+                public static final double bottomShooterKi = 0.001;
+                public static final double bottomShooterKd = 0.0;
+                public static final double bottomShooterKs = 0.14004;
+                public static final double bottomShooterKv = 0.11746;
+                public static final double bottomShooterKa = 0.0029709;
+
                 public static final double bottomShooterKf = 0.000195;
 
-                public static final double topShooterKp = 1;
-                public static final double topShooterKi = 0.00000000;
-                public static final double topShooterKd = 0.01;
-                public static final double topShooterKs = 0.0;
-                public static final double topShooterKv = 0.0;
-                public static final double topShooterKa = 0.0;
+                public static final double topShooterKp = 0.46848;
+                public static final double topShooterKi = 0.001;
+                public static final double topShooterKd = 0.0;
+                public static final double topShooterKs = 0.16512;
+                public static final double topShooterKv = 0.11447;
+                public static final double topShooterKa = 0.0035411;
+                
                 public static final double topShooterKf = 0.000198;
+
                 public static final double shooterTolerance = 100.0;
 
                 public static final double pivotKp = 0.0019;
@@ -204,7 +207,7 @@ public class Constants {
 
                 public static final double pivotMinPosition = 113;
                 public static final double pivotMaxPosition = 264;
-                public static final double pivotHomedPosition = 115;
+                public static final double pivotHomedPosition = 117;
                 public static final double pivotIndexingPosition = 154;
                 public static final double pivotAmpPosition = 229;
                 public static final double pivotClimbPosition = 235;
@@ -304,7 +307,7 @@ public class Constants {
         public static class IntakeConstants {
                 public static final int intakeMotorID = 16;
 
-                public static final double homedKp = 0.1;
+                public static final double homedKp = 0.2;
                 public static final double homedKi = 0.00004;
                 public static final double homedKd = 0.0;
 
@@ -343,7 +346,8 @@ public class Constants {
                 public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = -0.1;
 
-                public static final int intakeUltrasonicChannel = 3;
+                public static final double pushingAcutatingPosition = 25;
+                public static final double pushingHomedPosition = 1;
         }
 
         public static class VisionConstants {

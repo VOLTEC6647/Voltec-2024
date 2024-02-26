@@ -27,24 +27,15 @@ public class IntakePivotSubsystem extends SubsystemBase {
   private IntakePivotIO io;
   private IntakePivoIOInputsAutoLogged inputs = new IntakePivoIOInputsAutoLogged();
 
-  private PIDController mController = new PIDController(IntakeConstants.homedKp,
-      IntakeConstants.homedKi, IntakeConstants.homedKd);
-
-  private PIDController mExtendedController = new PIDController(IntakeConstants.extendedKp,
-      IntakeConstants.extendedKi, IntakeConstants.extendedKd);
-
-  private LoggedTunableNumber mHomedKp = new LoggedTunableNumber("Intake/Pivot/Homed/Kp", IntakeConstants.homedKp);
-  private LoggedTunableNumber mHomedKi = new LoggedTunableNumber("Intake/Pivot/Homed/Ki", IntakeConstants.homedKi);
-  private LoggedTunableNumber mHomedKd = new LoggedTunableNumber("Intake/Pivot/Homed/Kd", IntakeConstants.homedKd);
-
   @AutoLogOutput(key = "Intake/Pivot/Setpoint")
   private double setpoint = IntakeConstants.intakeHomedPosition;
+
+  @AutoLogOutput(key = "Intake/Pivot/PushingSetpoint")
+  private double pushingSetpoint = IntakeConstants.pushingAcutatingPosition;
 
   /** Creates a new IntakePivotSubsystem. */
   private IntakePivotSubsystem(IntakePivotIO io) {
     this.io = io;
-
-    mController.setTolerance(IntakeConstants.homedTolerance);
   }
 
   public static IntakePivotSubsystem getInstance(IntakePivotIO io) {
@@ -64,14 +55,11 @@ public class IntakePivotSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake/Pivot", inputs);
-    LoggedTunableNumber.ifChanged(hashCode(), pid -> setHomedPID(pid[0], pid[1], pid[2]), mHomedKp, mHomedKi, mHomedKd);
 
     if (inputs.intakePivotAbsoluteEncoderPosition == 0 || mState == IntakePivotState.EMERGENCY_DISABLED) {
       mState = IntakePivotState.EMERGENCY_DISABLED;
       DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
           true);
-    } else {
-      computePID(mState == IntakePivotState.HOMED);
     }
 
     if (getCurrentCommand() != null) {
@@ -80,10 +68,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
       Logger.recordOutput("Intake/Pivot/CurrentCommand", "");
     }
 
-  }
-
-  public void setHomedPID(double kp, double ki, double kd) {
-    mController.setPID(kp, ki, kd);
   }
 
   public void changeIntakePivotState(IntakePivotState intakePivotState) {
@@ -111,22 +95,20 @@ public class IntakePivotSubsystem extends SubsystemBase {
     setpoint = newSetpoint;
   }
 
-  private void computePID(boolean equalOutput) {
-    double output = equalOutput ? mController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint)
-        : mExtendedController.calculate(inputs.intakePivotAbsoluteEncoderPosition, setpoint);
+  public void setPushingReference(double reference) {
+    io.setPushingReference(reference);
+  }
 
-    double feedforwardValue = equalOutput ? output : -output * 2.1;
+  public void setIntakeVoltage(double volts) {
+    io.setIntakeVoltage(volts);
+  }
 
-    Logger.recordOutput("Intake/Pivot/output", output);
-    Logger.recordOutput("Intake/Pivot/feedforward", feedforwardValue);
+  public boolean pushingInTolerance() {
+    return Math.abs(inputs.intakePivotLeftMotorPosition - pushingSetpoint) < 1;
+  }
 
-/*     if (!equalOutput && inputs.intakePivotAbsoluteEncoderPosition < 160) {
-      io.setPushingPercent(0.2);
-    } else {
-      io.setPushingPercent(0);
-    }
-
-    io.setIntakeVoltage(output); */
+  public double intakePosition(){
+    return inputs.intakePivotAbsoluteEncoderPosition;
   }
 
   @AutoLogOutput(key = "Intake/Pivot/InTolerance")
@@ -134,7 +116,4 @@ public class IntakePivotSubsystem extends SubsystemBase {
     return Math.abs(inputs.intakePivotAbsoluteEncoderPosition - setpoint) < IntakeConstants.homedTolerance;
   }
 
-  public double getUltrasonicSensorReading() {
-    return inputs.intakeUltrasonicDistance;
-  }
 }

@@ -5,6 +5,10 @@
 
 package com.team6647.subsystems.flywheel;
 
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -13,7 +17,12 @@ import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 public class ShooterSubsystem extends SubsystemBase {
 
@@ -38,7 +47,7 @@ public class ShooterSubsystem extends SubsystemBase {
       ShooterConstants.bottomShooterKs);
   private LoggedTunableNumber bottomShooterKv = new LoggedTunableNumber("Shooter/Flywheel/bottomKv",
       ShooterConstants.bottomShooterKv);
-  private LoggedTunableNumber bottomShooterKa = new LoggedTunableNumber("Shooter/Flywheel/bottomKd",
+  private LoggedTunableNumber bottomShooterKa = new LoggedTunableNumber("Shooter/Flywheel/bottomKa",
       ShooterConstants.bottomShooterKa);
 
   private LoggedTunableNumber topShooterKp = new LoggedTunableNumber("Shooter/Flywheel/topKp",
@@ -51,12 +60,30 @@ public class ShooterSubsystem extends SubsystemBase {
       ShooterConstants.topShooterKs);
   private LoggedTunableNumber topShooterKv = new LoggedTunableNumber("Shooter/Flywheel/topKv",
       ShooterConstants.topShooterKv);
-  private LoggedTunableNumber topShooterKa = new LoggedTunableNumber("Shooter/Flywheel/topKd",
+  private LoggedTunableNumber topShooterKa = new LoggedTunableNumber("Shooter/Flywheel/topKa",
       ShooterConstants.topShooterKa);
 
   private LoggedTunableNumber shooterVelocity = new LoggedTunableNumber("Shooter/Flywheel/velocity", 0.0);
 
   private static ShootingParameters currentParameters = new ShootingParameters(new Rotation2d(), 0, 0);
+
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(),
+      new SysIdRoutine.Mechanism(
+          (Measure<Voltage> volts) -> {
+            runFlywheelCharacterization(volts.in(Units.Volts));
+          },
+          log -> {
+            log.motor("top-flywheel")
+                .voltage(Volts.of(inputs.topMotorVoltage))
+                .angularPosition(Rotations.of(inputs.topMotorPosition))
+                .angularVelocity(RotationsPerSecond.of(inputs.topMotorVelocity / 60));
+            log.motor("bottom-flywheel")
+                .voltage(Volts.of(inputs.bottomMotorVoltage))
+                .angularPosition(Rotations.of(inputs.bottomMotorPosition))
+                .angularVelocity(RotationsPerSecond.of(inputs.bottomMotorVelocity / 60));
+          },
+          this));
 
   private ShooterSubsystem(ShooterIO io) {
     this.io = io;
@@ -87,9 +114,9 @@ public class ShooterSubsystem extends SubsystemBase {
       io.setTopPIDF(pid[6], pid[7], pid[8], pid[9], pid[10], pid[11]);
 
       setShooterSpeed(pid[12]);
+
     }, bottomShooterKp, bottomShooterKi, bottomShooterKd, bottomShooterKs, bottomShooterKv, bottomShooterKa,
-        topShooterKp, topShooterKi, topShooterKd, topShooterKs, topShooterKv, topShooterKa,
-        shooterVelocity);
+        topShooterKp, topShooterKi, topShooterKd, topShooterKs, topShooterKv, topShooterKa, shooterVelocity);
   }
 
   /**
@@ -109,7 +136,7 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case SHOOTING:
         mFlywheelState = FlywheelState.SHOOTING;
-        setShooterSpeed(1000);
+        setShooterSpeed(currentParameters.flywheelRPM());
         break;
       case IDLE:
         mFlywheelState = FlywheelState.IDLE;
@@ -146,4 +173,15 @@ public class ShooterSubsystem extends SubsystemBase {
     return inputs.beamBrake;
   }
 
+  public void runFlywheelCharacterization(double volts) {
+    io.runFlywheelCharacterization(volts);
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
+  }
 }

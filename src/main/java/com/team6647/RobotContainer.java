@@ -19,8 +19,11 @@ import com.andromedalib.robot.SuperRobotContainer;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.ElevatorTarget;
+import com.team6647.commands.IntakeExtend;
+import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakePivotTarget;
 import com.team6647.commands.IntakeTriggerCommand;
+import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShootingStationary;
 import com.team6647.commands.VisionIntakeAlign;
 import com.team6647.subsystems.SuperStructure;
@@ -57,6 +60,7 @@ import com.team6647.subsystems.shooter.ShooterPivotIOSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
 import com.team6647.subsystems.shooter.ShooterRollerIO;
 import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
+import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.subsystems.vision.VisionIO;
 import com.team6647.subsystems.vision.VisionIOLimelight;
@@ -205,7 +209,7 @@ public class RobotContainer extends SuperRobotContainer {
                  * NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
                  */
 
-                // configSysIdBindings();
+                configSysIdBindings();
         }
 
         @Override
@@ -220,38 +224,40 @@ public class RobotContainer extends SuperRobotContainer {
 
                 /* Driver 1 */
 
-                OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp());
-
+                /*
+                 * OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp());
+                 */
                 /* Driver 2 */
                 OperatorConstants.TOGGLE_INTAKE
-                                .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-
-                OperatorConstants.driverController2.povLeft()
-                                .whileTrue(ShooterCommands.getShooterIntakingCommand()
-                                                .alongWith(IntakeCommands.getIntakingCommandPart1()))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE))
-                                .and(OperatorConstants.driverController2.a())
-                                .whileTrue(IntakeCommands.getIntakingCommandPart2());
-
-                OperatorConstants.SHOOT_SPEAKER
-                                .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-
-                OperatorConstants.TOGGLE_AMP
-                                .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-
-                OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(SuperStructureState.CLIMBING))
-                                .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
+                                .whileTrue(new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.INDEXING))
+                                .onFalse(new IntakeHome(intakePivotSubsystem));
 
                 /*
                  * OperatorConstants.driverController2.povLeft()
-                 * .whileTrue(new InstantCommand(
-                 * () -> shooterRollerSubsystem.changeRollerState(RollerState.INTAKING)))
-                 * .onFalse(new InstantCommand(
-                 * () -> shooterRollerSubsystem.changeRollerState(RollerState.STOPPED)));
+                 * .whileTrue(ShooterCommands.getShooterIntakingCommand()
+                 * .alongWith(IntakeCommands.getIntakingCommandPart1()))
+                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE))
+                 * .and(OperatorConstants.driverController2.a())
+                 * .whileTrue(IntakeCommands.getIntakingCommandPart2());
+                 * 
+                 * OperatorConstants.SHOOT_SPEAKER
+                 * .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
+                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                 * 
+                 * OperatorConstants.TOGGLE_AMP
+                 * .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
+                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                 * 
+                 * OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
+                 * SuperStructureState.CLIMBING))
+                 * .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
                  */
+
+                OperatorConstants.driverController2.povLeft()
+                                .whileTrue(new InstantCommand(
+                                                () -> shooterRollerSubsystem.changeRollerState(RollerState.INTAKING)))
+                                .onFalse(new InstantCommand(
+                                                () -> shooterRollerSubsystem.changeRollerState(RollerState.STOPPED)));
 
                 /*
                  * OperatorConstants.driverController2.y().whileTrue(new
@@ -276,14 +282,14 @@ public class RobotContainer extends SuperRobotContainer {
         public void configSysIdBindings() {
 
                 OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(andromedaSwerve.sysIdQuasistatic(Direction.kForward));
+                                .whileTrue(shooterSubsystem.sysIdQuasistatic(Direction.kForward));
                 OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(andromedaSwerve.sysIdQuasistatic(Direction.kReverse));
+                                .whileTrue(shooterSubsystem.sysIdQuasistatic(Direction.kReverse));
 
                 OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(andromedaSwerve.sysIdQuasistatic(Direction.kForward));
+                                .whileTrue(shooterSubsystem.sysIdDynamic(Direction.kForward));
                 OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(andromedaSwerve.sysIdQuasistatic(Direction.kForward));
+                                .whileTrue(shooterSubsystem.sysIdDynamic(Direction.kReverse));
 
         }
 

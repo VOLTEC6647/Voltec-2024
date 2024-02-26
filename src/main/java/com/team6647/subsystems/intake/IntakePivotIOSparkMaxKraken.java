@@ -9,6 +9,8 @@ package com.team6647.subsystems.intake;
 import com.andromedalib.motorControllers.SuperSparkMax;
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.SparkPIDController;
+import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.team6647.util.Constants.IntakeConstants;
@@ -33,12 +35,15 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
 
     private static AbsoluteEncoder pivotEncoder;
 
-    private AnalogPotentiometer ultrasonicSensor = new AnalogPotentiometer(IntakeConstants.intakeUltrasonicChannel, 1024);
+    private SparkPIDController pushingController;
 
     public IntakePivotIOSparkMaxKraken() {
+        pushingController = leftIntakePivotMotor.getPIDController();
+
+        pushingController.setP(0.1);
+
         leftIntakePivotMotor.setSmartCurrentLimit(10);
         pivotEncoder = leftIntakePivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
-
     }
 
     @Override
@@ -54,8 +59,6 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
         inputs.intakePivotRightMotorAppliedVoltage = rightIntakePivotMotor.getMotorVoltage().getValueAsDouble();
         inputs.intakePivotRightMotorPosition = rightIntakePivotMotor.getPosition().getValueAsDouble();
         inputs.intakePivtoRightMotorCurrent = rightIntakePivotMotor.getStatorCurrent().getValueAsDouble();
-
-        inputs.intakeUltrasonicDistance = ultrasonicSensor.get();
     }
 
     @Override
@@ -64,7 +67,7 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
     }
 
     @Override
-    public void setPushingPercent(double percent) {
-        leftIntakePivotMotor.set(percent);
+    public void setPushingReference(double position) {
+        pushingController.setReference(position, ControlType.kPosition);
     }
 }

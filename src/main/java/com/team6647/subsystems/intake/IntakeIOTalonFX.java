@@ -11,9 +11,6 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.team6647.util.Constants.IntakeConstants;
 
-import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
-
 public class IntakeIOTalonFX implements IntakeIO {
 
     private SuperTalonFX intakeMotor = new SuperTalonFX(IntakeConstants.intakeMotorID, GlobalIdleMode.Coast, false);
