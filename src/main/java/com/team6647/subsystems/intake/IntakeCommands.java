@@ -7,10 +7,10 @@
 package com.team6647.subsystems.intake;
 
 import com.team6647.RobotContainer;
-import com.team6647.commands.IntakePivotTarget;
+import com.team6647.commands.IntakeExtend;
+import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerTarget;
 import com.team6647.commands.IntakeTriggerCommand;
-import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,9 +25,9 @@ public class IntakeCommands {
 
                 return Commands.sequence(
                                 new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING),
-                                new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.EXTENDED),
+                                new IntakeExtend(intakePivotSubsystem),
                                 new IntakeTriggerCommand(),
-                                new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.HOMED),
+                                new IntakeHome(intakePivotSubsystem),
                                 new IntakeRollerTarget(
                                                 intakeSubsystem,
                                                 RollerState.STOPPED),
@@ -40,11 +40,12 @@ public class IntakeCommands {
         public static Command getIntakingCommandPart1() {
                 return Commands.sequence(
                                 new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING),
-                                new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.EXTENDED));
+                                new IntakeExtend(intakePivotSubsystem));
         }
 
         public static final Command getIntakingCommandPart2() {
-                return Commands.sequence(new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.HOMED),
+                return Commands.sequence(
+                                new IntakeHome(intakePivotSubsystem),
                                 new IntakeRollerTarget(
                                                 intakeSubsystem,
                                                 RollerState.STOPPED),

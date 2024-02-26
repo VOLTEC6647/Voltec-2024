@@ -58,14 +58,14 @@ public class ShootingStationary extends Command {
     this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
         Speaker.centerSpeakerOpening.toTranslation2d());
 
-    this.parameters = new ShootingParameters(parameters.robotAngle(), 90.0, 5000);
+    this.parameters = new ShootingParameters(parameters.robotAngle(), 154.0, 5000);
 
     SuperStructure.updateShootingParameters(parameters);
   }
 
   @Override
   public void execute() {
-    if (visionSubsystem.hasTargetID(stageID)) {
+/*     if (visionSubsystem.hasTargetID(stageID)) {
       // kP (constant of proportionality)
       // this is a hand-tuned number that determines the aggressiveness of our
       // proportional control loop
@@ -87,9 +87,10 @@ public class ShootingStationary extends Command {
 
       swerve.drive(new Translation2d(), targetingAngularVelocity, true);
     } else {
-      swerve.driveSetpoint(parameters.robotAngle(), true);
-    }
-
+    } */
+    
+    swerve.driveSetpoint(parameters.robotAngle(), true);
+    
     flywheelSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
     pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
 

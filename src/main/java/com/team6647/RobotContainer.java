@@ -17,8 +17,6 @@ import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
 import com.team6647.commands.ElevatorTarget;
-import com.team6647.commands.IntakeHome;
-import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
@@ -30,7 +28,6 @@ import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
-import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
 import com.team6647.subsystems.intake.IntakeIOTalonFX;
@@ -42,7 +39,6 @@ import com.team6647.subsystems.intake.IntakeSubsystem;
 import com.team6647.subsystems.neural.NeuralVisionIO;
 import com.team6647.subsystems.neural.NeuralVisionIOLimelight;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
-import com.team6647.subsystems.shooter.ShooterCommands;
 import com.team6647.subsystems.shooter.ShooterIORollerSim;
 import com.team6647.subsystems.shooter.ShooterIORollerSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotIO;
@@ -51,7 +47,6 @@ import com.team6647.subsystems.shooter.ShooterPivotIOSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
 import com.team6647.subsystems.shooter.ShooterRollerIO;
 import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
-import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.subsystems.vision.VisionIO;
 import com.team6647.subsystems.vision.VisionIOLimelight;
@@ -201,7 +196,7 @@ public class RobotContainer extends SuperRobotContainer {
                  */
 
                 configSysIdBindings();
-                configTuningBindings();
+                // configTuningBindings();
         }
 
         @Override
@@ -219,17 +214,20 @@ public class RobotContainer extends SuperRobotContainer {
                 /*
                  * OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp());
                  */
+
                 /* Driver 2 */
                 OperatorConstants.TOGGLE_INTAKE
-                                .whileTrue(new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.INDEXING))
-                                .onFalse(new IntakeHome(intakePivotSubsystem));
+                                .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
-                OperatorConstants.driverController2.povLeft()
-                                .whileTrue(ShooterCommands.getShooterIntakingCommand()
-                                                .alongWith(IntakeCommands.getIntakingCommandPart1()))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE))
-                                .and(OperatorConstants.driverController2.a())
-                                .whileTrue(IntakeCommands.getIntakingCommandPart2());
+                /*
+                 * OperatorConstants.driverController2.povLeft()
+                 * .whileTrue(ShooterCommands.getShooterIntakingCommand()
+                 * .alongWith(IntakeCommands.getIntakingCommandPart1()))
+                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE))
+                 * .and(OperatorConstants.driverController2.a())
+                 * .whileTrue(IntakeCommands.getIntakingCommandPart2());
+                 */
 
                 OperatorConstants.SHOOT_SPEAKER
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
@@ -242,16 +240,19 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
                                 SuperStructureState.CLIMBING))
                                 .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
-/* 
-                OperatorConstants.driverController2.y().whileTrue(new VisionIntakeAlign(neuralVisionSubsystem,
-                                andromedaSwerve))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-
-                OperatorConstants.driverController1.a()
-                                .whileTrue(new ShootingWhileMoving(andromedaSwerve, superStructure));
-
-                OperatorConstants.driverController2.y().whileTrue(new VisionIntakeAlign(neuralVisionSubsystem,
-                                andromedaSwerve)); */
+                /*
+                 * OperatorConstants.driverController2.y().whileTrue(new
+                 * VisionIntakeAlign(neuralVisionSubsystem,
+                 * andromedaSwerve))
+                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                 * 
+                 * OperatorConstants.driverController1.a()
+                 * .whileTrue(new ShootingWhileMoving(andromedaSwerve, superStructure));
+                 * 
+                 * OperatorConstants.driverController2.y().whileTrue(new
+                 * VisionIntakeAlign(neuralVisionSubsystem,
+                 * andromedaSwerve));
+                 */
 
         }
 

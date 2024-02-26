@@ -14,7 +14,7 @@ import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.RobotContainer;
 import com.team6647.commands.ElevatorTarget;
 import com.team6647.commands.FlywheelTarget;
-import com.team6647.commands.IntakePivotTarget;
+import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerTarget;
 import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
@@ -27,7 +27,6 @@ import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.IntakeSubsystem;
-import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
 import com.team6647.subsystems.shooter.ShooterCommands;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
@@ -112,7 +111,7 @@ public class SuperStructure {
     private static Command idleCommand() {
 
         return Commands.parallel(
-                new IntakePivotTarget(intakePivotSubsystem, IntakePivotState.HOMED),
+                new IntakeHome(intakePivotSubsystem),
                 new IntakeRollerTarget(intakeSubsystem, RollerState.STOPPED),
                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED),
                 new ShooterRollerTarget(rollerSubsystem, RollerState.STOPPED),
