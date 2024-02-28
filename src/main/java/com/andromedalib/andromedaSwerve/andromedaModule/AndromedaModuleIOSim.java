@@ -39,7 +39,7 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
     public AndromedaModuleIOSim(double wheelDiameter) {
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
         driveFeedback = new PIDController(0.1, 0.0, 0.0);
-        turnFeedback = new PIDController(1, 0.0, 0.0);
+        turnFeedback = new PIDController(10, 0.0, 0.0);
         wheelRadius = wheelDiameter / 2;
 
         turnFeedback.enableContinuousInput(-Math.PI, Math.PI);

@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ShootingWhileMoving extends Command {
-
   private AndromedaSwerve swerve;
   private SuperStructure superStructure;
   private Translation2d targetLocation;

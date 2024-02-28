@@ -38,8 +38,9 @@ public class Constants {
                                 BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.a(),
                                 FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.b(),
                                 BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.x(),
-                                GO_TO_AMP = driverController1.a(),
-                                GO_TO_SPEAKER = driverController1.b();
+                                RESET_GYRO = driverController1.a(),
+                                GO_TO_AMP = driverController1.b(),
+                                GO_TO_SPEAKER = driverController1.y();
 
                 /* Driver 2 */
 
@@ -160,10 +161,10 @@ public class Constants {
         }
 
         public static class ShooterConstants {
-                public static final int shooterPivotMotorID = 20;
-                public static final int flywheelBottomMotorID = 21;
-                public static final int flywheelTopMotorID = 22;
-                public static final int shooterRollerMotorID = 23;
+                public static final int shooterPivotMotorID = 21;
+                public static final int flywheelBottomMotorID = 22;
+                public static final int flywheelTopMotorID = 23;
+                public static final int shooterRollerMotorID = 24;
 
                 public static final double bottomShooterKp = 0.44998;
                 public static final double bottomShooterKi = 0.001;
@@ -180,16 +181,17 @@ public class Constants {
                 public static final double topShooterKs = 0.16512;
                 public static final double topShooterKv = 0.11447;
                 public static final double topShooterKa = 0.0035411;
-                
+
                 public static final double topShooterKf = 0.000198;
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 0.0019;
-                public static final double pivotKi = 0.0;
+                public static final double pivotKp = 0.1;
+                public static final double pivotKi = 0;
                 public static final double pivotKd = 0.0;
-                public static final double pivotKf = 0.000235;
-                public static final double positionTolerance = 0.5;
+                public static final double pivotKf = 0.45;
+                public static final double pidPositionTolerance = 0.05;
+                public static final double positionTolerance = 1;
 
                 public static final double pivotParallelFloorOffset = 203.0478515625;
 
@@ -205,10 +207,10 @@ public class Constants {
                 public static final boolean armEncoderInverted = true;
                 public static final boolean shooterPivotMotorInverted = true;
 
-                public static final double pivotMinPosition = 113;
+                public static final double pivotMinPosition = 118;
                 public static final double pivotMaxPosition = 264;
-                public static final double pivotHomedPosition = 117;
-                public static final double pivotIndexingPosition = 154;
+                public static final double pivotHomedPosition = 118.2;
+                public static final double pivotIndexingPosition = 155;
                 public static final double pivotAmpPosition = 229;
                 public static final double pivotClimbPosition = 235;
 
@@ -249,40 +251,39 @@ public class Constants {
 
                 static {
                         // Distance, Angle
-                        shooterPivotMap.put(1.13166, 90.0);
-                        shooterPivotMap.put(1.34509, 95.0);
-                        shooterPivotMap.put(1.52726, 100.0);
-                        shooterPivotMap.put(1.88464, 105.0);
-                        shooterPivotMap.put(2.22834, 110.0);
-                        shooterPivotMap.put(2.5641, 113.0);
-                        shooterPivotMap.put(2.86391, 115.0);
-                        shooterPivotMap.put(3.14579, 118.0);
-                        shooterPivotMap.put(3.56278, 119.0);
-                        shooterPivotMap.put(3.96404, 119.5);
+                        shooterPivotMap.put(1.095979334274389, 150.0);
+                        shooterPivotMap.put(1.282133452297385, 155.0);
+                        shooterPivotMap.put(1.4342617709538774, 157.0);
+                        shooterPivotMap.put(1.4342617709538774, 162.0);
+                        shooterPivotMap.put(1.8687062887987802, 163.0);
+                        shooterPivotMap.put(2.0448387211045267, 167.0);
+                        shooterPivotMap.put(2.259941229448083, 169.0);
+                        shooterPivotMap.put(2.3849374678265636, 171.0);
+                        shooterPivotMap.put(2.6708614771998826, 173.0);
+                        shooterPivotMap.put(2.8698417854532146, 175.0);
+                        shooterPivotMap.put(3.0614379417757864, 176.0);
+                        shooterPivotMap.put(3.21703461348205, 177.0);
+                        shooterPivotMap.put(3.45334674644738, 178.0);
+                        shooterPivotMap.put(3.805586983598703, 178.5);
+                        shooterPivotMap.put(4.150999154490105, 179.0);
+                        shooterPivotMap.put(4.532950393382253, 181.0);
+
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterTimeMap = new InterpolatingDoubleTreeMap();
 
                 static {
                         // Distance, Seconds
-                        shooterTimeMap.put(1.13166, 90.0);
-                        shooterTimeMap.put(1.34509, 95.0);
-                        shooterTimeMap.put(1.52726, 100.0);
-                        shooterTimeMap.put(1.88464, 105.0);
-                        shooterTimeMap.put(2.22834, 110.0);
-                        shooterTimeMap.put(2.5641, 113.0);
-                        shooterTimeMap.put(2.86391, 115.0);
-                        shooterTimeMap.put(3.14579, 118.0);
-                        shooterTimeMap.put(3.56278, 119.0);
-                        shooterTimeMap.put(3.96404, 119.5);
+                        shooterTimeMap.put(1.095979334274389, 0.3);
+
                 }
         }
 
         public static class ElevatorConstants {
-                public static final int elevatorBoottomMotorID = 17;
-                public static final int elevatorTopMotorID = 18;
+                public static final int elevatorBoottomMotorID = 18;
+                public static final int elevatorTopMotorID = 19;
 
-                public static final int elevatorCANCoderID = 19;
+                public static final int elevatorCANCoderID = 20;
 
                 public static final double elevatorCANCoderOffset = -0.940000;
 
@@ -305,10 +306,10 @@ public class Constants {
         }
 
         public static class IntakeConstants {
-                public static final int intakeMotorID = 16;
+                public static final int intakeMotorID = 17;
 
-                public static final double homedKp = 0.2;
-                public static final double homedKi = 0.00004;
+                public static final double homedKp = 0.05;
+                public static final double homedKi = 0.0;// 0.00004;
                 public static final double homedKd = 0.0;
 
                 public static final double extendedKp = 0.1;
@@ -331,12 +332,13 @@ public class Constants {
 
                 public static final int intakePivotLeftMotorID = 14;
                 public static final int intakePivotRightMotorID = 15;
+                public static final int intakePushingMotor = 16;
 
                 public static final double intakePivotEncoderPositionConversionFactor = 360;
                 public static final double intakePivotEncoderZeroOffset = 0.0;
 
                 public static final boolean intakePivotEncoderInverted = true;
-                public static final boolean intakePivotLeftMotorInverted = true;
+                public static final boolean intakePivotLeftMotorInverted = false;
                 public static final boolean intakePivotRightMotorInverted = true;
 
                 public static final int intakeMotorsCurrentLimit = 30;
@@ -346,8 +348,11 @@ public class Constants {
                 public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = -0.1;
 
-                public static final double pushingAcutatingPosition = 25;
+                public static final double pushingAcutatingPosition = 20;
                 public static final double pushingHomedPosition = 1;
+
+                public static final int pushingLimitSwitch = 5;
+                public static final int intakeLimitSwitch = 9;
         }
 
         public static class VisionConstants {
@@ -357,8 +362,8 @@ public class Constants {
                 public static final int speakerBlueCenterTagID = 7;
                 public static final int speakerRedCentgerTagID = 4;
 
-                public static final int speakerPipelineNumber = 0;
-                public static final int odometryPipelineNumber = 1;
+                public static final int odometryPipelineNumber = 0;
+                public static final int speakerPipelineNumber = 1;
         }
 
         public static class DriveConstants {

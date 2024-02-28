@@ -24,7 +24,15 @@ public interface IntakePivotIO {
         public double intakePivotRightMotorPosition = 0.0;
         public double intakePivtoRightMotorCurrent = 0.0;
 
+        public double intakePushingMotorVelocity = 0.0;
+        public double intakePushingMotorAppliedVoltage = 0.0;
+        public double intakePushingMotorPosition = 0.0;
+        public double intakePushingMotorCurrent = 0.0;
+
         public double intakePivotAbsoluteEncoderPosition = 0.0;
+
+        public boolean pushingLimitSwitchPressed = false;
+        public boolean intakeLimitSwitchPressed = false;
 
     }
 
@@ -35,5 +43,16 @@ public interface IntakePivotIO {
     }
 
     public default void setPushingReference(double volts) {
+    }
+
+    public default void setPushingPercentage(double percentage) {
+    }
+
+    public default void setPushingPosition(double position) {
+
+    }
+
+    public default void disableIntake() {
+
     }
 }

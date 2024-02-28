@@ -20,6 +20,8 @@ import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ShootingStationary extends Command {
@@ -48,52 +50,51 @@ public class ShootingStationary extends Command {
     stageID = AllianceFlipUtil.shouldFlip() ? VisionConstants.speakerRedCentgerTagID
         : VisionConstants.speakerBlueCenterTagID;
 
-    visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
+    SmartDashboard.putNumber("STAGE", stageID);
+
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
 
     this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
         Speaker.centerSpeakerOpening.toTranslation2d());
 
-    this.parameters = new ShootingParameters(parameters.robotAngle(), 154.0, 5000);
-
     SuperStructure.updateShootingParameters(parameters);
-    
+
     swerve.setHeadingOverride(true);
     swerve.setTargetHeading(parameters.robotAngle());
   }
 
   @Override
   public void execute() {
-    /*
-     * if (visionSubsystem.hasTargetID(stageID)) {
-     * // kP (constant of proportionality)
-     * // this is a hand-tuned number that determines the aggressiveness of our
-     * // proportional control loop
-     * // if it is too high, the robot will oscillate around.
-     * // if it is too low, the robot will never reach its target
-     * // if the robot never turns in the correct direction, kP should be inverted.
-     * double kP = .035;
-     * 
-     * // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the
-     * // rightmost edge of
-     * // your limelight 3 feed, tx should return roughly 31 degrees.
-     * double targetingAngularVelocity = visionSubsystem.getTX() * kP;
-     * 
-     * // convert to radians per second for our drive method
-     * targetingAngularVelocity *= DriveConstants.maxAngularVelocity;
-     * 
-     * // invert since tx is positive when the target is to the right of the
-     * crosshair
-     * targetingAngularVelocity *= -1.0;
-     * 
-     * swerve.drive(new Translation2d(), targetingAngularVelocity, true);
-     * } else {
-     * }
-     */
+
+    if (visionSubsystem.hasTargetID(stageID)) {
+      // kP (constant of proportionality)
+      // this is a hand-tuned number that determines the aggressiveness of our
+      // proportional control loop
+      // if it is too high, the robot will oscillate around.
+      // if it is too low, the robot will never reach its target
+      // if the robot never turns in the correct direction, kP should be inverted.
+      double kP = .025;
+
+      // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the
+      // rightmost edge of
+      // your limelight 3 feed, tx should return roughly 31 degrees.
+      double targetingAngularVelocity = visionSubsystem.getTX() * kP;
+
+      // convert to radians per second for our drive method
+      targetingAngularVelocity *= DriveConstants.maxAngularVelocity;
+
+      // invert since tx is positive when the target is to the right of the Fcrosshair
+      targetingAngularVelocity *= -1.0;
+
+      swerve.drive(new Translation2d(), targetingAngularVelocity, false);
+    } else {
+      swerve.drive(new ChassisSpeeds());
+    }
 
     flywheelSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
     pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
@@ -107,6 +108,7 @@ public class ShootingStationary extends Command {
   @Override
   public void end(boolean interrupted) {
     visionSubsystem.changePipeline(VisionConstants.odometryPipelineNumber);
+    swerve.setHeadingOverride(false);
   }
 
   // Returns true when the command should end.

@@ -14,6 +14,7 @@ import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.RobotContainer;
 import com.team6647.commands.ElevatorTarget;
 import com.team6647.commands.FlywheelTarget;
+import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerTarget;
 import com.team6647.commands.ShooterPivotTarget;
@@ -41,6 +42,7 @@ import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class SuperStructure {
 
@@ -105,17 +107,23 @@ public class SuperStructure {
 
         return Commands.deadline(
                 ShooterCommands.getShooterIntakingCommand(),
-                IntakeCommands.getIntakeCommand());
+                Commands.sequence(
+                        IntakeCommands.getIntakeCommand(),
+                        Commands.waitSeconds(0.5),
+                        new RunCommand(() -> intakeSubsystem.changeRollerState(RollerState.INTAKING), intakeSubsystem)
+                                .withTimeout(0.2)));
     }
 
     private static Command idleCommand() {
 
-        return Commands.parallel(
-                new IntakeHome(intakePivotSubsystem),
-                new IntakeRollerTarget(intakeSubsystem, RollerState.STOPPED),
-                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED),
-                new ShooterRollerTarget(rollerSubsystem, RollerState.STOPPED),
-                new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED));
+        return Commands.sequence(
+                new InitIntake(intakePivotSubsystem),
+                Commands.parallel(
+                        Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
+                        new IntakeRollerTarget(intakeSubsystem, RollerState.STOPPED),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED),
+                        new ShooterRollerTarget(rollerSubsystem, RollerState.STOPPED),
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED)));
     }
 
     private static Command shootingWhileMoving() {

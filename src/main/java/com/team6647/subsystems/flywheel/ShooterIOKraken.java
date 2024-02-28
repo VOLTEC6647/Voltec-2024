@@ -67,14 +67,20 @@ public class ShooterIOKraken implements ShooterIO {
         @Override
         public void setShooterVelocity(double velocity) {
 
-                velocity /= 60;
+                if (velocity == 0) {
+                        topFlywheelMotor.stopMotor();
+                        botttomFlywheelMotor.stopMotor();
+                } else {
+                        velocity /= 60;
 
-                topFlywheelMotor.setControl(
-                                topFlywheelVelocityVoltage.withVelocity(velocity)
-                                                .withFeedForward(0));
-                botttomFlywheelMotor
-                                .setControl(bottomFlywheelVelocityVoltage.withVelocity(velocity)
-                                                .withFeedForward(0));
+                        topFlywheelMotor.setControl(
+                                        topFlywheelVelocityVoltage.withVelocity(velocity)
+                                                        .withFeedForward(0));
+                        botttomFlywheelMotor
+                                        .setControl(bottomFlywheelVelocityVoltage.withVelocity(velocity)
+                                                        .withFeedForward(0));
+
+                }
         }
 
         @Override

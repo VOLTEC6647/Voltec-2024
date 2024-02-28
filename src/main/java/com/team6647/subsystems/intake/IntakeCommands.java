@@ -7,12 +7,15 @@
 package com.team6647.subsystems.intake;
 
 import com.team6647.RobotContainer;
+import com.team6647.commands.IntakePush;
+import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeExtend;
 import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerTarget;
-import com.team6647.commands.IntakeTriggerCommand;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -22,11 +25,12 @@ public class IntakeCommands {
         private static IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
 
         public static final Command getIntakeCommand() {
+                Debouncer debounce = new Debouncer(0.34, DebounceType.kRising);
 
                 return Commands.sequence(
                                 new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING),
-                                new IntakeExtend(intakePivotSubsystem),
-                                new IntakeTriggerCommand(),
+                                new IntakeExtend().andThen(new InitIntake(intakePivotSubsystem)),
+                                Commands.waitUntil(() -> debounce.calculate(intakeSubsystem.getAmps() > 5)),
                                 new IntakeHome(intakePivotSubsystem),
                                 new IntakeRollerTarget(
                                                 intakeSubsystem,
@@ -40,7 +44,7 @@ public class IntakeCommands {
         public static Command getIntakingCommandPart1() {
                 return Commands.sequence(
                                 new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING),
-                                new IntakeExtend(intakePivotSubsystem));
+                                new IntakePush(intakePivotSubsystem));
         }
 
         public static final Command getIntakingCommandPart2() {

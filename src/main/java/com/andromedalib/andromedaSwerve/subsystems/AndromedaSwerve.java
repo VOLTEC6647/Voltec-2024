@@ -94,11 +94,12 @@ public class AndromedaSwerve extends SubsystemBase {
           },
           this));
 
-  private ProfiledPIDController headingController = new ProfiledPIDController(3, 0.0, 0.00001,
+  private ProfiledPIDController headingController = new ProfiledPIDController(2.6, 0.0, 0.00001,
       new TrapezoidProfile.Constraints(10, 10));
   private SwerveModulePosition[] lastPositions = new SwerveModulePosition[4];
   private Rotation2d rawGyroRotation;
 
+  @AutoLogOutput(key = "Swerve/TargetHeading")
   Rotation2d angle = new Rotation2d();
 
   private boolean headingOverride = false;
@@ -243,7 +244,7 @@ public class AndromedaSwerve extends SubsystemBase {
    */
   public void drive(ChassisSpeeds chassisSpeeds) {
     if (headingOverride) {
-      double output = headingController.calculate(getSwerveAngle().getRadians());
+      double output = headingController.calculate(getSwerveAngle().getRadians(), angle.getRadians());
 
       chassisSpeeds = new ChassisSpeeds(chassisSpeeds.vxMetersPerSecond, chassisSpeeds.vyMetersPerSecond, output);
     }
@@ -261,6 +262,7 @@ public class AndromedaSwerve extends SubsystemBase {
   }
 
   public void setTargetHeading(Rotation2d target) {
+    angle = target;
     headingController.setGoal(target.getRadians());
   }
 
@@ -359,6 +361,10 @@ public class AndromedaSwerve extends SubsystemBase {
     }
 
     return states;
+  }
+
+  public void setGyroAngle(Rotation2d angle) {
+    gyroIO.setGyroAngle(angle);
   }
 
   /* Characterization */

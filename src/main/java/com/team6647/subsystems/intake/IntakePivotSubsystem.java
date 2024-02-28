@@ -30,6 +30,9 @@ public class IntakePivotSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Intake/Pivot/PushingSetpoint")
   private double pushingSetpoint = IntakeConstants.pushingAcutatingPosition;
 
+  @AutoLogOutput(key = "Shooter/Pivot/Emergency Disable")
+  private boolean emergencyDisable = false;
+
   /** Creates a new IntakePivotSubsystem. */
   private IntakePivotSubsystem(IntakePivotIO io) {
     this.io = io;
@@ -53,18 +56,13 @@ public class IntakePivotSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Intake/Pivot", inputs);
 
-    if (inputs.intakePivotAbsoluteEncoderPosition == 0 || mState == IntakePivotState.EMERGENCY_DISABLED) {
-      mState = IntakePivotState.EMERGENCY_DISABLED;
-      DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
-          true);
-    }
-
     if (getCurrentCommand() != null) {
       Logger.recordOutput("Intake/Pivot/CurrentCommand", getCurrentCommand().getName());
     } else {
       Logger.recordOutput("Intake/Pivot/CurrentCommand", "");
     }
 
+    emergencyCheck();
   }
 
   public void changeIntakePivotState(IntakePivotState intakePivotState) {
@@ -100,17 +98,52 @@ public class IntakePivotSubsystem extends SubsystemBase {
     io.setIntakeVoltage(volts);
   }
 
+  public void setPushingPercentage(double percentage) {
+    io.setPushingPercentage(percentage);
+  }
+
+  public void setPushingPosition(double position) {
+    io.setPushingPosition(position);
+  }
+
+  public void emergencyCheck() {
+    if (inputs.intakeLimitSwitchPressed) {
+      DriverStation.reportError("Intake Pivot Stopped", true);
+      io.setIntakeVoltage(0);
+    }
+
+    if (inputs.intakePivotAbsoluteEncoderPosition == 0) {
+      mState = IntakePivotState.EMERGENCY_DISABLED;
+      DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
+          true);
+      io.disableIntake();
+    }
+
+  }
+
   public boolean pushingInTolerance() {
     return Math.abs(inputs.intakePivotLeftMotorPosition - pushingSetpoint) < 1;
   }
 
-  public double intakePosition(){
+  public double intakePosition() {
     return inputs.intakePivotAbsoluteEncoderPosition;
   }
 
   @AutoLogOutput(key = "Intake/Pivot/InTolerance")
   public boolean inTolerance() {
     return Math.abs(inputs.intakePivotAbsoluteEncoderPosition - setpoint) < IntakeConstants.homedTolerance;
+  }
+
+  public boolean getPushingPressed() {
+    return inputs.pushingLimitSwitchPressed;
+  }
+
+  public boolean getIntakeLimitSwitchPressed() {
+    return inputs.intakeLimitSwitchPressed;
+  }
+
+  public boolean emergencyDisabled() {
+    return mState == IntakePivotState.EMERGENCY_DISABLED;
   }
 
 }

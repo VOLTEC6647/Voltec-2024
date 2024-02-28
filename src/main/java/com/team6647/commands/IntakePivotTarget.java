@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 /**
  * 
- * @deprecated Use {@link IntakeExtend} or {@link IntakeHome} instead
+ * @deprecated Use {@link IntakePush} or {@link IntakeHome} instead
  */
 public class IntakePivotTarget extends Command {
 

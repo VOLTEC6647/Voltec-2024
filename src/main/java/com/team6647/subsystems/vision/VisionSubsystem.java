@@ -8,6 +8,7 @@ package com.team6647.subsystems.vision;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
+import com.team6647.util.Constants.VisionConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -21,6 +22,8 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   private VisionSubsystem(VisionIO io) {
     this.io = io;
+    
+    changePipeline(VisionConstants.odometryPipelineNumber);
   }
 
   public static VisionSubsystem getInstance(VisionIO io) {

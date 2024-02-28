@@ -39,7 +39,7 @@ public class IntakeHome extends Command {
   @Override
   public void execute() {
     double output = mController.calculate(intakePivotSubsystem.intakePosition(),
-        IntakeConstants.intakeExtendedPosition);
+        IntakeConstants.intakeHomedPosition);
 
     Logger.recordOutput("Intake/Pivot/output", output);
 
@@ -49,11 +49,13 @@ public class IntakeHome extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intakePivotSubsystem.setIntakeVoltage(0);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return mController.atSetpoint();
+    return mController.atSetpoint() || intakePivotSubsystem.emergencyDisabled()
+        || intakePivotSubsystem.getIntakeLimitSwitchPressed();
   }
 }

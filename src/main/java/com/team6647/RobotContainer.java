@@ -16,19 +16,18 @@ import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.AndromedaPr
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
-import com.team6647.commands.ElevatorTarget;
-import com.team6647.commands.ShootingWhileMoving;
+import com.team6647.commands.InitIntake;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
 import com.team6647.subsystems.elevator.ElevatorIOSim;
 import com.team6647.subsystems.elevator.ElevatorIOSparkMax;
 import com.team6647.subsystems.elevator.ElevatorSubsystem;
-import com.team6647.subsystems.elevator.ElevatorSubsystem.ElevatorState;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
+import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
 import com.team6647.subsystems.intake.IntakeIOTalonFX;
@@ -40,6 +39,7 @@ import com.team6647.subsystems.intake.IntakeSubsystem;
 import com.team6647.subsystems.neural.NeuralVisionIO;
 import com.team6647.subsystems.neural.NeuralVisionIOLimelight;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
+import com.team6647.subsystems.shooter.ShooterCommands;
 import com.team6647.subsystems.shooter.ShooterIORollerSim;
 import com.team6647.subsystems.shooter.ShooterIORollerSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotIO;
@@ -57,6 +57,7 @@ import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -196,8 +197,8 @@ public class RobotContainer extends SuperRobotContainer {
                  * NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
                  */
 
-                configSysIdBindings();
-                // configTuningBindings();
+                // configSysIdBindings();
+                //configTuningBindings();
         }
 
         @Override
@@ -212,11 +213,15 @@ public class RobotContainer extends SuperRobotContainer {
 
                 /* Driver 1 */
 
+                OperatorConstants.RESET_GYRO
+                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(new Rotation2d())));
                 /*
                  * OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp());
                  */
 
                 /* Driver 2 */
+                OperatorConstants.driverController2.a().whileTrue(new InitIntake(intakePivotSubsystem));
+
                 OperatorConstants.TOGGLE_INTAKE
                                 .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
@@ -237,15 +242,24 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.TOGGLE_AMP
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-
-                OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
-                                SuperStructureState.CLIMBING))
-                                .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
-
-                OperatorConstants.driverController1.a()
-                                .whileTrue(new ShootingWhileMoving(
-                                                andromedaSwerve,
-                                                superStructure));
+                /*
+                 * OperatorConstants.SHOOT_SPEAKER
+                 * .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
+                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                 * 
+                 * OperatorConstants.TOGGLE_AMP
+                 * .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
+                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                 * 
+                 * OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
+                 * SuperStructureState.CLIMBING))
+                 * .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
+                 * 
+                 * OperatorConstants.driverController1.a()
+                 * .whileTrue(new ShootingWhileMoving(
+                 * andromedaSwerve,
+                 * superStructure));
+                 */
         }
 
         public void configSysIdBindings() {

@@ -15,7 +15,9 @@ public interface ShooterPivotIO {
         public double shooterAbsoluteEncoderPosition = 0.0;
         public double shooterAbsoluteEncoderVelocity = 0.0;
 
+        public double arbitraryFeedforward = 0.0;
         public double shooterPivotAppliedVolts = 0.0;
+        public double output = 0.0;
 
         public double pivotMotorPosition = 0.0;
 

@@ -23,13 +23,16 @@ public class IntakeTriggerCommand extends Command {
   @Override
   public void initialize() {
     durationTimer.restart();
-    durationTimer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     SmartDashboard.putNumber("Timer", durationTimer.get());
+
+    if (RobotContainer.intakeSubsystem.getAmps() > 5) {
+      durationTimer.start();
+    }
   }
 
   // Called once the command ends or is interrupted.
@@ -40,6 +43,6 @@ public class IntakeTriggerCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (RobotContainer.intakeSubsystem.getAmps() > 5) && (durationTimer.get() > 0.2);
+    return (RobotContainer.intakeSubsystem.getAmps() > 5) && (durationTimer.get() > 0.1);
   }
 }

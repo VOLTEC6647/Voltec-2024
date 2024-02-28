@@ -8,6 +8,7 @@ package com.team6647.subsystems.intake;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.team6647.util.Constants.IntakeConstants;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,7 +47,7 @@ public class IntakeSubsystem extends SubsystemBase {
    * @param rollerState Intake RollerState
    */
   public void changeRollerState(RollerState rollerState) {
-    /* switch (rollerState) {
+    switch (rollerState) {
       case STOPPED:
         mState = RollerState.STOPPED;
         io.setIntakeVelocity(IntakeConstants.intakeStoppedVelocity);
@@ -63,7 +64,7 @@ public class IntakeSubsystem extends SubsystemBase {
         mState = RollerState.IDLE;
         io.setIntakeVelocity(IntakeConstants.intakeIdleVelocity);
         break;
-    } */
+    }
   }
 
   public double getAmps() {
