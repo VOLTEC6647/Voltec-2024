@@ -1,14 +1,32 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.5846709517493112,
+      "y": 4.108923884514436
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Top"
+            "pathName": "Bottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
           }
         },
         {
@@ -18,15 +36,9 @@
           }
         },
         {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Idle"
+            "name": "ShootStay"
           }
         }
       ]

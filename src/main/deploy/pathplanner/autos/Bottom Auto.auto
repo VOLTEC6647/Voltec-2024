@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.5846709517493112,
+      "y": 4.108923884514436
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,13 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootStay"
+            "name": "Idle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Top"
+            "pathName": "BottomUndisturbed"
           }
         },
         {
@@ -26,25 +32,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopTo1"
+            "pathName": "BottomUndisturbedTo5"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "GrabPiece"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "1ToWing"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootStay"
           }
         }
       ]

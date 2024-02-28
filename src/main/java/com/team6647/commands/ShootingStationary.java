@@ -36,6 +36,8 @@ public class ShootingStationary extends Command {
 
   private int stageID;
 
+  private boolean readyToShoot = false;
+
   /** Creates a new ShootingStationary. */
   public ShootingStationary(AndromedaSwerve swerve, ShooterSubsystem flywheelSubsystem,
       ShooterPivotSubsystem pivotSubsystem, ShooterRollerSubsystem rollerSubsystem, VisionSubsystem visionSubsystem) {
@@ -70,7 +72,6 @@ public class ShootingStationary extends Command {
 
   @Override
   public void execute() {
-
     if (visionSubsystem.hasTargetID(stageID)) {
       // kP (constant of proportionality)
       // this is a hand-tuned number that determines the aggressiveness of our
@@ -78,7 +79,7 @@ public class ShootingStationary extends Command {
       // if it is too high, the robot will oscillate around.
       // if it is too low, the robot will never reach its target
       // if the robot never turns in the correct direction, kP should be inverted.
-      double kP = .025;
+      double kP = .005;
 
       // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the
       // rightmost edge of
@@ -91,17 +92,30 @@ public class ShootingStationary extends Command {
       // invert since tx is positive when the target is to the right of the Fcrosshair
       targetingAngularVelocity *= -1.0;
 
+      if (targetingAngularVelocity < 0.1) {
+        readyToShoot = true;
+      }
+
       swerve.drive(new Translation2d(), targetingAngularVelocity, false);
     } else {
       swerve.drive(new ChassisSpeeds());
+      if (swerve.angleInTolerance()) {
+        readyToShoot = true;
+      }
+
     }
 
     flywheelSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
     pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
 
-    if (flywheelSubsystem.topInTolerance() && flywheelSubsystem.bottomInTolerance()) {
-      rollerSubsystem.changeRollerState(RollerState.INTAKING);
+    if (readyToShoot) {
+      if (flywheelSubsystem.topInTolerance() && flywheelSubsystem.bottomInTolerance()) {
+        if (pivotSubsystem.inTolerance()) {
+          rollerSubsystem.changeRollerState(RollerState.INTAKING);
+        }
+      }
     }
+
   }
 
   // Called once the command ends or is interrupted.
@@ -114,6 +128,6 @@ public class ShootingStationary extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return !flywheelSubsystem.getBeamBrake();
   }
 }

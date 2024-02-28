@@ -47,11 +47,12 @@ public class Constants {
                 public static final Trigger TOGGLE_INTAKE = driverController2.povRight(),
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = driverController2.b(),
-                                CLIMB_TOP = driverController2.y();
+                                CLIMB_TOP = driverController2.y(),
+                                MOVE_FEEDER = driverController2.rightTrigger();
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.SIM;
+                public static final Mode currentMode = Mode.REAL;
 
                 public static final boolean tuningMode = true;
 
@@ -221,7 +222,7 @@ public class Constants {
                 public static final double rollerIdleVelocity = 0.1;
 
                 public static final double shooterExhaustSpeed = 1000;
-                public static final double shooterIdleSpeed = 2000;
+                public static final double shooterIdleSpeed = 5000;
                 public static final double shooterStoppedSpeed = 0.0;
 
                 public static final int forwardLimitSwitchID = 7;

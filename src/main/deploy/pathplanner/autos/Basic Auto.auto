@@ -1,32 +1,32 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.5846709517493112,
+      "y": 4.108923884514436
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "BottomTo5"
+            "name": "Idle"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "5ToWing"
+            "pathName": "BottomUndisturbed"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "WingTo3"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "3ToWing"
+            "name": "ShootStay"
           }
         }
       ]

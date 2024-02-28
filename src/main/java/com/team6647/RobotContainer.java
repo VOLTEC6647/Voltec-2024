@@ -16,7 +16,10 @@ import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.AndromedaPr
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
+import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
@@ -39,7 +42,6 @@ import com.team6647.subsystems.intake.IntakeSubsystem;
 import com.team6647.subsystems.neural.NeuralVisionIO;
 import com.team6647.subsystems.neural.NeuralVisionIOLimelight;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
-import com.team6647.subsystems.shooter.ShooterCommands;
 import com.team6647.subsystems.shooter.ShooterIORollerSim;
 import com.team6647.subsystems.shooter.ShooterIORollerSparkMax;
 import com.team6647.subsystems.shooter.ShooterPivotIO;
@@ -182,23 +184,19 @@ public class RobotContainer extends SuperRobotContainer {
                 }
                 superStructure = SuperStructure.getInstance();
 
-                /*
-                 * NamedCommands.registerCommand("ShootStay",
-                 * SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(4));
-                 * // TODO
-                 * // QUITAR
-                 * NamedCommands.registerCommand("GrabPiece",
-                 * SuperStructure.update(SuperStructureState.INTAKING));
-                 * NamedCommands.registerCommand("Idle",
-                 * SuperStructure.update(SuperStructureState.IDLE));
-                 * NamedCommands.registerCommand("VisionAlign",
-                 * SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
-                 * 
-                 * NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
-                 */
+                NamedCommands.registerCommand("ShootStay",
+                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(3));
+                NamedCommands.registerCommand("GrabPiece",
+                                SuperStructure.update(SuperStructureState.INTAKING));
+                NamedCommands.registerCommand("Idle",
+                                SuperStructure.update(SuperStructureState.IDLE).withTimeout(0.1));
+                NamedCommands.registerCommand("VisionAlign",
+                                SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
+
+                NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
                 // configSysIdBindings();
-                //configTuningBindings();
+                // configTuningBindings();
         }
 
         @Override
@@ -226,15 +224,6 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
-                /*
-                 * OperatorConstants.driverController2.povLeft()
-                 * .whileTrue(ShooterCommands.getShooterIntakingCommand()
-                 * .alongWith(IntakeCommands.getIntakingCommandPart1()))
-                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE))
-                 * .and(OperatorConstants.driverController2.a())
-                 * .whileTrue(IntakeCommands.getIntakingCommandPart2());
-                 */
-
                 OperatorConstants.SHOOT_SPEAKER
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
@@ -242,6 +231,10 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.TOGGLE_AMP
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                OperatorConstants.MOVE_FEEDER
+                                .whileTrue(new IntakeRollerStartEnd(intakeSubsystem, RollerState.INTAKING,
+                                                RollerState.STOPPED));
                 /*
                  * OperatorConstants.SHOOT_SPEAKER
                  * .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
@@ -286,6 +279,6 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return Commands.waitSeconds(0);
+                return AutoBuilder.buildAuto("Bottom Wing Auto");
         }
 }

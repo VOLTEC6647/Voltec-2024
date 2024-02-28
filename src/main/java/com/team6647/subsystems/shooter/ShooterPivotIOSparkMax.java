@@ -64,7 +64,7 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
                 * shooterPivotMotor.getBusVoltage();
 
         inputs.inTolerance = Math
-                .abs(shooterPivotMotor.getPosition() - setpoint) < ShooterConstants.positionTolerance;
+                .abs(pivotEncoder.getPosition() - this.setpoint) < ShooterConstants.positionTolerance;
 
         inputs.limitSwitchPressed = !forwardLimitSwitch.get();
 

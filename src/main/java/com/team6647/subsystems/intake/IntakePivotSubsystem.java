@@ -107,7 +107,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   public void emergencyCheck() {
-    if (inputs.intakeLimitSwitchPressed) {
+  /*   if (inputs.intakeLimitSwitchPressed) {
       DriverStation.reportError("Intake Pivot Stopped", true);
       io.setIntakeVoltage(0);
     }
@@ -118,7 +118,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
           true);
       io.disableIntake();
     }
-
+ */
   }
 
   public boolean pushingInTolerance() {
