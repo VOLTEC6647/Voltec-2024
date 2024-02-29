@@ -19,7 +19,7 @@ import com.andromedalib.robot.SuperRobotContainer;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
-import com.team6647.commands.IntakeRollerStartEnd;
+import com.team6647.commands.ShooterRollerStartEnd;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
@@ -187,7 +187,7 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("ShootStay",
                                 SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(3));
                 NamedCommands.registerCommand("GrabPiece",
-                                SuperStructure.update(SuperStructureState.INTAKING));
+                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(3));
                 NamedCommands.registerCommand("Idle",
                                 SuperStructure.update(SuperStructureState.IDLE).withTimeout(0.1));
                 NamedCommands.registerCommand("VisionAlign",
@@ -233,7 +233,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 OperatorConstants.MOVE_FEEDER
-                                .whileTrue(new IntakeRollerStartEnd(intakeSubsystem, RollerState.INTAKING,
+                                .whileTrue(new ShooterRollerStartEnd(shooterRollerSubsystem, RollerState.IDLE,
                                                 RollerState.STOPPED));
                 /*
                  * OperatorConstants.SHOOT_SPEAKER
@@ -279,6 +279,8 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return AutoBuilder.buildAuto("Bottom Wing Auto");
+                return Commands.sequence(
+                                new InitIntake(intakePivotSubsystem),
+                                AutoBuilder.buildAuto("Bottom Wing Auto"));
         }
 }
