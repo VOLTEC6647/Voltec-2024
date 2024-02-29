@@ -5,6 +5,8 @@
  */
 package com.team6647;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIOSim;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIOTalonFX;
@@ -30,7 +32,6 @@ import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
-import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
 import com.team6647.subsystems.intake.IntakeIOTalonFX;
@@ -79,6 +80,9 @@ public class RobotContainer extends SuperRobotContainer {
         public static ElevatorSubsystem elevatorSubsystem;
 
         public static SuperStructure superStructure;
+
+        private final LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<>(
+                        "Auto Routine");
 
         private RobotContainer() {
         }
@@ -195,8 +199,9 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
-                // configSysIdBindings();
-                // configTuningBindings();
+                autoChooser.addOption("Bottom Wing 2Piece Auto",
+                                AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
+                autoChooser.addOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
         }
 
         @Override
@@ -232,8 +237,12 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
-                OperatorConstants.MOVE_FEEDER
-                                .whileTrue(new ShooterRollerStartEnd(shooterRollerSubsystem, RollerState.IDLE,
+                OperatorConstants.INTAKE_FEEDER
+                                .whileTrue(new ShooterRollerStartEnd(shooterRollerSubsystem, RollerState.INTAKING,
+                                                RollerState.STOPPED));
+
+                OperatorConstants.EXHAUST_FEEDER
+                                .whileTrue(new ShooterRollerStartEnd(shooterRollerSubsystem, RollerState.EXHAUSTING,
                                                 RollerState.STOPPED));
                 /*
                  * OperatorConstants.SHOOT_SPEAKER
@@ -281,6 +290,6 @@ public class RobotContainer extends SuperRobotContainer {
         public Command getAutonomousCommand() {
                 return Commands.sequence(
                                 new InitIntake(intakePivotSubsystem),
-                                AutoBuilder.buildAuto("Bottom Wing Auto"));
+                                autoChooser.get());
         }
 }

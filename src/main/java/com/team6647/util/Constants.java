@@ -48,7 +48,8 @@ public class Constants {
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = driverController2.b(),
                                 CLIMB_TOP = driverController2.y(),
-                                MOVE_FEEDER = driverController2.rightTrigger();
+                                INTAKE_FEEDER = driverController2.rightTrigger(),
+                                EXHAUST_FEEDER = driverController2.leftTrigger();
         }
 
         public static class RobotConstants {
