@@ -110,7 +110,7 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5),
-                        new RunCommand(() -> intakeSubsystem.changeRollerState(RollerState.INTAKING), intakeSubsystem)
+                        new RunCommand(() -> intakeSubsystem.changeRollerState(RollerState.EXHAUSTING), intakeSubsystem)
                                 .withTimeout(0.2)));
     }
 

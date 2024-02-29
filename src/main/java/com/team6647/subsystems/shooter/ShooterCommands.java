@@ -9,7 +9,7 @@ package com.team6647.subsystems.shooter;
 import com.team6647.RobotContainer;
 import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.ShooterPivotTarget;
-import com.team6647.commands.ShooterRollerTarget;
+import com.team6647.commands.ShooterRollerStartEnd;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
@@ -32,7 +32,7 @@ public class ShooterCommands {
         return Commands.deadline(
                 Commands.waitUntil(() -> debounce.calculate(rollerSubsystem.getAmps() > 3)),
                 new ShooterPivotTarget(pivotSubsystem, ShooterPivotState.INDEXING),
-                new ShooterRollerTarget(rollerSubsystem, RollerState.IDLE),
+                new ShooterRollerStartEnd(rollerSubsystem, RollerState.IDLE, RollerState.STOPPED),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED));
 
     }
