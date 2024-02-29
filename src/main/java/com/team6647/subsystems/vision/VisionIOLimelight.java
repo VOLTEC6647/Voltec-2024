@@ -35,12 +35,7 @@ public class VisionIOLimelight implements VisionIO {
                 LimelightHelpers.getTA(VisionConstants.aprilLimeNTName) > 0.1) {
             inputs.hasTarget = true;
 
-            if (DriverStation.isAutonomous()) {
-                inputs.observedPose2d = LimelightHelpers.toPose2D(result.botpose_wpiblue);
-            } else {
-                inputs.observedPose2d = isRed() ? LimelightHelpers.toPose2D(result.botpose_wpired)
-                        : LimelightHelpers.toPose2D(result.botpose_wpiblue);
-            }
+            inputs.observedPose2d = LimelightHelpers.toPose2D(result.botpose_wpiblue);
 
             inputs.timestampLatency = Logger.getRealTimestamp()
                     - (result.latency_capture + result.latency_pipeline / 1000.0);
