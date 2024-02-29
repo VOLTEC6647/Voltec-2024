@@ -62,6 +62,7 @@ public class Constants {
                                 DriverStation.reportError("[Mode Error] Mode is set to " + currentMode.toString()
                                                 + " , but the robot is running on a real robot. Changing mode to avoid issues",
                                                 true);
+                                return Mode.REAL;
                         }
 
                         if (currentMode == Mode.SIM)
