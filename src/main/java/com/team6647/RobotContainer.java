@@ -246,6 +246,7 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.TOGGLE_AMP
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                                
 
                 OperatorConstants.INTAKE_FEEDER
                                 .whileTrue(Commands.parallel(
