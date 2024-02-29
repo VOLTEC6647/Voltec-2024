@@ -256,9 +256,9 @@ public class Constants {
                         shooterPivotMap.put(1.095979334274389, 150.0);
                         shooterPivotMap.put(1.282133452297385, 155.0);
                         shooterPivotMap.put(1.4342617709538774, 157.0);
-                        shooterPivotMap.put(1.4342617709538774, 164.0);
-                        shooterPivotMap.put(1.8687062887987802, 165.0);
-                        shooterPivotMap.put(2.0448387211045267, 168.0);
+                        shooterPivotMap.put(1.4342617709538774, 162.0);
+                        shooterPivotMap.put(1.8687062887987802, 163.0);
+                        shooterPivotMap.put(2.0448387211045267, 167.0);
                         shooterPivotMap.put(2.259941229448083, 169.0);
                         shooterPivotMap.put(2.3849374678265636, 171.0);
                         shooterPivotMap.put(2.6708614771998826, 173.0);
