@@ -25,12 +25,12 @@ public class IntakeCommands {
         private static IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
 
         public static final Command getIntakeCommand() {
-                Debouncer debounce = new Debouncer(0.34, DebounceType.kRising);
+                Debouncer debounce = new Debouncer(0.3, DebounceType.kRising);
 
                 return Commands.sequence(
                                 new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING),
                                 new IntakeExtend().andThen(new InitIntake(intakePivotSubsystem)),
-                                Commands.waitUntil(() -> debounce.calculate(intakeSubsystem.getAmps() > 5)),
+                                Commands.waitUntil(() -> debounce.calculate(intakeSubsystem.objectDetected())),
                                 new IntakeHome(intakePivotSubsystem),
                                 new IntakeRollerTarget(
                                                 intakeSubsystem,

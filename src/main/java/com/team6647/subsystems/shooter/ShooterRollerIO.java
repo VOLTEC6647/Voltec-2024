@@ -12,7 +12,9 @@ public interface ShooterRollerIO {
 
     @AutoLog
     public static class ShooterRollerIOInputs {
-        public double rollerVelocity = 0.9;
+        public double rollerVelocity = 0.0;
+
+        public double rollerCurrent = 0.0;
     }
 
     public default void updateInputs(ShooterRollerIOInputs inputs) {

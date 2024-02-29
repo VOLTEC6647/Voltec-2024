@@ -21,6 +21,8 @@ public class ShooterIORollerSparkMax implements ShooterRollerIO {
     @Override
     public void updateInputs(ShooterRollerIOInputs inputs) {
         inputs.rollerVelocity = rollerMotor.getAppliedOutput();
+
+        inputs.rollerCurrent = rollerMotor.getOutputCurrent();
     }
 
     @Override
