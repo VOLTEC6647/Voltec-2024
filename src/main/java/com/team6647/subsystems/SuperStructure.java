@@ -151,8 +151,8 @@ public class SuperStructure {
 
         return Commands.sequence(
                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP),
-                new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING),
-                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING));
+                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING));
     }
 
     private static Command elevatorClimb() {

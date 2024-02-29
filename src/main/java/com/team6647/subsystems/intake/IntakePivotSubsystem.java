@@ -11,7 +11,6 @@ import org.littletonrobotics.junction.Logger;
 import com.andromedalib.math.Functions;
 import com.team6647.util.Constants.IntakeConstants;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class IntakePivotSubsystem extends SubsystemBase {
@@ -107,18 +106,20 @@ public class IntakePivotSubsystem extends SubsystemBase {
   }
 
   public void emergencyCheck() {
-  /*   if (inputs.intakeLimitSwitchPressed) {
-      DriverStation.reportError("Intake Pivot Stopped", true);
-      io.setIntakeVoltage(0);
-    }
-
-    if (inputs.intakePivotAbsoluteEncoderPosition == 0) {
-      mState = IntakePivotState.EMERGENCY_DISABLED;
-      DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
-          true);
-      io.disableIntake();
-    }
- */
+    /*
+     * if (inputs.intakeLimitSwitchPressed) {
+     * DriverStation.reportError("Intake Pivot Stopped", true);
+     * io.setIntakeVoltage(0);
+     * }
+     * 
+     * if (inputs.intakePivotAbsoluteEncoderPosition == 0) {
+     * mState = IntakePivotState.EMERGENCY_DISABLED;
+     * DriverStation.reportError("[" + getName() +
+     * "] Absolute Encoder position is not in range. Emergency disabled",
+     * true);
+     * io.disableIntake();
+     * }
+     */
   }
 
   public boolean pushingInTolerance() {

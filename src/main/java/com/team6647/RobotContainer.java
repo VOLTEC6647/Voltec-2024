@@ -20,6 +20,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
+import com.team6647.commands.ShooterRollerStartEnd;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
@@ -30,7 +31,7 @@ import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
-import com.team6647.subsystems.intake.IntakeCommands;
+import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
 import com.team6647.subsystems.intake.IntakeIOTalonFX;
@@ -58,6 +59,7 @@ import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.RobotConstants.RollerState;
+import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -228,13 +230,43 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
+                OperatorConstants.driverController2.a()
+                                .whileTrue(new InstantCommand(
+                                                () -> {
+                                                        ShootingParameters currentParameters = new ShootingParameters(
+                                                                        new Rotation2d(), 0, 5000);
+
+                                                        ShooterSubsystem.updateShootingParameters(
+                                                                        currentParameters);
+                                                        shooterSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
+                                                }))
+                                .onFalse(new InstantCommand(
+                                                () -> shooterSubsystem.changeFlywheelState(FlywheelState.STOPPED)));
+
                 OperatorConstants.TOGGLE_AMP
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
-                OperatorConstants.MOVE_FEEDER
-                                .whileTrue(new IntakeRollerStartEnd(intakeSubsystem, RollerState.INTAKING,
-                                                RollerState.STOPPED));
+                OperatorConstants.INTAKE_FEEDER
+                                .whileTrue(Commands.parallel(
+                                                new ShooterRollerStartEnd(shooterRollerSubsystem, RollerState.INTAKING,
+                                                                RollerState.STOPPED),
+                                                new IntakeRollerStartEnd(intakeSubsystem, RollerState.INTAKING,
+                                                                RollerState.STOPPED)));
+
+                OperatorConstants.EXHAUST_FEEDER
+                                .whileTrue(Commands.parallel(
+                                                new ShooterRollerStartEnd(shooterRollerSubsystem,
+                                                                RollerState.EXHAUSTING,
+                                                                RollerState.STOPPED),
+                                                new IntakeRollerStartEnd(intakeSubsystem, RollerState.EXHAUSTING,
+                                                                RollerState.STOPPED)));
+
+                OperatorConstants.driverController2.povUp()
+                                .whileTrue(new InstantCommand(() -> shooterPivotSubsystem.updateSetpoint(0.5)));
+                OperatorConstants.driverController2.povDown()
+                                .whileTrue(new InstantCommand(() -> shooterPivotSubsystem.updateSetpoint(-0.5)));
+
                 /*
                  * OperatorConstants.SHOOT_SPEAKER
                  * .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))

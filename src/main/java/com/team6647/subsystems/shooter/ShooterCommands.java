@@ -15,6 +15,8 @@ import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
 import com.team6647.util.Constants.RobotConstants.RollerState;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 
@@ -24,8 +26,11 @@ public class ShooterCommands {
     private static ShooterRollerSubsystem rollerSubsystem = RobotContainer.shooterRollerSubsystem;
 
     public static final Command getShooterIntakingCommand() {
+
+        Debouncer debounce = new Debouncer(0.34, DebounceType.kRising);
+
         return Commands.deadline(
-                Commands.waitUntil(() -> !shooterSubsystem.getBeamBrake()),
+                Commands.waitUntil(() -> debounce.calculate(rollerSubsystem.getAmps() > 3)),
                 new ShooterPivotTarget(pivotSubsystem, ShooterPivotState.INDEXING),
                 new ShooterRollerTarget(rollerSubsystem, RollerState.IDLE),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED));

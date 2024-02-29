@@ -120,6 +120,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     io.setShooterReference(newSetpoint);
   }
 
+  public void updateSetpoint(double measure) {
+    changeSetpoint(setpoint + measure);
+  }
+
   public boolean inTolerance() {
     return inputs.inTolerance;
   }

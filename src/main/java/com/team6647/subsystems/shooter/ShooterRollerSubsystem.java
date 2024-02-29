@@ -62,4 +62,8 @@ public class ShooterRollerSubsystem extends SubsystemBase {
         break;
     }
   }
+
+  public double getAmps(){
+    return inputs.rollerCurrent;
+  }
 }

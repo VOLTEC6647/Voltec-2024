@@ -48,7 +48,8 @@ public class Constants {
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = driverController2.b(),
                                 CLIMB_TOP = driverController2.y(),
-                                MOVE_FEEDER = driverController2.rightTrigger();
+                                INTAKE_FEEDER = driverController2.rightTrigger(),
+                                EXHAUST_FEEDER = driverController2.leftTrigger();
         }
 
         public static class RobotConstants {
@@ -188,7 +189,7 @@ public class Constants {
                 public static final double shooterTolerance = 100.0;
 
                 public static final double pivotKp = 0.1;
-                public static final double pivotKi = 0;
+                public static final double pivotKi = 0.0015;
                 public static final double pivotKd = 0.0;
                 public static final double pivotKf = 0.45;
                 public static final double pidPositionTolerance = 0.05;
@@ -208,9 +209,9 @@ public class Constants {
                 public static final boolean armEncoderInverted = true;
                 public static final boolean shooterPivotMotorInverted = true;
 
-                public static final double pivotMinPosition = 118;
+                public static final double pivotMinPosition = 115;
                 public static final double pivotMaxPosition = 264;
-                public static final double pivotHomedPosition = 118.2;
+                public static final double pivotHomedPosition = 115;
                 public static final double pivotIndexingPosition = 155;
                 public static final double pivotAmpPosition = 229;
                 public static final double pivotClimbPosition = 235;
@@ -255,9 +256,9 @@ public class Constants {
                         shooterPivotMap.put(1.095979334274389, 150.0);
                         shooterPivotMap.put(1.282133452297385, 155.0);
                         shooterPivotMap.put(1.4342617709538774, 157.0);
-                        shooterPivotMap.put(1.4342617709538774, 162.0);
-                        shooterPivotMap.put(1.8687062887987802, 163.0);
-                        shooterPivotMap.put(2.0448387211045267, 167.0);
+                        shooterPivotMap.put(1.4342617709538774, 164.0);
+                        shooterPivotMap.put(1.8687062887987802, 165.0);
+                        shooterPivotMap.put(2.0448387211045267, 168.0);
                         shooterPivotMap.put(2.259941229448083, 169.0);
                         shooterPivotMap.put(2.3849374678265636, 171.0);
                         shooterPivotMap.put(2.6708614771998826, 173.0);
