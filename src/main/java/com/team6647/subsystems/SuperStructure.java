@@ -69,7 +69,8 @@ public class SuperStructure {
     }
 
     public enum SuperStructureState {
-        IDLE, INTAKING, SHOOTING_SPEAKER, SCORING_AMP, SHOOTING_TRAP, SHOOTING_MOVING, CLIMBING, INTAKE_ALIGN
+        IDLE, INTAKING, SHOOTING_SPEAKER, SCORING_AMP, SHOOTING_TRAP, SHOOTING_MOVING, CLIMBING, STOPPING_CLIMB,
+        INTAKE_ALIGN
     }
 
     public static Command update(SuperStructureState newState) {
@@ -94,6 +95,9 @@ public class SuperStructure {
             case CLIMBING:
                 mRobotState = SuperStructureState.CLIMBING;
                 return elevatorClimb();
+            case STOPPING_CLIMB:
+                mRobotState = SuperStructureState.STOPPING_CLIMB;
+                return homeElevator();
             case INTAKE_ALIGN:
                 mRobotState = SuperStructureState.INTAKE_ALIGN;
                 return new VisionIntakeAlign(neuralVisionSubsystem,
@@ -121,9 +125,15 @@ public class SuperStructure {
                 Commands.parallel(
                         Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
                         new IntakeRollerTarget(intakeSubsystem, RollerState.STOPPED),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED),
                         new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED),
                         new ShooterRollerTarget(rollerSubsystem, RollerState.STOPPED),
-                        new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED)),
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED)));
+    }
+
+    private static Command homeElevator() {
+        return Commands.sequence(
+                new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED),
                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED));
     }
 
@@ -153,6 +163,7 @@ public class SuperStructure {
         return Commands.sequence(
                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(3),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                Commands.waitSeconds(2),
                 new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING));
     }
 

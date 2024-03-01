@@ -305,6 +305,8 @@ public class Constants {
                 public static final double elevatorHomedPosition = 0.24;
                 public static final double elevatorAmpPosition = 2;
 
+                public static final double positionTolerance = 4;
+
                 public static final SensorDirectionValue elevatorCANCoderSensorValue = SensorDirectionValue.CounterClockwise_Positive;
         }
 

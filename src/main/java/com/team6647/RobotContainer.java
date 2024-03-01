@@ -267,7 +267,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
                                 SuperStructureState.CLIMBING))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                                .onFalse(SuperStructure.update(SuperStructureState.STOPPING_CLIMB));
                 /*
                  * OperatorConstants.SHOOT_SPEAKER
                  * .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))

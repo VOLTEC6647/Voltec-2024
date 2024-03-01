@@ -36,6 +36,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     this.io = io;
 
     elevatorPIDController.reset(inputs.elevatorAbsoluteEncoderPosition);
+    elevatorPIDController.setTolerance(ElevatorConstants.positionTolerance);
   }
 
   public static ElevatorSubsystem getInstance(ElevatorIO io) {
