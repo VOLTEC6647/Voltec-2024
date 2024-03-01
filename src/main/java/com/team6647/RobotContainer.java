@@ -246,7 +246,6 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.TOGGLE_AMP
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-                                
 
                 OperatorConstants.INTAKE_FEEDER
                                 .whileTrue(Commands.parallel(
@@ -312,6 +311,6 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return AutoBuilder.buildAuto("Bottom Wing Auto");
+                return AutoBuilder.buildAuto("Basic Auto");
         }
 }
