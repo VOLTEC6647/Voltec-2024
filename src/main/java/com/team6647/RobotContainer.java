@@ -195,7 +195,7 @@ public class RobotContainer extends SuperRobotContainer {
                 autoDashboardChooser.addDefaultOption("Do nothing auto", Commands.waitSeconds(0));
 
                 autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
-                autoDashboardChooser.addDefaultOption("Top", AutoBuilder.buildAuto("Top Auto"));
+                autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Aut|"));
 
                 autoDashboardChooser.addOption("Bottom 2Piece Auto", AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
 
