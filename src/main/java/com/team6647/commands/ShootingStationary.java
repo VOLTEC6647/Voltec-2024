@@ -21,6 +21,7 @@ import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -53,7 +54,6 @@ public class ShootingStationary extends Command {
         : VisionConstants.speakerBlueCenterTagID;
 
     SmartDashboard.putNumber("STAGE", stageID);
-
   }
 
   // Called when the command is initially scheduled.
@@ -62,7 +62,7 @@ public class ShootingStationary extends Command {
     visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
 
     this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
-        Speaker.centerSpeakerOpening.toTranslation2d());
+        AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
 
     SuperStructure.updateShootingParameters(parameters);
 

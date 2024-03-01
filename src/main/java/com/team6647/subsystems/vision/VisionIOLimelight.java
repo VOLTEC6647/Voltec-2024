@@ -35,7 +35,7 @@ public class VisionIOLimelight implements VisionIO {
                 LimelightHelpers.getTA(VisionConstants.aprilLimeNTName) > 0.1) {
             inputs.hasTarget = true;
 
-            inputs.observedPose2d = LimelightHelpers.toPose2D(result.botpose_wpiblue);
+            inputs.observedPose2d = LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.aprilLimeNTName);
 
             inputs.timestampLatency = Logger.getRealTimestamp()
                     - (result.latency_capture + result.latency_pipeline / 1000.0);

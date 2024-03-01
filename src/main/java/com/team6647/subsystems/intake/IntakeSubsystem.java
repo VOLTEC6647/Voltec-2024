@@ -84,4 +84,8 @@ public class IntakeSubsystem extends SubsystemBase {
   public boolean objectDetected() {
     return getAmps() > 5;
   }
+
+  public boolean getBeamBrake(){
+    return inputs.intakeBeamBrake;
+  }
 }

@@ -30,7 +30,7 @@ public class IntakeCommands {
                 return Commands.sequence(
                                 new IntakeRollerTarget(intakeSubsystem, RollerState.INTAKING),
                                 new IntakeExtend().andThen(new InitIntake(intakePivotSubsystem)),
-                                Commands.waitUntil(() -> debounce.calculate(intakeSubsystem.objectDetected())),
+                                Commands.waitUntil(() -> !intakeSubsystem.getBeamBrake()),
                                 new IntakeHome(intakePivotSubsystem),
                                 new IntakeRollerTarget(
                                                 intakeSubsystem,

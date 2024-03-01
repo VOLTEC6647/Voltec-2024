@@ -150,7 +150,7 @@ public class SuperStructure {
         updateShootingParameters(ampParams);
 
         return Commands.sequence(
-                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(3),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                 new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING));
     }

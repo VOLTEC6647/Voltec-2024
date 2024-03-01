@@ -356,6 +356,7 @@ public class Constants {
 
                 public static final int pushingLimitSwitch = 5;
                 public static final int intakeLimitSwitch = 9;
+                public static final int intakeBeamBrakeChannel = 4;
         }
 
         public static class VisionConstants {
