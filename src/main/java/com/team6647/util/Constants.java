@@ -343,7 +343,7 @@ public class Constants {
                 public static final double intakePivotEncoderZeroOffset = 0.0;
 
                 public static final boolean intakePivotEncoderInverted = true;
-                public static final boolean intakePivotLeftMotorInverted = false;c
+                public static final boolean intakePivotLeftMotorInverted = false;
                 public static final boolean intakePivotRightMotorInverted = true;
 
                 public static final int intakeMotorsCurrentLimit = 30;
