@@ -90,7 +90,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     Logger.recordOutput("Elevator/Output", volts);
 
-    io.setElevatorVoltage(volts);
+    //io.setElevatorVoltage(volts);
   }
 
   @AutoLogOutput(key = "Elevator/InTolerance")
