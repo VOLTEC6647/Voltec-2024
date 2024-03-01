@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.44,
-        "y": 7.32
+        "x": 1.3753145608143071,
+        "y": 6.981745845094965
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2003288611831815,
-        "y": 6.9534244556445
+        "x": 2.165314560814307,
+        "y": 6.981745845094965
       },
       "isLocked": false,
       "linkedName": "TopStart"
@@ -30,28 +30,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "ShootMove",
-      "waypointRelativePos": 0.4,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "GrabPiece",
-      "waypointRelativePos": 1.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

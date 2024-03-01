@@ -195,10 +195,12 @@ public class RobotContainer extends SuperRobotContainer {
                 autoDashboardChooser.addDefaultOption("Do nothing auto", Commands.waitSeconds(0));
 
                 autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
+                autoDashboardChooser.addDefaultOption("Top", AutoBuilder.buildAuto("Top Auto"));
+
                 autoDashboardChooser.addOption("Bottom 2Piece Auto", AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
 
                 NamedCommands.registerCommand("ShootStay",
-                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(3));
+                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
                 NamedCommands.registerCommand("GrabPiece",
                                 SuperStructure.update(SuperStructureState.INTAKING));
                 NamedCommands.registerCommand("Idle",
