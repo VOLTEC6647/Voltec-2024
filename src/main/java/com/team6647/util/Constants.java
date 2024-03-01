@@ -53,7 +53,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.REPLAY;
+                public static final Mode currentMode = Mode.REAL;
 
                 public static final boolean tuningMode = true;
 
