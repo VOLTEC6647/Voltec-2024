@@ -161,9 +161,9 @@ public class SuperStructure {
         updateShootingParameters(ampParams);
 
         return Commands.sequence(
-                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(3),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(1),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
-                Commands.waitSeconds(2),
+                Commands.waitSeconds(1),
                 new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING));
     }
 
