@@ -20,6 +20,7 @@ import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.team6647.commands.ElevatorTarget;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
@@ -30,6 +31,7 @@ import com.team6647.subsystems.elevator.ElevatorIO;
 import com.team6647.subsystems.elevator.ElevatorIOSim;
 import com.team6647.subsystems.elevator.ElevatorIOSparkMax;
 import com.team6647.subsystems.elevator.ElevatorSubsystem;
+import com.team6647.subsystems.elevator.ElevatorSubsystem.ElevatorState;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
@@ -260,12 +262,9 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 RollerState.STOPPED),
                                                 new IntakeRollerStartEnd(intakeSubsystem, RollerState.EXHAUSTING,
                                                                 RollerState.STOPPED)));
-
-                OperatorConstants.driverController2.povUp()
-                                .whileTrue(new InstantCommand(() -> shooterPivotSubsystem.updateSetpoint(0.5)));
-                OperatorConstants.driverController2.povDown()
-                                .whileTrue(new InstantCommand(() -> shooterPivotSubsystem.updateSetpoint(-0.5)));
-
+                OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
+                                SuperStructureState.CLIMBING))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
                 /*
                  * OperatorConstants.SHOOT_SPEAKER
                  * .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))

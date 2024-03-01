@@ -19,6 +19,7 @@ import com.team6647.util.Constants.RobotConstants.RollerState;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -64,8 +65,12 @@ public class ShootingStationary extends Command {
   public void initialize() {
     visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
 
-    this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
-        AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+    if (align) {
+      this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
+          AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+    } else {
+      this.parameters = new ShootingParameters(new Rotation2d(), 150, 5000);
+    }
 
     SuperStructure.updateShootingParameters(parameters);
 
