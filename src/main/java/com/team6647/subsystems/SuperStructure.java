@@ -134,7 +134,7 @@ public class SuperStructure {
     private static Command shootingStationary() {
 
         return new ShootingStationary(andromedaSwerve, shooterSubsystem, shooterPivotSubsystem, rollerSubsystem,
-                visionSubsystem);
+                visionSubsystem, true);
     }
 
     /* Pathfinding */

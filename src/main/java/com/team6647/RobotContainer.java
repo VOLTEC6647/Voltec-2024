@@ -5,6 +5,8 @@
  */
 package com.team6647;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIOSim;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIOTalonFX;
@@ -21,6 +23,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
+import com.team6647.commands.ShootingStationary;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
@@ -31,7 +34,6 @@ import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
-import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.IntakeIO;
 import com.team6647.subsystems.intake.IntakeIOSim;
 import com.team6647.subsystems.intake.IntakeIOTalonFX;
@@ -59,7 +61,6 @@ import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.RobotConstants.RollerState;
-import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -81,6 +82,9 @@ public class RobotContainer extends SuperRobotContainer {
         public static ElevatorSubsystem elevatorSubsystem;
 
         public static SuperStructure superStructure;
+
+        private static LoggedDashboardChooser<Command> autoDashboardChooser = new LoggedDashboardChooser<>(
+                        "Auto chooser");
 
         private RobotContainer() {
         }
@@ -186,6 +190,9 @@ public class RobotContainer extends SuperRobotContainer {
                 }
                 superStructure = SuperStructure.getInstance();
 
+                autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
+                autoDashboardChooser.addOption("Bottom 2Piece Auto", AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
+
                 NamedCommands.registerCommand("ShootStay",
                                 SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(3));
                 NamedCommands.registerCommand("GrabPiece",
@@ -231,17 +238,9 @@ public class RobotContainer extends SuperRobotContainer {
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 OperatorConstants.driverController2.a()
-                                .whileTrue(new InstantCommand(
-                                                () -> {
-                                                        ShootingParameters currentParameters = new ShootingParameters(
-                                                                        new Rotation2d(), 0, 5000);
-
-                                                        ShooterSubsystem.updateShootingParameters(
-                                                                        currentParameters);
-                                                        shooterSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
-                                                }))
-                                .onFalse(new InstantCommand(
-                                                () -> shooterSubsystem.changeFlywheelState(FlywheelState.STOPPED)));
+                                .whileTrue(new ShootingStationary(andromedaSwerve, shooterSubsystem,
+                                                shooterPivotSubsystem, shooterRollerSubsystem, visionSubsytem, false))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 OperatorConstants.TOGGLE_AMP
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
@@ -311,6 +310,8 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return AutoBuilder.buildAuto("Basic Auto");
+                return Commands.sequence(
+                                new InitIntake(intakePivotSubsystem),
+                                autoDashboardChooser.get());
         }
 }

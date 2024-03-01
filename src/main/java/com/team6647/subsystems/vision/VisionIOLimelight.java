@@ -44,8 +44,8 @@ public class VisionIOLimelight implements VisionIO {
             try {
                 inputs.targetID = (int) LimelightHelpers.getFiducialID(VisionConstants.aprilLimeNTName);
             } catch (Exception e) {
-                inputs.targetID = 0;
                 DriverStation.reportError("[Limelight] Error found while trying to compute target ID", true);
+                inputs.targetID = 0;
             }
         } else {
             inputs.observedPose2d = new Pose2d();
