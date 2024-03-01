@@ -47,7 +47,7 @@ public class Constants {
                 public static final Trigger TOGGLE_INTAKE = driverController2.povRight(),
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = driverController2.b(),
-                                CLIMB_TOP = driverController2.y(),
+                                CLIMB_TOP = driverController2.povUp(),
                                 INTAKE_FEEDER = driverController2.rightTrigger(),
                                 EXHAUST_FEEDER = driverController2.leftTrigger();
         }

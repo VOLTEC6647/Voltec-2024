@@ -192,6 +192,8 @@ public class RobotContainer extends SuperRobotContainer {
                 }
                 superStructure = SuperStructure.getInstance();
 
+                autoDashboardChooser.addDefaultOption("Do nothing auto", Commands.waitSeconds(0));
+
                 autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
                 autoDashboardChooser.addOption("Bottom 2Piece Auto", AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
 
@@ -262,6 +264,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 RollerState.STOPPED),
                                                 new IntakeRollerStartEnd(intakeSubsystem, RollerState.EXHAUSTING,
                                                                 RollerState.STOPPED)));
+
                 OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
                                 SuperStructureState.CLIMBING))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
