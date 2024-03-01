@@ -122,9 +122,9 @@ public class SuperStructure {
                         Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
                         new IntakeRollerTarget(intakeSubsystem, RollerState.STOPPED),
                         new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED),
-                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED),
                         new ShooterRollerTarget(rollerSubsystem, RollerState.STOPPED),
-                        new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED)));
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED)),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED));
     }
 
     private static Command shootingWhileMoving() {
