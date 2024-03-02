@@ -20,7 +20,6 @@ import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.team6647.commands.ElevatorTarget;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
@@ -31,7 +30,6 @@ import com.team6647.subsystems.elevator.ElevatorIO;
 import com.team6647.subsystems.elevator.ElevatorIOSim;
 import com.team6647.subsystems.elevator.ElevatorIOSparkMax;
 import com.team6647.subsystems.elevator.ElevatorSubsystem;
-import com.team6647.subsystems.elevator.ElevatorSubsystem.ElevatorState;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
@@ -192,13 +190,6 @@ public class RobotContainer extends SuperRobotContainer {
                 }
                 superStructure = SuperStructure.getInstance();
 
-                autoDashboardChooser.addDefaultOption("Do nothing auto", Commands.waitSeconds(0));
-
-                autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
-                autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Auto"));
-
-                autoDashboardChooser.addOption("Bottom 2Piece Auto", AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
-
                 NamedCommands.registerCommand("ShootStay",
                                 SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
                 NamedCommands.registerCommand("GrabPiece",
@@ -209,6 +200,13 @@ public class RobotContainer extends SuperRobotContainer {
                                 SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
+
+                autoDashboardChooser.addDefaultOption("Do nothing auto", Commands.waitSeconds(0));
+
+                autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
+                autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Auto"));
+
+                autoDashboardChooser.addOption("Bottom 2Piece Auto", AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
 
                 // configSysIdBindings();
                 // configTuningBindings();

@@ -3,6 +3,7 @@
     "types": {
       "/AdvantageKit/RealOutputs/Elevator/Mechanism2D": "Mechanism2d",
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Auto chooser": "String Chooser",
       "/SmartDashboard/VisionSystemSim-main/Sim Field": "Field2d"
     }
   },
