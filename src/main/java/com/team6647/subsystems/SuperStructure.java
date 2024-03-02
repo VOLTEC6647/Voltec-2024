@@ -115,7 +115,8 @@ public class SuperStructure {
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5),
                         new RunCommand(() -> intakeSubsystem.changeRollerState(RollerState.EXHAUSTING), intakeSubsystem)
-                                .withTimeout(0.2)));
+                                .withTimeout(0.2)))
+                .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }
 
     private static Command idleCommand() {
