@@ -129,12 +129,12 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   }
 
   public void emergencyCheck() {
-    if (inputs.shooterPivotAppliedVolts < 0 && !inputs.limitSwitchPressed) {
+/*     if (inputs.shooterPivotAppliedVolts < 0 && !inputs.limitSwitchPressed) {
       emergencyDisable = true;
       DriverStation.reportError("Shooter Pivot Emergency Disabled", true);
       io.setShooterReference(inputs.shooterAbsoluteEncoderPosition);
       mState = ShooterPivotState.EMERGENCY_DISABLED;
-    }
+    } */
 
     if (inputs.shooterAbsoluteEncoderPosition == 0) {
       DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
