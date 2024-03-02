@@ -16,12 +16,6 @@
           "data": {
             "pathName": "Top"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootStay"
-          }
         }
       ]
     }
