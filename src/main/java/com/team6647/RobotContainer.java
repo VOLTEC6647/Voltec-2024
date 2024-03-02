@@ -201,8 +201,10 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
-                autoDashboardChooser.addDefaultOption("Do nothing auto", Commands.waitSeconds(0));
-
+                autoDashboardChooser.addOption("Shoot stay auto",
+                                new ShootingStationary(andromedaSwerve, shooterSubsystem,
+                                                shooterPivotSubsystem, shooterRollerSubsystem, visionSubsytem, false));
+                autoDashboardChooser.addOption("Do nothing auto", Commands.waitSeconds(0));
                 autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
                 autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Auto"));
 
