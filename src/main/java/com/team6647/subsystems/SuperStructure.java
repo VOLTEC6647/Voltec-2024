@@ -42,6 +42,7 @@ import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class SuperStructure {
@@ -69,7 +70,8 @@ public class SuperStructure {
     }
 
     public enum SuperStructureState {
-        IDLE, INTAKING, SHOOTING_SPEAKER, SCORING_AMP, SHOOTING_TRAP, SHOOTING_MOVING, CLIMBING, INTAKE_ALIGN
+        IDLE, INTAKING, SHOOTING_SPEAKER, SCORING_AMP, SHOOTING_TRAP, SHOOTING_MOVING, CLIMBING, STOPPING_CLIMB,
+        INTAKE_ALIGN
     }
 
     public static Command update(SuperStructureState newState) {
@@ -94,6 +96,9 @@ public class SuperStructure {
             case CLIMBING:
                 mRobotState = SuperStructureState.CLIMBING;
                 return elevatorClimb();
+            case STOPPING_CLIMB:
+                mRobotState = SuperStructureState.STOPPING_CLIMB;
+                return homeElevator();
             case INTAKE_ALIGN:
                 mRobotState = SuperStructureState.INTAKE_ALIGN;
                 return new VisionIntakeAlign(neuralVisionSubsystem,
@@ -110,8 +115,9 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5),
-                        new RunCommand(() -> intakeSubsystem.changeRollerState(RollerState.INTAKING), intakeSubsystem)
-                                .withTimeout(0.2)));
+                        new RunCommand(() -> intakeSubsystem.changeRollerState(RollerState.EXHAUSTING), intakeSubsystem)
+                                .withTimeout(0.2)))
+                .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }
 
     private static Command idleCommand() {
@@ -122,8 +128,15 @@ public class SuperStructure {
                         Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
                         new IntakeRollerTarget(intakeSubsystem, RollerState.STOPPED),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED),
+                        new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED),
                         new ShooterRollerTarget(rollerSubsystem, RollerState.STOPPED),
                         new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED)));
+    }
+
+    private static Command homeElevator() {
+        return Commands.sequence(
+                new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED));
     }
 
     private static Command shootingWhileMoving() {
@@ -134,7 +147,7 @@ public class SuperStructure {
     private static Command shootingStationary() {
 
         return new ShootingStationary(andromedaSwerve, shooterSubsystem, shooterPivotSubsystem, rollerSubsystem,
-                visionSubsystem);
+                visionSubsystem, true);
     }
 
     /* Pathfinding */
@@ -144,15 +157,18 @@ public class SuperStructure {
     }
 
     private static Command scoreAmp() {
-        ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), ShooterConstants.pivotAmpPosition,
-                ShooterConstants.flywheelAmpRPM);
-
-        updateShootingParameters(ampParams);
-
         return Commands.sequence(
-                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP),
-                new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING),
-                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING));
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(),
+                            ShooterConstants.pivotAmpPosition,
+                            ShooterConstants.flywheelAmpRPM);
+
+                    updateShootingParameters(ampParams);
+                }),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(1),
+                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                Commands.waitSeconds(1),
+                new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING));
     }
 
     private static Command elevatorClimb() {

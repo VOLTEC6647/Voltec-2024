@@ -11,9 +11,13 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.team6647.util.Constants.IntakeConstants;
 
+import edu.wpi.first.wpilibj.DigitalInput;
+
 public class IntakeIOTalonFX implements IntakeIO {
 
     private SuperTalonFX intakeMotor = new SuperTalonFX(IntakeConstants.intakeMotorID, GlobalIdleMode.Coast, false);
+
+    private DigitalInput intakeBeamBrake = new DigitalInput(IntakeConstants.intakeBeamBrakeChannel);
 
     public IntakeIOTalonFX() {
         int angleContinuousCurrentLimit = 5;
@@ -40,6 +44,8 @@ public class IntakeIOTalonFX implements IntakeIO {
         inputs.intakeMotorAppliedVoltage = intakeMotor.getSupplyVoltage().getValueAsDouble();
         inputs.intakeMotorVelocity = intakeMotor.getVelocity().getValueAsDouble();
         inputs.intakeMotorCurrent = intakeMotor.getStatorCurrent().getValueAsDouble();
+        inputs.intakeBeamBrake = intakeBeamBrake.get();
+
     }
 
     @Override

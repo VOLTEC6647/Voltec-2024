@@ -68,8 +68,8 @@ public class ShooterIOKraken implements ShooterIO {
         public void setShooterVelocity(double velocity) {
 
                 if (velocity == 0) {
-                        topFlywheelMotor.stopMotor();
-                        botttomFlywheelMotor.stopMotor();
+                        topFlywheelMotor.disable();
+                        botttomFlywheelMotor.disable();
                 } else {
                         velocity /= 60;
 

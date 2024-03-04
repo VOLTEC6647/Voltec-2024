@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.Logger;
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.team6647.util.Constants.VisionConstants;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -39,6 +40,7 @@ public class VisionSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Vision", inputs);
     computeVisionMeasurements();
+    Logger.recordOutput("IsAutonomous", DriverStation.isAutonomous());
   }
 
   public void computeVisionMeasurements() {

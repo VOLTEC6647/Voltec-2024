@@ -47,7 +47,7 @@ public class Constants {
                 public static final Trigger TOGGLE_INTAKE = driverController2.povRight(),
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = driverController2.b(),
-                                CLIMB_TOP = driverController2.y(),
+                                CLIMB_TOP = driverController2.povUp(),
                                 INTAKE_FEEDER = driverController2.rightTrigger(),
                                 EXHAUST_FEEDER = driverController2.leftTrigger();
         }
@@ -62,6 +62,7 @@ public class Constants {
                                 DriverStation.reportError("[Mode Error] Mode is set to " + currentMode.toString()
                                                 + " , but the robot is running on a real robot. Changing mode to avoid issues",
                                                 true);
+                                return Mode.REAL;
                         }
 
                         if (currentMode == Mode.SIM)
@@ -209,9 +210,9 @@ public class Constants {
                 public static final boolean armEncoderInverted = true;
                 public static final boolean shooterPivotMotorInverted = true;
 
-                public static final double pivotMinPosition = 118;
+                public static final double pivotMinPosition = 115;
                 public static final double pivotMaxPosition = 264;
-                public static final double pivotHomedPosition = 118.2;
+                public static final double pivotHomedPosition = 115;
                 public static final double pivotIndexingPosition = 155;
                 public static final double pivotAmpPosition = 229;
                 public static final double pivotClimbPosition = 235;
@@ -304,6 +305,8 @@ public class Constants {
                 public static final double elevatorHomedPosition = 0.24;
                 public static final double elevatorAmpPosition = 2;
 
+                public static final double positionTolerance = 4;
+
                 public static final SensorDirectionValue elevatorCANCoderSensorValue = SensorDirectionValue.CounterClockwise_Positive;
         }
 
@@ -355,6 +358,7 @@ public class Constants {
 
                 public static final int pushingLimitSwitch = 5;
                 public static final int intakeLimitSwitch = 9;
+                public static final int intakeBeamBrakeChannel = 4;
         }
 
         public static class VisionConstants {

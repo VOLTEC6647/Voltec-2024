@@ -26,12 +26,13 @@ public class ShooterCommands {
     private static ShooterRollerSubsystem rollerSubsystem = RobotContainer.shooterRollerSubsystem;
 
     public static final Command getShooterIntakingCommand() {
-        Debouncer debounce = new Debouncer(0.2, DebounceType.kRising);
+
+        Debouncer debounce = new Debouncer(0.1, DebounceType.kRising);
 
         return Commands.deadline(
                 Commands.waitUntil(() -> debounce.calculate(rollerSubsystem.objectDetected())),
                 new ShooterPivotTarget(pivotSubsystem, ShooterPivotState.INDEXING),
-                new ShooterRollerTarget(rollerSubsystem, RollerState.IDLE),
+                new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED));
 
     }

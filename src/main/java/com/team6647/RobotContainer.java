@@ -21,7 +21,9 @@ import com.andromedalib.robot.SuperRobotContainer;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
+import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
+import com.team6647.commands.ShootingStationary;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.elevator.ElevatorIO;
@@ -81,8 +83,8 @@ public class RobotContainer extends SuperRobotContainer {
 
         public static SuperStructure superStructure;
 
-        private final LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<>(
-                        "Auto Routine");
+        private static LoggedDashboardChooser<Command> autoDashboardChooser = new LoggedDashboardChooser<>(
+                        "Auto chooser");
 
         private RobotContainer() {
         }
@@ -189,7 +191,7 @@ public class RobotContainer extends SuperRobotContainer {
                 superStructure = SuperStructure.getInstance();
 
                 NamedCommands.registerCommand("ShootStay",
-                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(3));
+                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
                 NamedCommands.registerCommand("GrabPiece",
                                 SuperStructure.update(SuperStructureState.INTAKING).withTimeout(3));
                 NamedCommands.registerCommand("Idle",
@@ -199,9 +201,17 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
-                autoChooser.addOption("Bottom Wing 2Piece Auto",
-                                AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
-                autoChooser.addOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
+                autoDashboardChooser.addOption("Shoot stay auto",
+                                new ShootingStationary(andromedaSwerve, shooterSubsystem,
+                                                shooterPivotSubsystem, shooterRollerSubsystem, visionSubsytem, false));
+                autoDashboardChooser.addOption("Do nothing auto", Commands.waitSeconds(0));
+                autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
+                autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Auto"));
+
+                autoDashboardChooser.addOption("Bottom 2Piece Auto", AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
+
+                // configSysIdBindings();
+                // configTuningBindings();
         }
 
         @Override
@@ -233,17 +243,33 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
+                OperatorConstants.driverController2.a()
+                                .whileTrue(new ShootingStationary(andromedaSwerve, shooterSubsystem,
+                                                shooterPivotSubsystem, shooterRollerSubsystem, visionSubsytem, false))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
                 OperatorConstants.TOGGLE_AMP
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 OperatorConstants.INTAKE_FEEDER
-                                .whileTrue(new ShooterRollerStartEnd(shooterRollerSubsystem, RollerState.INTAKING,
-                                                RollerState.STOPPED));
+                                .whileTrue(Commands.parallel(
+                                                new ShooterRollerStartEnd(shooterRollerSubsystem, RollerState.INTAKING,
+                                                                RollerState.STOPPED),
+                                                new IntakeRollerStartEnd(intakeSubsystem, RollerState.INTAKING,
+                                                                RollerState.STOPPED)));
 
                 OperatorConstants.EXHAUST_FEEDER
-                                .whileTrue(new ShooterRollerStartEnd(shooterRollerSubsystem, RollerState.EXHAUSTING,
-                                                RollerState.STOPPED));
+                                .whileTrue(Commands.parallel(
+                                                new ShooterRollerStartEnd(shooterRollerSubsystem,
+                                                                RollerState.EXHAUSTING,
+                                                                RollerState.STOPPED),
+                                                new IntakeRollerStartEnd(intakeSubsystem, RollerState.EXHAUSTING,
+                                                                RollerState.STOPPED)));
+
+                OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
+                                SuperStructureState.CLIMBING))
+                                .onFalse(SuperStructure.update(SuperStructureState.STOPPING_CLIMB));
                 /*
                  * OperatorConstants.SHOOT_SPEAKER
                  * .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
@@ -290,6 +316,6 @@ public class RobotContainer extends SuperRobotContainer {
         public Command getAutonomousCommand() {
                 return Commands.sequence(
                                 new InitIntake(intakePivotSubsystem),
-                                autoChooser.get());
+                                autoDashboardChooser.get());
         }
 }

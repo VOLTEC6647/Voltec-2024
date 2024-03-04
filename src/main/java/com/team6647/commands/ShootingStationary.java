@@ -19,8 +19,10 @@ import com.team6647.util.Constants.RobotConstants.RollerState;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -31,6 +33,7 @@ public class ShootingStationary extends Command {
   private ShooterPivotSubsystem pivotSubsystem;
   private ShooterRollerSubsystem rollerSubsystem;
   private VisionSubsystem visionSubsystem;
+  private boolean align;
 
   private ShootingParameters parameters;
 
@@ -40,12 +43,14 @@ public class ShootingStationary extends Command {
 
   /** Creates a new ShootingStationary. */
   public ShootingStationary(AndromedaSwerve swerve, ShooterSubsystem flywheelSubsystem,
-      ShooterPivotSubsystem pivotSubsystem, ShooterRollerSubsystem rollerSubsystem, VisionSubsystem visionSubsystem) {
+      ShooterPivotSubsystem pivotSubsystem, ShooterRollerSubsystem rollerSubsystem, VisionSubsystem visionSubsystem,
+      boolean align) {
     this.swerve = swerve;
     this.flywheelSubsystem = flywheelSubsystem;
     this.pivotSubsystem = pivotSubsystem;
     this.rollerSubsystem = rollerSubsystem;
     this.visionSubsystem = visionSubsystem;
+    this.align = align;
 
     addRequirements(swerve, flywheelSubsystem, pivotSubsystem, rollerSubsystem);
 
@@ -53,7 +58,6 @@ public class ShootingStationary extends Command {
         : VisionConstants.speakerBlueCenterTagID;
 
     SmartDashboard.putNumber("STAGE", stageID);
-
   }
 
   // Called when the command is initially scheduled.
@@ -61,8 +65,12 @@ public class ShootingStationary extends Command {
   public void initialize() {
     visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
 
-    this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
-        Speaker.centerSpeakerOpening.toTranslation2d());
+    if (align) {
+      this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
+          AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+    } else {
+      this.parameters = new ShootingParameters(new Rotation2d(), 150, 5000);
+    }
 
     SuperStructure.updateShootingParameters(parameters);
 
@@ -72,46 +80,50 @@ public class ShootingStationary extends Command {
 
   @Override
   public void execute() {
-    if (visionSubsystem.hasTargetID(stageID)) {
-      // kP (constant of proportionality)
-      // this is a hand-tuned number that determines the aggressiveness of our
-      // proportional control loop
-      // if it is too high, the robot will oscillate around.
-      // if it is too low, the robot will never reach its target
-      // if the robot never turns in the correct direction, kP should be inverted.
-      double kP = .005;
+    if (align) {
+      if (visionSubsystem.hasTargetID(stageID)) {
+        // kP (constant of proportionality)
+        // this is a hand-tuned number that determines the aggressiveness of our
+        // proportional control loop
+        // if it is too high, the robot will oscillate around.
+        // if it is too low, the robot will never reach its target
+        // if the robot never turns in the correct direction, kP should be inverted.
+        double kP = .005;
 
-      // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the
-      // rightmost edge of
-      // your limelight 3 feed, tx should return roughly 31 degrees.
-      double targetingAngularVelocity = visionSubsystem.getTX() * kP;
+        // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the
+        // rightmost edge of
+        // your limelight 3 feed, tx should return roughly 31 degrees.
+        double targetingAngularVelocity = visionSubsystem.getTX() * kP;
 
-      // convert to radians per second for our drive method
-      targetingAngularVelocity *= DriveConstants.maxAngularVelocity;
+        // convert to radians per second for our drive method
+        targetingAngularVelocity *= DriveConstants.maxAngularVelocity;
 
-      // invert since tx is positive when the target is to the right of the Fcrosshair
-      targetingAngularVelocity *= -1.0;
+        // invert since tx is positive when the target is to the right of the Fcrosshair
+        targetingAngularVelocity *= -1.0;
 
-      if (targetingAngularVelocity < 0.1) {
-        readyToShoot = true;
+        if (targetingAngularVelocity < 0.1) {
+          readyToShoot = true;
+        }
+
+        swerve.drive(new Translation2d(), targetingAngularVelocity, false);
+      } else {
+        swerve.drive(new ChassisSpeeds());
+        if (swerve.angleInTolerance()) {
+          readyToShoot = true;
+        }
+
       }
-
-      swerve.drive(new Translation2d(), targetingAngularVelocity, false);
     } else {
-      swerve.drive(new ChassisSpeeds());
-      if (swerve.angleInTolerance()) {
-        readyToShoot = true;
-      }
+      readyToShoot = true;
 
-    }
+      flywheelSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
+      pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
 
-    flywheelSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
-    pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
-
-    if (readyToShoot) {
-      if (flywheelSubsystem.topInTolerance() && flywheelSubsystem.bottomInTolerance()) {
-        if (pivotSubsystem.inTolerance()) {
-          rollerSubsystem.changeRollerState(RollerState.INTAKING);
+      if (readyToShoot) {
+        if (flywheelSubsystem.topInTolerance() && flywheelSubsystem.bottomInTolerance()) {
+          if (pivotSubsystem.inTolerance()) {
+            rollerSubsystem.changeRollerState(RollerState.INTAKING);
+          }
         }
       }
     }

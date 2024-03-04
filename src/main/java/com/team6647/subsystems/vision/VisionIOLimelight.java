@@ -35,12 +35,7 @@ public class VisionIOLimelight implements VisionIO {
                 LimelightHelpers.getTA(VisionConstants.aprilLimeNTName) > 0.1) {
             inputs.hasTarget = true;
 
-            if (DriverStation.isAutonomous()) {
-                inputs.observedPose2d = LimelightHelpers.toPose2D(result.botpose_wpiblue);
-            } else {
-                inputs.observedPose2d = isRed() ? LimelightHelpers.toPose2D(result.botpose_wpired)
-                        : LimelightHelpers.toPose2D(result.botpose_wpiblue);
-            }
+            inputs.observedPose2d = LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.aprilLimeNTName);
 
             inputs.timestampLatency = Logger.getRealTimestamp()
                     - (result.latency_capture + result.latency_pipeline / 1000.0);
@@ -49,8 +44,8 @@ public class VisionIOLimelight implements VisionIO {
             try {
                 inputs.targetID = (int) LimelightHelpers.getFiducialID(VisionConstants.aprilLimeNTName);
             } catch (Exception e) {
-                inputs.targetID = 0;
                 DriverStation.reportError("[Limelight] Error found while trying to compute target ID", true);
+                inputs.targetID = 0;
             }
         } else {
             inputs.observedPose2d = new Pose2d();

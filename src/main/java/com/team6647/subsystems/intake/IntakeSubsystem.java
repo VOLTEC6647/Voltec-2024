@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.team6647.util.Constants.IntakeConstants;
 import com.team6647.util.Constants.RobotConstants.RollerState;
-import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.LoggedTunableNumber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,6 +25,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+
+  private LoggedTunableNumber peakCurrentLimit = new LoggedTunableNumber("Intake/Roller/PeakCurrent", 4);
+
+  @AutoLogOutput(key = "Intake/Roller/Peak")
+  private double peakCurrent = 4;
 
   /** Creates a new IntakeSubsystem. */
   private IntakeSubsystem(IntakeIO io) {
@@ -44,7 +48,9 @@ public class IntakeSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Intake/Rollers", inputs);
 
-    Logger.recordOutput("Intake/Roller/PeakCurrentLimit", peakCurrentLimit.get());
+    LoggedTunableNumber.ifChanged(hashCode(), peak -> {
+      peakCurrent = peak[0];
+    }, peakCurrentLimit);
   }
 
   /**
@@ -78,6 +84,10 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean objectDetected() {
-    return inputs.intakeMotorCurrent > peakCurrentLimit.get();
+    return getAmps() > 5;
+  }
+
+  public boolean getBeamBrake(){
+    return inputs.intakeBeamBrake;
   }
 }

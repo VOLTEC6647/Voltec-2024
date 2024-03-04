@@ -63,7 +63,7 @@ public class ShooterRollerSubsystem extends SubsystemBase {
     }
   }
 
-  public boolean objectDetected() {
-    return inputs.rollerCurrent > 8;
+  public double getAmps(){
+    return inputs.rollerCurrent;
   }
 }
