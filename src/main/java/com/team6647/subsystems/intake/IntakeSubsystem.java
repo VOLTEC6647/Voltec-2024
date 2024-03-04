@@ -26,8 +26,6 @@ public class IntakeSubsystem extends SubsystemBase {
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 
-  private LoggedTunableNumber peakCurrentLimit = new LoggedTunableNumber("Intake/Roller/PeakCurrent", 4);
-
   @AutoLogOutput(key = "Intake/Roller/Peak")
   private double peakCurrent = 4;
 
@@ -87,7 +85,7 @@ public class IntakeSubsystem extends SubsystemBase {
     return getAmps() > 5;
   }
 
-  public boolean getBeamBrake(){
+  public boolean getBeamBrake() {
     return inputs.intakeBeamBrake;
   }
 }
