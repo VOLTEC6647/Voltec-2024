@@ -30,7 +30,7 @@ public class ShooterCommands {
         Debouncer debounce = new Debouncer(0.1, DebounceType.kRising);
 
         return Commands.deadline(
-                Commands.waitUntil(() -> !shooterSubsystem.getBeamBrake()),
+                Commands.waitUntil(() -> debounce.calculate(rollerSubsystem.objectDetected())),
                 new ShooterPivotTarget(pivotSubsystem, ShooterPivotState.INDEXING),
                 new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED));

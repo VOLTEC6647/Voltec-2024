@@ -21,6 +21,8 @@ public class IntakeSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Intake/Rollers/State")
   private RollerState mState = RollerState.STOPPED;
 
+  private LoggedTunableNumber peakCurrentLimit = new LoggedTunableNumber("Intake/Rollers/PeakCurrentLimit", 4);
+
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
 

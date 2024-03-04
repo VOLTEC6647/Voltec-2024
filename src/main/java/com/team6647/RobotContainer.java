@@ -193,7 +193,7 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("ShootStay",
                                 SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
                 NamedCommands.registerCommand("GrabPiece",
-                                SuperStructure.update(SuperStructureState.INTAKING));
+                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(3));
                 NamedCommands.registerCommand("Idle",
                                 SuperStructure.update(SuperStructureState.IDLE).withTimeout(0.1));
                 NamedCommands.registerCommand("VisionAlign",
