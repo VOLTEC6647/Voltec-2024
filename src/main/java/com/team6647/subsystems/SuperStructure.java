@@ -72,7 +72,6 @@ public class SuperStructure {
         SCORING_AMP,
         SHOOTING_TRAP,
         SHOOTING_MOVING,
-        CLIMBING,
         STOPPING_CLIMB,
         INTAKE_ALIGN
     }
@@ -96,9 +95,6 @@ public class SuperStructure {
             case SHOOTING_MOVING:
                 mRobotState = SuperStructureState.SHOOTING_MOVING;
                 return shootingWhileMoving();
-            case CLIMBING:
-                mRobotState = SuperStructureState.CLIMBING;
-                return elevatorClimb();
             case STOPPING_CLIMB:
                 mRobotState = SuperStructureState.STOPPING_CLIMB;
                 return homeElevator();
@@ -168,11 +164,6 @@ public class SuperStructure {
                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                 Commands.waitSeconds(1),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
-    }
-
-    private static Command elevatorClimb() {
-        return Commands.parallel(
-                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.CLIMBING));
     }
 
     /* Util */

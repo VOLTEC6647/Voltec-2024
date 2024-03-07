@@ -13,7 +13,6 @@ import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 public class IntakePivotSubsystem extends SubsystemBase {

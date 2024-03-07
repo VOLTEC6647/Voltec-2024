@@ -9,7 +9,6 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.team6647.util.Constants.IntakeConstants;
-import com.team6647.util.LoggedTunableNumber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +21,6 @@ public class IntakeSubsystem extends SubsystemBase {
   @Setter
   @AutoLogOutput(key = "Intake/Rollers/State")
   public IntakeRollerState mState = IntakeRollerState.STOPPED;
-
-  private LoggedTunableNumber peakCurrentLimit = new LoggedTunableNumber("Intake/Rollers/PeakCurrentLimit", 4);
 
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
