@@ -128,7 +128,13 @@ public class LEDSubsystem extends SubsystemBase {
     loadingNotifier.stop();
 
     // Select LED mode
-    solid(Color.kBlack); // Default to off
+    solid(allianceColor);
+    
+    if (DriverStation.isDisabled()) {
+      wave(Color.kAliceBlue, Color.kYellow, waveAllianceCycleLength, waveAllianceDuration); // Default to off
+
+    }
+
     if (estopped) {
       solid(Color.kRed);
     } else if (DriverStation.isDisabled()) {
@@ -183,7 +189,7 @@ public class LEDSubsystem extends SubsystemBase {
       }
 
       if (endgameAlert) {
-        strobe(Color.kRed, strobeFastDuration);
+        strobe(Color.kYellow, strobeFastDuration);
       }
     }
 

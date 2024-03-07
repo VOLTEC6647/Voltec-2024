@@ -8,6 +8,7 @@ package com.team6647.subsystems.intake.roller;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -53,6 +54,12 @@ public class IntakeSubsystem extends SubsystemBase {
     Logger.processInputs("Intake/Rollers", inputs);
 
     io.setIntakeVelocity(mState.velocity);
+
+    if (getBeamBrake()) {
+      LEDSubsystem.getInstance().hasNote = true;
+    } else {
+      LEDSubsystem.getInstance().hasNote = false;
+    }
   }
 
   public double getAmps() {

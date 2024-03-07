@@ -3,71 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.4968743826376543,
-        "y": 6.981745845094965
+        "x": 2.292684432591088,
+        "y": 6.501520475263173
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.1195943460945053,
-        "y": 6.7305660213172285
+        "x": 2.01494369655406,
+        "y": 6.332987610419666
       },
       "isLocked": false,
       "linkedName": "TopPiece"
     },
     {
       "anchor": {
-        "x": 3.4501453447351342,
-        "y": 6.247533490437352
+        "x": 2.1479053189587862,
+        "y": 6.511972125796103
       },
       "prevControl": {
-        "x": 3.42031034363808,
-        "y": 6.748217287349491
+        "x": 2.142514216702352,
+        "y": 6.798423742031281
       },
       "nextControl": {
-        "x": 3.4683763487897346,
-        "y": 5.941585174837017
+        "x": 2.1576443569553807,
+        "y": 5.994496655659978
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "MiddlePiece"
     },
     {
       "anchor": {
-        "x": 2.282589088326325,
-        "y": 5.5625346898841945
+        "x": 2.445777359147311,
+        "y": 5.597215166652556
       },
       "prevControl": {
-        "x": 2.6725662988363017,
-        "y": 5.487235298544672
+        "x": 1.999503758266776,
+        "y": 5.585694597315121
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "MiddlePiece"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "ShootMove",
-      "waypointRelativePos": 0.85,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "GrabPiece",
-      "waypointRelativePos": 2.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

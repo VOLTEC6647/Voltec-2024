@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.282589088326325,
-        "y": 5.5625346898841945
+        "x": 2.1479053189587862,
+        "y": 6.511972125796103
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5752617616346347,
-        "y": 5.413658054167961
+        "x": 1.5768057554633628,
+        "y": 6.311015390549299
       },
       "isLocked": false,
       "linkedName": "MiddlePiece"
     },
     {
       "anchor": {
-        "x": 2.244761239522479,
-        "y": 5.017445483965043
+        "x": 1.996415770609319,
+        "y": 4.761914505310492
       },
       "prevControl": {
-        "x": 2.2732360822542352,
-        "y": 5.22870643506222
+        "x": 2.0003351395591684,
+        "y": 4.938404876809753
       },
       "nextControl": {
-        "x": 2.135969058975155,
-        "y": 4.210293017808258
+        "x": 1.982079385497534,
+        "y": 4.1163427393677114
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.282589088326325,
-        "y": 4.315700288807985
+        "x": 2.3426266945126484,
+        "y": 4.2282270999727185
       },
       "prevControl": {
-        "x": 1.859465047933194,
-        "y": 4.33470328977695
+        "x": 2.4249334424594773,
+        "y": 4.238203675481426
       },
       "nextControl": null,
       "isLocked": false,
@@ -46,28 +46,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "ShootMove",
-      "waypointRelativePos": 0.65,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    },
-    {
-      "name": "GrabPiece",
-      "waypointRelativePos": 2.0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
