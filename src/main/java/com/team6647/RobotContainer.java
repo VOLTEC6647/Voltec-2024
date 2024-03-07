@@ -5,6 +5,8 @@
  */
 package com.team6647;
 
+import java.util.function.Function;
+
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIO;
@@ -39,6 +41,7 @@ import com.team6647.subsystems.intake.roller.IntakeIOSim;
 import com.team6647.subsystems.intake.roller.IntakeIOTalonFX;
 import com.team6647.subsystems.intake.roller.IntakeSubsystem;
 import com.team6647.subsystems.intake.roller.IntakeSubsystem.IntakeRollerState;
+import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.subsystems.neural.NeuralVisionIO;
 import com.team6647.subsystems.neural.NeuralVisionIOLimelight;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
@@ -60,9 +63,12 @@ import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class RobotContainer extends SuperRobotContainer {
@@ -76,6 +82,7 @@ public class RobotContainer extends SuperRobotContainer {
         public static ShooterRollerSubsystem shooterRollerSubsystem;
         public static VisionSubsystem visionSubsytem;
         public static NeuralVisionSubsystem neuralVisionSubsystem;
+        private static final LEDSubsystem leds = LEDSubsystem.getInstance();
 
         public static SuperStructure superStructure;
 
@@ -180,6 +187,8 @@ public class RobotContainer extends SuperRobotContainer {
                 }
                 superStructure = SuperStructure.getInstance();
 
+                // -------- Auto Declaration --------
+
                 NamedCommands.registerCommand("ShootStay",
                                 SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
                 NamedCommands.registerCommand("GrabPiece",
@@ -199,6 +208,43 @@ public class RobotContainer extends SuperRobotContainer {
                 autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Auto"));
 
                 autoDashboardChooser.addOption("Bottom 2Piece Auto", AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
+
+                // -------- Engame alers (Credits: 6328) --------
+                Function<Double, Command> controllerRumbleCommandFactory = time -> Commands.sequence(
+                                Commands.runOnce(
+                                                () -> {
+                                                        OperatorConstants.driverController1.getHID()
+                                                                        .setRumble(RumbleType.kBothRumble, 1.0);
+                                                        OperatorConstants.driverController2.getHID()
+                                                                        .setRumble(RumbleType.kBothRumble, 1.0);
+                                                        leds.endgameAlert = true;
+                                                }),
+                                Commands.waitSeconds(time),
+                                Commands.runOnce(
+                                                () -> {
+                                                        OperatorConstants.driverController1.getHID()
+                                                                        .setRumble(RumbleType.kBothRumble, 0.0);
+                                                        OperatorConstants.driverController2.getHID()
+                                                                        .setRumble(RumbleType.kBothRumble, 0.0);
+                                                        leds.endgameAlert = false;
+                                                }));
+                new Trigger(
+                                () -> DriverStation.isTeleopEnabled()
+                                                && DriverStation.getMatchTime() > 0
+                                                && DriverStation.getMatchTime() <= Math.round(30.0))
+                                .onTrue(controllerRumbleCommandFactory.apply(0.5));
+
+                new Trigger(
+                                () -> DriverStation.isTeleopEnabled()
+                                                && DriverStation.getMatchTime() > 0
+                                                && DriverStation.getMatchTime() <= Math.round(10.0))
+                                .onTrue(
+                                                Commands.sequence(
+                                                                controllerRumbleCommandFactory.apply(0.2),
+                                                                Commands.waitSeconds(0.1),
+                                                                controllerRumbleCommandFactory.apply(0.2),
+                                                                Commands.waitSeconds(0.1),
+                                                                controllerRumbleCommandFactory.apply(0.2)));
         }
 
         @Override
@@ -212,6 +258,8 @@ public class RobotContainer extends SuperRobotContainer {
                                                 () -> OperatorConstants.driverController1.leftStick().getAsBoolean()));
 
                 /* Driver 1 */
+
+                // -------- Gyro Commands --------
 
                 OperatorConstants.RESET_GYRO
                                 .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(new Rotation2d())));
