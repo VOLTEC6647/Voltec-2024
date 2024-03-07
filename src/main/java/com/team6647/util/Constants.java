@@ -195,20 +195,20 @@ public class Constants {
                 public static final double pivotMaxVelocity = 1500.0;
                 public static final double pivotMaxAcceleration = 1500.0;
 
-                public static final int shooterBeamBrakeChannel = 8;
+                public static final int shooterBeamBrakeChannel = 0;
                 public static final int shooterMotorCurrentLimit = 80;
                 public static final int rollerMotorCurrentLimit = 80;
 
                 public static final double armEncoderPositionConversionFactor = 360;
-                public static final double armEncoderZeroOffset = 22;
+                public static final double armEncoderZeroOffset = 100;
                 public static final boolean armEncoderInverted = true;
                 public static final boolean shooterPivotMotorInverted = true;
 
-                public static final double pivotMinPosition = 115;
-                public static final double pivotMaxPosition = 264;
-                public static final double pivotHomedPosition = 115;
-                public static final double pivotIndexingPosition = 155;
-                public static final double pivotAmpPosition = 229;
+                public static final double pivotMinPosition = 70;
+                public static final double pivotMaxPosition = 240;
+                public static final double pivotHomedPosition = 71;
+                public static final double pivotIndexingPosition = 114;
+                public static final double pivotAmpPosition = 183;
                 public static final double pivotClimbPosition = 235;
 
                 public static final double flywheelAmpRPM = 1000;
@@ -351,9 +351,9 @@ public class Constants {
                 public static final double pushingAcutatingPosition = 20;
                 public static final double pushingHomedPosition = 1;
 
-                public static final int pushingLimitSwitch = 5;
-                public static final int intakeLimitSwitch = 9;
-                public static final int intakeBeamBrakeChannel = 4;
+                public static final int pushingLimitSwitch = 9;
+                public static final int intakeLimitSwitch = 8;
+                public static final int intakeBeamBrakeChannel = 1;
         }
 
         public static class VisionConstants {
