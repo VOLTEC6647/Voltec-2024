@@ -27,7 +27,7 @@ public class FlywheelStartEnd extends Command {
 
   @Override
   public void initialize() {
-    flywheelSubsystem.changeFlywheelState(initialFlywheelState);
+    flywheelSubsystem.setMFlywheelState(initialFlywheelState);
   }
 
   @Override
@@ -36,7 +36,7 @@ public class FlywheelStartEnd extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    flywheelSubsystem.changeFlywheelState(finalFlywheelState);
+    flywheelSubsystem.setMFlywheelState(finalFlywheelState);
 
   }
 

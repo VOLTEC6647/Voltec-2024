@@ -8,21 +8,20 @@ import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
-import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
-import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
-import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem.ShooterPivotState;
+import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
+import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.VisionConstants;
 import com.team6647.util.Constants.FieldConstants.Speaker;
-import com.team6647.util.Constants.RobotConstants.RollerState;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -116,13 +115,13 @@ public class ShootingStationary extends Command {
     } else {
       readyToShoot = true;
 
-      flywheelSubsystem.changeFlywheelState(FlywheelState.SHOOTING);
-      pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
+      flywheelSubsystem.setMFlywheelState(FlywheelState.SHOOTING);
+      pivotSubsystem.setMState(ShooterPivotState.SHOOTING);
 
       if (readyToShoot) {
         if (flywheelSubsystem.topInTolerance() && flywheelSubsystem.bottomInTolerance()) {
           if (pivotSubsystem.inTolerance()) {
-            rollerSubsystem.changeRollerState(RollerState.INTAKING);
+            rollerSubsystem.setMRollerState(ShooterFeederState.INTAKING);
           }
         }
       }

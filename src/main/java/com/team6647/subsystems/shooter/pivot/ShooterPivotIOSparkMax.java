@@ -4,7 +4,7 @@
  * 06 02 2024
  */
 
-package com.team6647.subsystems.shooter;
+package com.team6647.subsystems.shooter.pivot;
 
 import com.andromedalib.motorControllers.SuperSparkMax;
 import com.revrobotics.AbsoluteEncoder;

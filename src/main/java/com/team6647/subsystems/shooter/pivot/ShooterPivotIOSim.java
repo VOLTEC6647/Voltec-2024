@@ -3,7 +3,7 @@
  * 
  * 10 02 2024
  */
-package com.team6647.subsystems.shooter;
+package com.team6647.subsystems.shooter.pivot;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;

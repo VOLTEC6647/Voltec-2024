@@ -4,7 +4,7 @@
  * 06 02 2024
  */
 
-package com.team6647.subsystems.intake;
+package com.team6647.subsystems.intake.roller;
 
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;

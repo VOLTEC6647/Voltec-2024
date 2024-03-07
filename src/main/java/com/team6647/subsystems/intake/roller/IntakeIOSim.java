@@ -4,7 +4,7 @@
  * 29 01 2024
  */
 
-package com.team6647.subsystems.intake;
+package com.team6647.subsystems.intake.roller;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;

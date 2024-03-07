@@ -26,33 +26,31 @@ import com.team6647.commands.ShooterRollerStartEnd;
 import com.team6647.commands.ShootingStationary;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
-import com.team6647.subsystems.elevator.ElevatorIO;
-import com.team6647.subsystems.elevator.ElevatorIOSim;
-import com.team6647.subsystems.elevator.ElevatorIOSparkMax;
-import com.team6647.subsystems.elevator.ElevatorSubsystem;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
-import com.team6647.subsystems.intake.IntakeIO;
-import com.team6647.subsystems.intake.IntakeIOSim;
-import com.team6647.subsystems.intake.IntakeIOTalonFX;
-import com.team6647.subsystems.intake.IntakePivotIO;
-import com.team6647.subsystems.intake.IntakePivotIOSim;
-import com.team6647.subsystems.intake.IntakePivotIOSparkMaxKraken;
-import com.team6647.subsystems.intake.IntakePivotSubsystem;
-import com.team6647.subsystems.intake.IntakeSubsystem;
+import com.team6647.subsystems.intake.pivot.IntakePivotIO;
+import com.team6647.subsystems.intake.pivot.IntakePivotIOSim;
+import com.team6647.subsystems.intake.pivot.IntakePivotIOSparkMaxKraken;
+import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
+import com.team6647.subsystems.intake.roller.IntakeIO;
+import com.team6647.subsystems.intake.roller.IntakeIOSim;
+import com.team6647.subsystems.intake.roller.IntakeIOTalonFX;
+import com.team6647.subsystems.intake.roller.IntakeSubsystem;
+import com.team6647.subsystems.intake.roller.IntakeSubsystem.IntakeRollerState;
 import com.team6647.subsystems.neural.NeuralVisionIO;
 import com.team6647.subsystems.neural.NeuralVisionIOLimelight;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
-import com.team6647.subsystems.shooter.ShooterIORollerSim;
-import com.team6647.subsystems.shooter.ShooterIORollerSparkMax;
-import com.team6647.subsystems.shooter.ShooterPivotIO;
-import com.team6647.subsystems.shooter.ShooterPivotIOSim;
-import com.team6647.subsystems.shooter.ShooterPivotIOSparkMax;
-import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
-import com.team6647.subsystems.shooter.ShooterRollerIO;
-import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotIO;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotIOSim;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotIOSparkMax;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem;
+import com.team6647.subsystems.shooter.roller.ShooterIORollerSim;
+import com.team6647.subsystems.shooter.roller.ShooterIORollerSparkMax;
+import com.team6647.subsystems.shooter.roller.ShooterRollerIO;
+import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
+import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.subsystems.vision.VisionIO;
 import com.team6647.subsystems.vision.VisionIOLimelight;
@@ -60,7 +58,6 @@ import com.team6647.subsystems.vision.VisionIOSim;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
-import com.team6647.util.Constants.RobotConstants.RollerState;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -79,7 +76,6 @@ public class RobotContainer extends SuperRobotContainer {
         public static ShooterRollerSubsystem shooterRollerSubsystem;
         public static VisionSubsystem visionSubsytem;
         public static NeuralVisionSubsystem neuralVisionSubsystem;
-        public static ElevatorSubsystem elevatorSubsystem;
 
         public static SuperStructure superStructure;
 
@@ -129,7 +125,6 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOKraken());
                                 shooterRollerSubsystem = ShooterRollerSubsystem
                                                 .getInstance(new ShooterIORollerSparkMax());
-                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSparkMax());
                                 visionSubsytem = VisionSubsystem.getInstance(new VisionIOLimelight());
                                 neuralVisionSubsystem = NeuralVisionSubsystem
                                                 .getInstance(new NeuralVisionIOLimelight());
@@ -145,12 +140,10 @@ public class RobotContainer extends SuperRobotContainer {
                                                 }, DriveConstants.andromedaSwerveConfig,
                                                 DriveConstants.holonomicPathConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOSim());
-                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
                                 intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSim());
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSim());
                                 shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterIORollerSim());
-                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIOSim());
                                 visionSubsytem = VisionSubsystem.getInstance(new VisionIOSim());
                                 break;
 
@@ -170,8 +163,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                 DriveConstants.holonomicPathConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIO() {
                                 });
-                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIO() {
-                                });
+
                                 intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIO() {
                                 });
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIO() {
@@ -179,8 +171,6 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIO() {
                                 });
                                 shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterRollerIO() {
-                                });
-                                elevatorSubsystem = ElevatorSubsystem.getInstance(new ElevatorIO() {
                                 });
                                 visionSubsytem = VisionSubsystem.getInstance(new VisionIO() {
                                 });
@@ -209,9 +199,6 @@ public class RobotContainer extends SuperRobotContainer {
                 autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Auto"));
 
                 autoDashboardChooser.addOption("Bottom 2Piece Auto", AutoBuilder.buildAuto("Bottom Wing 2Piece Auto"));
-
-                // configSysIdBindings();
-                // configTuningBindings();
         }
 
         @Override
@@ -228,9 +215,6 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.RESET_GYRO
                                 .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(new Rotation2d())));
-                /*
-                 * OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp());
-                 */
 
                 /* Driver 2 */
                 OperatorConstants.driverController2.a().whileTrue(new InitIntake(intakePivotSubsystem));
@@ -254,40 +238,19 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.INTAKE_FEEDER
                                 .whileTrue(Commands.parallel(
-                                                new ShooterRollerStartEnd(shooterRollerSubsystem, RollerState.INTAKING,
-                                                                RollerState.STOPPED),
-                                                new IntakeRollerStartEnd(intakeSubsystem, RollerState.INTAKING,
-                                                                RollerState.STOPPED)));
+                                                new ShooterRollerStartEnd(shooterRollerSubsystem,
+                                                                ShooterFeederState.INTAKING,
+                                                                ShooterFeederState.STOPPED),
+                                                new IntakeRollerStartEnd(intakeSubsystem, IntakeRollerState.INTAKING,
+                                                                IntakeRollerState.STOPPED)));
 
                 OperatorConstants.EXHAUST_FEEDER
                                 .whileTrue(Commands.parallel(
                                                 new ShooterRollerStartEnd(shooterRollerSubsystem,
-                                                                RollerState.EXHAUSTING,
-                                                                RollerState.STOPPED),
-                                                new IntakeRollerStartEnd(intakeSubsystem, RollerState.EXHAUSTING,
-                                                                RollerState.STOPPED)));
-
-                OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
-                                SuperStructureState.CLIMBING))
-                                .onFalse(SuperStructure.update(SuperStructureState.STOPPING_CLIMB));
-                /*
-                 * OperatorConstants.SHOOT_SPEAKER
-                 * .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
-                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-                 * 
-                 * OperatorConstants.TOGGLE_AMP
-                 * .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
-                 * .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-                 * 
-                 * OperatorConstants.CLIMB_TOP.whileTrue(SuperStructure.update(
-                 * SuperStructureState.CLIMBING))
-                 * .onFalse(new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED));
-                 * 
-                 * OperatorConstants.driverController1.a()
-                 * .whileTrue(new ShootingWhileMoving(
-                 * andromedaSwerve,
-                 * superStructure));
-                 */
+                                                                ShooterFeederState.EXHAUSTING,
+                                                                ShooterFeederState.STOPPED),
+                                                new IntakeRollerStartEnd(intakeSubsystem, IntakeRollerState.EXHAUSTING,
+                                                                IntakeRollerState.STOPPED)));
         }
 
         public void configSysIdBindings() {
@@ -306,9 +269,11 @@ public class RobotContainer extends SuperRobotContainer {
         public void configTuningBindings() {
                 OperatorConstants.driverController2.povLeft()
                                 .whileTrue(new InstantCommand(
-                                                () -> shooterRollerSubsystem.changeRollerState(RollerState.INTAKING)))
+                                                () -> shooterRollerSubsystem
+                                                                .setMRollerState(ShooterFeederState.INTAKING)))
                                 .onFalse(new InstantCommand(
-                                                () -> shooterRollerSubsystem.changeRollerState(RollerState.STOPPED)));
+                                                () -> shooterRollerSubsystem
+                                                                .setMRollerState(ShooterFeederState.STOPPED)));
 
         }
 

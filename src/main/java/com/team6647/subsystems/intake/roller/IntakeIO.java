@@ -4,7 +4,7 @@
  * 24 01 2024
  */
 
-package com.team6647.subsystems.intake;
+package com.team6647.subsystems.intake.roller;
 
 import org.littletonrobotics.junction.AutoLog;
 

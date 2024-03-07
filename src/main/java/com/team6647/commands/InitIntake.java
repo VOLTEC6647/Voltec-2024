@@ -5,7 +5,7 @@
  */
 package com.team6647.commands;
 
-import com.team6647.subsystems.intake.IntakePivotSubsystem;
+import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -23,7 +23,7 @@ public class InitIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakePivotSubsystem.setPushingPercentage(-0.5);
+    intakePivotSubsystem.setPushingPercentage(-0.7);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

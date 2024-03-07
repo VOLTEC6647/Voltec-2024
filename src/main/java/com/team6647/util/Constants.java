@@ -72,12 +72,6 @@ public class Constants {
 
                 }
 
-                public enum RollerState {
-                        STOPPED,
-                        EXHAUSTING,
-                        INTAKING,
-                        IDLE
-                }
         }
 
         /**
@@ -219,6 +213,7 @@ public class Constants {
 
                 public static final double flywheelAmpRPM = 1000;
 
+                public static final double rollerStoppedVelocity = 0.0;
                 public static final double rollerIntakingVelocity = 0.3;
                 public static final double rollerExhaustingVelocity = -0.1;
                 public static final double rollerIdleVelocity = 0.1;

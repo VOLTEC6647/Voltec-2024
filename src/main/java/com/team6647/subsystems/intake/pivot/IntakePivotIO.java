@@ -6,7 +6,7 @@
  
  */
 
-package com.team6647.subsystems.intake;
+package com.team6647.subsystems.intake.pivot;
 
 import org.littletonrobotics.junction.AutoLog;
 
@@ -49,10 +49,8 @@ public interface IntakePivotIO {
     }
 
     public default void setPushingPosition(double position) {
-
     }
 
     public default void disableIntake() {
-
     }
 }

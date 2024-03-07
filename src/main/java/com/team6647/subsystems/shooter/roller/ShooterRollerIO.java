@@ -4,7 +4,7 @@
  * 16 02 2024
  */
 
-package com.team6647.subsystems.shooter;
+package com.team6647.subsystems.shooter.roller;
 
 import org.littletonrobotics.junction.AutoLog;
 

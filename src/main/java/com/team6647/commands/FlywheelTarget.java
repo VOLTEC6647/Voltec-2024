@@ -23,6 +23,6 @@ public class FlywheelTarget extends InstantCommand {
 
   @Override
   public void initialize() {
-    shooterSubsystem.changeFlywheelState(flywheelState);
+    shooterSubsystem.setMFlywheelState(flywheelState);
   }
 }

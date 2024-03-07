@@ -4,7 +4,7 @@
  * 16 02 2024
  */
 
-package com.team6647.subsystems.shooter;
+package com.team6647.subsystems.shooter.roller;
 
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;

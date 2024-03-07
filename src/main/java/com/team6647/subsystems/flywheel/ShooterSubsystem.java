@@ -23,13 +23,16 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 public class ShooterSubsystem extends SubsystemBase {
 
   private static ShooterSubsystem instance;
 
+  @Setter
   @AutoLogOutput(key = "Shooter/Flywheel/State")
-  private FlywheelState mFlywheelState = FlywheelState.STOPPED;
+  public FlywheelState mFlywheelState = FlywheelState.STOPPED;
 
   private ShooterIO io;
   private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
@@ -96,11 +99,14 @@ public class ShooterSubsystem extends SubsystemBase {
     return instance;
   }
 
+  @RequiredArgsConstructor
   public enum FlywheelState {
-    STOPPED,
-    EXHAUSTING,
-    SHOOTING,
-    IDLE
+    STOPPED(ShooterConstants.shooterStoppedSpeed),
+    EXHAUSTING(ShooterConstants.shooterExhaustSpeed),
+    SHOOTING(-1),
+    IDLE(ShooterConstants.shooterIdleSpeed);
+
+    public final double velocity;
   }
 
   @Override
@@ -117,31 +123,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }, bottomShooterKp, bottomShooterKi, bottomShooterKd, bottomShooterKs, bottomShooterKv, bottomShooterKa,
         topShooterKp, topShooterKi, topShooterKd, topShooterKs, topShooterKv, topShooterKa, shooterVelocity);
-  }
 
-  /**
-   * Public method to command shooter state
-   * 
-   * @param rollerState Shooter RollerState
-   */
-  public void changeFlywheelState(FlywheelState rollerState) {
-    switch (rollerState) {
-      case STOPPED:
-        mFlywheelState = FlywheelState.STOPPED;
-        setShooterSpeed(ShooterConstants.shooterStoppedSpeed);
-        break;
-      case EXHAUSTING:
-        mFlywheelState = FlywheelState.EXHAUSTING;
-        setShooterSpeed(ShooterConstants.shooterExhaustSpeed);
-        break;
-      case SHOOTING:
-        mFlywheelState = FlywheelState.SHOOTING;
-        setShooterSpeed(currentParameters.flywheelRPM());
-        break;
-      case IDLE:
-        mFlywheelState = FlywheelState.IDLE;
-        setShooterSpeed(ShooterConstants.shooterIdleSpeed);
-        break;
+    if (mFlywheelState == FlywheelState.SHOOTING) {
+      setShooterSpeed(currentParameters.flywheelRPM());
+    } else {
+      setShooterSpeed(mFlywheelState.velocity);
     }
   }
 

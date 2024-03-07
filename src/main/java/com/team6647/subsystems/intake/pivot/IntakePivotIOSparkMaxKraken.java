@@ -4,7 +4,7 @@
  * 26 01 2024
  */
 
-package com.team6647.subsystems.intake;
+package com.team6647.subsystems.intake.pivot;
 
 import com.andromedalib.motorControllers.SuperSparkMax;
 import com.andromedalib.motorControllers.SuperTalonFX;

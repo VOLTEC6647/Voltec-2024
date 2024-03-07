@@ -4,15 +4,16 @@
  * 16 02 2024
  */
 
-package com.team6647.subsystems.shooter;
+package com.team6647.subsystems.shooter.roller;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
-import com.team6647.util.Constants.RobotConstants.RollerState;
 import com.team6647.util.Constants.ShooterConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 public class ShooterRollerSubsystem extends SubsystemBase {
 
@@ -21,8 +22,9 @@ public class ShooterRollerSubsystem extends SubsystemBase {
   private ShooterRollerIO io;
   private ShooterRollerIOInputsAutoLogged inputs = new ShooterRollerIOInputsAutoLogged();
 
+  @Setter
   @AutoLogOutput(key = "Shooter/Roller/State")
-  private RollerState mRollerState = RollerState.STOPPED;
+  public ShooterFeederState mRollerState = ShooterFeederState.STOPPED;
 
   /** Creates a new ShooterRollerSubsystem. */
   private ShooterRollerSubsystem(ShooterRollerIO io) {
@@ -36,34 +38,25 @@ public class ShooterRollerSubsystem extends SubsystemBase {
     return instance;
   }
 
+  @RequiredArgsConstructor
+  public enum ShooterFeederState {
+    STOPPED(ShooterConstants.shooterStoppedSpeed),
+    EXHAUSTING(ShooterConstants.rollerStoppedVelocity),
+    INTAKING(ShooterConstants.rollerIntakingVelocity),
+    IDLE(ShooterConstants.rollerIdleVelocity);
+
+    public final double velocity;
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Roller", inputs);
+
+    io.setRollerVelocity(mRollerState.velocity);
   }
 
-  public void changeRollerState(RollerState rollerState) {
-    switch (rollerState) {
-      case STOPPED:
-        mRollerState = RollerState.STOPPED;
-        io.setRollerVelocity(0);
-        break;
-      case EXHAUSTING:
-        mRollerState = RollerState.EXHAUSTING;
-        io.setRollerVelocity(ShooterConstants.rollerExhaustingVelocity);
-        break;
-      case INTAKING:
-        mRollerState = RollerState.INTAKING;
-        io.setRollerVelocity(ShooterConstants.rollerIntakingVelocity);
-        break;
-      case IDLE:
-        mRollerState = RollerState.IDLE;
-        io.setRollerVelocity(ShooterConstants.rollerIdleVelocity);
-        break;
-    }
-  }
-
-  public double getAmps(){
+  public double getAmps() {
     return inputs.rollerCurrent;
   }
 }

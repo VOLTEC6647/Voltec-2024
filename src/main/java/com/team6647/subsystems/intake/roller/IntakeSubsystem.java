@@ -3,31 +3,30 @@
  * 
  * 24 01 2024
  */
-package com.team6647.subsystems.intake;
+package com.team6647.subsystems.intake.roller;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.team6647.util.Constants.IntakeConstants;
-import com.team6647.util.Constants.RobotConstants.RollerState;
 import com.team6647.util.LoggedTunableNumber;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 public class IntakeSubsystem extends SubsystemBase {
 
   private static IntakeSubsystem instance;
 
+  @Setter
   @AutoLogOutput(key = "Intake/Rollers/State")
-  private RollerState mState = RollerState.STOPPED;
+  public IntakeRollerState mState = IntakeRollerState.STOPPED;
 
   private LoggedTunableNumber peakCurrentLimit = new LoggedTunableNumber("Intake/Rollers/PeakCurrentLimit", 4);
 
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
-
-  @AutoLogOutput(key = "Intake/Roller/Peak")
-  private double peakCurrent = 4;
 
   /** Creates a new IntakeSubsystem. */
   private IntakeSubsystem(IntakeIO io) {
@@ -41,48 +40,26 @@ public class IntakeSubsystem extends SubsystemBase {
     return instance;
   }
 
+  @RequiredArgsConstructor
+  public enum IntakeRollerState {
+    STOPPED(IntakeConstants.intakeStoppedVelocity),
+    EXHAUSTING(IntakeConstants.intakeExhaustingVelocity),
+    INTAKING(IntakeConstants.intakeIntakingVelocity),
+    IDLE(IntakeConstants.intakeIdleVelocity);
+
+    public final double velocity;
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Intake/Rollers", inputs);
 
-    LoggedTunableNumber.ifChanged(hashCode(), peak -> {
-      peakCurrent = peak[0];
-    }, peakCurrentLimit);
-  }
-
-  /**
-   * Public method to command intake state
-   * 
-   * @param rollerState Intake RollerState
-   */
-  public void changeRollerState(RollerState rollerState) {
-    switch (rollerState) {
-      case STOPPED:
-        mState = RollerState.STOPPED;
-        io.setIntakeVelocity(IntakeConstants.intakeStoppedVelocity);
-        break;
-      case EXHAUSTING:
-        mState = RollerState.EXHAUSTING;
-        io.setIntakeVelocity(IntakeConstants.intakeExhaustingVelocity);
-        break;
-      case INTAKING:
-        mState = RollerState.INTAKING;
-        io.setIntakeVelocity(IntakeConstants.intakeIntakingVelocity);
-        break;
-      case IDLE:
-        mState = RollerState.IDLE;
-        io.setIntakeVelocity(IntakeConstants.intakeIdleVelocity);
-        break;
-    }
+    io.setIntakeVelocity(mState.velocity);
   }
 
   public double getAmps() {
     return inputs.intakeMotorCurrent;
-  }
-
-  public boolean objectDetected() {
-    return getAmps() > 5;
   }
 
   public boolean getBeamBrake() {

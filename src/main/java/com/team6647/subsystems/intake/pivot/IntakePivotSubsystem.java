@@ -3,7 +3,7 @@
  * 
  * 26 01 2024
  */
-package com.team6647.subsystems.intake;
+package com.team6647.subsystems.intake.pivot;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -11,14 +11,18 @@ import org.littletonrobotics.junction.Logger;
 import com.andromedalib.math.Functions;
 import com.team6647.util.Constants.IntakeConstants;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 public class IntakePivotSubsystem extends SubsystemBase {
 
   private static IntakePivotSubsystem instance;
 
+  @Setter
   @AutoLogOutput(key = "Intake/Pivot/State")
-  private IntakePivotState mState = IntakePivotState.HOMED;
+  public IntakePivotState mState = IntakePivotState.HOMED;
 
   private IntakePivotIO io;
   private IntakePivoIOInputsAutoLogged inputs = new IntakePivoIOInputsAutoLogged();
@@ -28,9 +32,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   @AutoLogOutput(key = "Intake/Pivot/PushingSetpoint")
   private double pushingSetpoint = IntakeConstants.pushingAcutatingPosition;
-
-  @AutoLogOutput(key = "Shooter/Pivot/Emergency Disable")
-  private boolean emergencyDisable = false;
 
   /** Creates a new IntakePivotSubsystem. */
   private IntakePivotSubsystem(IntakePivotIO io) {
@@ -47,7 +48,7 @@ public class IntakePivotSubsystem extends SubsystemBase {
   public enum IntakePivotState {
     HOMED,
     EXTENDED,
-    EMERGENCY_DISABLED
+    EMERGENCY_DISABLED;
   }
 
   @Override
@@ -61,25 +62,25 @@ public class IntakePivotSubsystem extends SubsystemBase {
       Logger.recordOutput("Intake/Pivot/CurrentCommand", "");
     }
 
-    emergencyCheck();
-  }
+    if (inputs.intakePivotAbsoluteEncoderPosition == 0) {
+      mState = IntakePivotState.EMERGENCY_DISABLED;
+      DriverStation.reportError("[ " + getName() + " ] Error. Absolute Position Encoder position out of range", true);
+    }
 
-  public void changeIntakePivotState(IntakePivotState intakePivotState) {
-    switch (intakePivotState) {
+    switch (mState) {
       case HOMED:
-        mState = IntakePivotState.HOMED;
         changeSetpoint(IntakeConstants.intakeHomedPosition);
         break;
       case EXTENDED:
-        mState = IntakePivotState.EXTENDED;
         changeSetpoint(IntakeConstants.intakeExtendedPosition);
         break;
       case EMERGENCY_DISABLED:
-        mState = IntakePivotState.EMERGENCY_DISABLED;
+        changeSetpoint(inputs.intakePivotAbsoluteEncoderPosition);
         break;
     }
   }
 
+  // Redudant, but will stay for logging purposes
   private void changeSetpoint(double newSetpoint) {
     if (newSetpoint > IntakeConstants.maxIntakePivotPosition || newSetpoint < IntakeConstants.minIntakePivotPosition) {
       newSetpoint = Functions.clamp(newSetpoint, IntakeConstants.minIntakePivotPosition,
@@ -103,23 +104,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   public void setPushingPosition(double position) {
     io.setPushingPosition(position);
-  }
-
-  public void emergencyCheck() {
-    /*
-     * if (inputs.intakeLimitSwitchPressed) {
-     * DriverStation.reportError("Intake Pivot Stopped", true);
-     * io.setIntakeVoltage(0);
-     * }
-     * 
-     * if (inputs.intakePivotAbsoluteEncoderPosition == 0) {
-     * mState = IntakePivotState.EMERGENCY_DISABLED;
-     * DriverStation.reportError("[" + getName() +
-     * "] Absolute Encoder position is not in range. Emergency disabled",
-     * true);
-     * io.disableIntake();
-     * }
-     */
   }
 
   public boolean pushingInTolerance() {

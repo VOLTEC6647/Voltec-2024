@@ -4,7 +4,7 @@
  * 16 09 2024
  */
 
-package com.team6647.subsystems.shooter;
+package com.team6647.subsystems.shooter.roller;
 
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.andromedalib.motorControllers.SuperSparkMax;

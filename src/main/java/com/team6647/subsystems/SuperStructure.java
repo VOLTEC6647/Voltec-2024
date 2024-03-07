@@ -12,7 +12,6 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.RobotContainer;
-import com.team6647.commands.ElevatorTarget;
 import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeHome;
@@ -21,29 +20,27 @@ import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.ShootingStationary;
 import com.team6647.commands.VisionIntakeAlign;
-import com.team6647.subsystems.elevator.ElevatorSubsystem;
-import com.team6647.subsystems.elevator.ElevatorSubsystem.ElevatorState;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.IntakeCommands;
-import com.team6647.subsystems.intake.IntakePivotSubsystem;
-import com.team6647.subsystems.intake.IntakeSubsystem;
+import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
+import com.team6647.subsystems.intake.roller.IntakeSubsystem;
+import com.team6647.subsystems.intake.roller.IntakeSubsystem.IntakeRollerState;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
 import com.team6647.subsystems.shooter.ShooterCommands;
-import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
-import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
-import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem.ShooterPivotState;
+import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
+import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.util.Constants.FieldConstants;
 import com.team6647.util.Constants.ShooterConstants;
-import com.team6647.util.Constants.RobotConstants.RollerState;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class SuperStructure {
 
@@ -57,7 +54,6 @@ public class SuperStructure {
     private static IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
     private static VisionSubsystem visionSubsystem = RobotContainer.visionSubsytem;
     private static NeuralVisionSubsystem neuralVisionSubsystem = RobotContainer.neuralVisionSubsystem;
-    private static ElevatorSubsystem elevatorSubsystem = RobotContainer.elevatorSubsystem;
 
     @AutoLogOutput(key = "SuperStructure/State")
     private static SuperStructureState mRobotState = SuperStructureState.IDLE;
@@ -70,7 +66,14 @@ public class SuperStructure {
     }
 
     public enum SuperStructureState {
-        IDLE, INTAKING, SHOOTING_SPEAKER, SCORING_AMP, SHOOTING_TRAP, SHOOTING_MOVING, CLIMBING, STOPPING_CLIMB,
+        IDLE,
+        INTAKING,
+        SHOOTING_SPEAKER,
+        SCORING_AMP,
+        SHOOTING_TRAP,
+        SHOOTING_MOVING,
+        CLIMBING,
+        STOPPING_CLIMB,
         INTAKE_ALIGN
     }
 
@@ -114,9 +117,7 @@ public class SuperStructure {
                 ShooterCommands.getShooterIntakingCommand(),
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
-                        Commands.waitSeconds(0.5),
-                        new RunCommand(() -> intakeSubsystem.changeRollerState(RollerState.EXHAUSTING), intakeSubsystem)
-                                .withTimeout(0.2)))
+                        Commands.waitSeconds(0.5)))
                 .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }
 
@@ -126,16 +127,14 @@ public class SuperStructure {
                 new InitIntake(intakePivotSubsystem),
                 Commands.parallel(
                         Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
-                        new IntakeRollerTarget(intakeSubsystem, RollerState.STOPPED),
+                        new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED),
-                        new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED),
-                        new ShooterRollerTarget(rollerSubsystem, RollerState.STOPPED),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
                         new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED)));
     }
 
     private static Command homeElevator() {
         return Commands.sequence(
-                new ElevatorTarget(elevatorSubsystem, ElevatorState.HOMED),
                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED));
     }
 
@@ -168,13 +167,12 @@ public class SuperStructure {
                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(1),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                 Commands.waitSeconds(1),
-                new ShooterRollerTarget(rollerSubsystem, RollerState.INTAKING));
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
     private static Command elevatorClimb() {
         return Commands.parallel(
-                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.CLIMBING),
-                new ElevatorTarget(elevatorSubsystem, ElevatorState.TOP));
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.CLIMBING));
     }
 
     /* Util */

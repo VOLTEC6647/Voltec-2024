@@ -4,7 +4,7 @@
  * 06 02 2024
  */
 
-package com.team6647.subsystems.shooter;
+package com.team6647.subsystems.shooter.pivot;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -16,13 +16,16 @@ import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 public class ShooterPivotSubsystem extends SubsystemBase {
 
   private static ShooterPivotSubsystem instance;
 
+  @Setter
   @AutoLogOutput(key = "Shooter/Pivot/State")
-  private static ShooterPivotState mState = ShooterPivotState.HOMED;
+  public ShooterPivotState mState = ShooterPivotState.HOMED;
 
   private ShooterPivotIO io;
   private ShooterPivotIOInputsAutoLogged inputs = new ShooterPivotIOInputsAutoLogged();
@@ -61,7 +64,16 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
 
-    emergencyCheck();
+    if (inputs.shooterAbsoluteEncoderPosition == 0) {
+      DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
+          true);
+      io.disablePivot();
+    }
+
+    if (mState == ShooterPivotState.EMERGENCY_DISABLED) {
+      io.setShooterReference(inputs.pivotMotorPosition);
+      io.disablePivot();
+    }
 
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
       io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
@@ -69,51 +81,44 @@ public class ShooterPivotSubsystem extends SubsystemBase {
       changeSetpoint(pid[4]);
 
     }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
-  }
 
-  public enum ShooterPivotState {
-    HOMED,
-    SHOOTING,
-    AMP,
-    INDEXING,
-    CLIMBING,
-    EMERGENCY_DISABLED
-  }
+    if (mState != ShooterPivotState.EMERGENCY_DISABLED || mState != ShooterPivotState.SHOOTING
+        || mState != ShooterPivotState.CUSTOM) {
+      setpoint = mState.setpoint;
 
-  public void setShooterPivotState(ShooterPivotState state) {
-    switch (state) {
-      case HOMED:
-        mState = ShooterPivotState.HOMED;
-        changeSetpoint(ShooterConstants.pivotHomedPosition);
-        break;
-      case SHOOTING:
-        mState = ShooterPivotState.SHOOTING;
-        changeSetpoint(currentParameters.pivotAngle());
-        break;
-      case AMP:
-        mState = ShooterPivotState.AMP;
-        changeSetpoint(ShooterConstants.pivotAmpPosition);
-        break;
-      case INDEXING:
-        mState = ShooterPivotState.INDEXING;
-        changeSetpoint(ShooterConstants.pivotIndexingPosition);
-        break;
-      case CLIMBING:
-        mState = ShooterPivotState.CLIMBING;
-        changeSetpoint(ShooterConstants.pivotClimbPosition);
-        break;
-      case EMERGENCY_DISABLED:
-        mState = ShooterPivotState.EMERGENCY_DISABLED;
-        io.disablePivot();
-        break;
+      io.setShooterReference(mState.setpoint);
+    }
+
+    if (mState == ShooterPivotState.SHOOTING) {
+      io.setShooterReference(currentParameters.pivotAngle());
     }
   }
 
-  private void changeSetpoint(double newSetpoint) {
+  @RequiredArgsConstructor
+  public enum ShooterPivotState {
+    HOMED(ShooterConstants.pivotHomedPosition),
+    SHOOTING(-1),
+    AMP(ShooterConstants.pivotAmpPosition),
+    INDEXING(ShooterConstants.pivotIndexingPosition),
+    CLIMBING(ShooterConstants.pivotClimbPosition),
+    EMERGENCY_DISABLED(-1),
+    CUSTOM(-1);
+
+    private final double setpoint;
+  }
+
+  /**
+   * Public security measure for arbitrarily changing the setpoint
+   * 
+   * @param newSetpoint The new setpoint
+   */
+  public void changeSetpoint(double newSetpoint) {
     if (newSetpoint > ShooterConstants.pivotMaxPosition || newSetpoint < ShooterConstants.pivotMinPosition) {
       newSetpoint = Functions.clamp(newSetpoint, ShooterConstants.pivotMinPosition,
           ShooterConstants.pivotMaxPosition);
     }
+
+    setMState(ShooterPivotState.CUSTOM);
 
     setpoint = newSetpoint;
 
@@ -126,21 +131,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
   public boolean inTolerance() {
     return inputs.inTolerance;
-  }
-
-  public void emergencyCheck() {
-/*     if (inputs.shooterPivotAppliedVolts < 0 && !inputs.limitSwitchPressed) {
-      emergencyDisable = true;
-      DriverStation.reportError("Shooter Pivot Emergency Disabled", true);
-      io.setShooterReference(inputs.shooterAbsoluteEncoderPosition);
-      mState = ShooterPivotState.EMERGENCY_DISABLED;
-    } */
-
-    if (inputs.shooterAbsoluteEncoderPosition == 0) {
-      DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
-          true);
-      io.disablePivot();
-    }
   }
 
   public static void updateShootingParameters(ShootingParameters newParameters) {

@@ -5,17 +5,17 @@
  */
 package com.team6647.commands;
 
-import com.team6647.subsystems.intake.IntakeSubsystem;
-import com.team6647.util.Constants.RobotConstants.RollerState;
+import com.team6647.subsystems.intake.roller.IntakeSubsystem;
+import com.team6647.subsystems.intake.roller.IntakeSubsystem.IntakeRollerState;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class IntakeRollerStartEnd extends Command {
   private IntakeSubsystem intakeSubsystem;
-  private RollerState startState;
-  private RollerState endState;
+  private IntakeRollerState startState;
+  private IntakeRollerState endState;
 
-  public IntakeRollerStartEnd(IntakeSubsystem intakeSubsystem, RollerState startState, RollerState endState) {
+  public IntakeRollerStartEnd(IntakeSubsystem intakeSubsystem, IntakeRollerState startState, IntakeRollerState endState) {
     this.intakeSubsystem = intakeSubsystem;
     this.startState = startState;
     this.endState = endState;
@@ -25,7 +25,7 @@ public class IntakeRollerStartEnd extends Command {
 
   @Override
   public void initialize() {
-    intakeSubsystem.changeRollerState(startState);
+    intakeSubsystem.setMState(startState);
   }
 
   @Override
@@ -34,7 +34,7 @@ public class IntakeRollerStartEnd extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    intakeSubsystem.changeRollerState(endState);
+    intakeSubsystem.setMState(endState);
   }
 
   @Override

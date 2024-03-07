@@ -4,7 +4,7 @@
  * 24 01 2024s
  */
 
-package com.team6647.subsystems.intake;
+package com.team6647.subsystems.intake.roller;
 
 import com.andromedalib.motorControllers.SuperSparkMax;
 import com.team6647.util.Constants.IntakeConstants;
