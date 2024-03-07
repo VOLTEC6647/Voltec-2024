@@ -219,22 +219,33 @@ public class RobotContainer extends SuperRobotContainer {
                 /* Driver 2 */
                 OperatorConstants.driverController2.a().whileTrue(new InitIntake(intakePivotSubsystem));
 
+                // -------- Superstructure --------
+
+                // -------- Intake Commands --------
+
                 OperatorConstants.TOGGLE_INTAKE
                                 .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                // -------- Shooter Commands --------
 
                 OperatorConstants.SHOOT_SPEAKER
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
+                // Subwoofer shootings
                 OperatorConstants.driverController2.a()
                                 .whileTrue(new ShootingStationary(andromedaSwerve, shooterSubsystem,
                                                 shooterPivotSubsystem, shooterRollerSubsystem, visionSubsytem, false))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
+                // -------- Amp Commands --------
+
                 OperatorConstants.TOGGLE_AMP
                                 .whileTrue(SuperStructure.update(SuperStructureState.SCORING_AMP))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                // -------- Helper Commands --------
 
                 OperatorConstants.INTAKE_FEEDER
                                 .whileTrue(Commands.parallel(
