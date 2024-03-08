@@ -118,15 +118,13 @@ public class ShooterPivotSubsystem extends SubsystemBase {
           ShooterConstants.pivotMaxPosition);
     }
 
-    setMState(ShooterPivotState.CUSTOM);
+    System.out.println("Setpoint changed to " + newSetpoint);
+
+    //setMState(mState); TODO FIX
 
     setpoint = newSetpoint;
 
     io.setShooterReference(newSetpoint);
-  }
-
-  public void updateSetpoint(double measure) {
-    changeSetpoint(setpoint + measure);
   }
 
   public boolean inTolerance() {

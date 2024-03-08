@@ -152,6 +152,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSim());
                                 shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterIORollerSim());
                                 visionSubsytem = VisionSubsystem.getInstance(new VisionIOSim());
+                                neuralVisionSubsystem = NeuralVisionSubsystem.getInstance(new NeuralVisionIOLimelight());
                                 break;
 
                         default:
@@ -313,7 +314,6 @@ public class RobotContainer extends SuperRobotContainer {
         }
 
         public void configSysIdBindings() {
-
                 OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
                                 .whileTrue(shooterSubsystem.sysIdQuasistatic(Direction.kForward));
                 OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
