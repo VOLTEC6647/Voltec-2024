@@ -41,7 +41,7 @@ public class ShooterRollerSubsystem extends SubsystemBase {
   @RequiredArgsConstructor
   public enum ShooterFeederState {
     STOPPED(ShooterConstants.shooterStoppedSpeed),
-    EXHAUSTING(ShooterConstants.rollerStoppedVelocity),
+    EXHAUSTING(ShooterConstants.rollerExhaustingVelocity),
     INTAKING(ShooterConstants.rollerIntakingVelocity),
     IDLE(ShooterConstants.rollerIdleVelocity);
 

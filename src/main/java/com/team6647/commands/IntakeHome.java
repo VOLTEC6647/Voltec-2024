@@ -55,7 +55,6 @@ public class IntakeHome extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return mController.atSetpoint() || intakePivotSubsystem.emergencyDisabled()
-        || intakePivotSubsystem.getIntakeLimitSwitchPressed();
+    return mController.atSetpoint() || intakePivotSubsystem.emergencyDisabled();
   }
 }

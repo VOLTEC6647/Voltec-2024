@@ -55,11 +55,11 @@ public class IntakeSubsystem extends SubsystemBase {
 
     io.setIntakeVelocity(mState.velocity);
 
-    if (getBeamBrake()) {
+    /* if (getBeamBrake()) {
       LEDSubsystem.getInstance().hasNote = true;
     } else {
       LEDSubsystem.getInstance().hasNote = false;
-    }
+    } */
   }
 
   public double getAmps() {

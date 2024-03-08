@@ -45,7 +45,7 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void computeVisionMeasurements() {
     if (inputs.hasTarget) {
-      if (inputs.targetDistance < 1.5) {
+      if (inputs.targetDistance < 3.5) {
         AndromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
       }
     }

@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class LEDSubsystem extends SubsystemBase {
-  private static LEDSubsystem instance;
+  /* private static LEDSubsystem instance;
 
   public static LEDSubsystem getInstance() {
     if (instance == null) {
@@ -275,5 +275,5 @@ public class LEDSubsystem extends SubsystemBase {
       colorIndex = colors.size() - 1 - colorIndex;
       buffer.setLED(i, colors.get(colorIndex));
     }
-  }
+  } */
 }

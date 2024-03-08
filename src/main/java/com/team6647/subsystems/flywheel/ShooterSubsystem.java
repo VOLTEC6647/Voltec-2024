@@ -68,7 +68,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private LoggedTunableNumber shooterVelocity = new LoggedTunableNumber("Shooter/Flywheel/velocity", 0.0);
 
-  private static ShootingParameters currentParameters = new ShootingParameters(new Rotation2d(), 0, 5000);
+  private static ShootingParameters currentParameters = new ShootingParameters(new Rotation2d(), 0, 0);
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(),

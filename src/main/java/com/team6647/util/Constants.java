@@ -190,8 +190,6 @@ public class Constants {
                 public static final double pidPositionTolerance = 0.05;
                 public static final double positionTolerance = 1;
 
-                public static final double pivotParallelFloorOffset = 203.0478515625;
-
                 public static final double pivotMaxVelocity = 1500.0;
                 public static final double pivotMaxAcceleration = 1500.0;
 
@@ -208,7 +206,7 @@ public class Constants {
                 public static final double pivotMaxPosition = 240;
                 public static final double pivotHomedPosition = 71;
                 public static final double pivotIndexingPosition = 114;
-                public static final double pivotAmpPosition = 183;
+                public static final double pivotAmpPosition = 185;
                 public static final double pivotClimbPosition = 235;
 
                 public static final double flywheelAmpRPM = 1000;
@@ -338,13 +336,14 @@ public class Constants {
                 public static final double intakePivotEncoderZeroOffset = 0.0;
 
                 public static final boolean intakePivotEncoderInverted = true;
+                public static final boolean intakePushingMotorInverted = true;
                 public static final boolean intakePivotLeftMotorInverted = false;
                 public static final boolean intakePivotRightMotorInverted = true;
 
                 public static final int intakeMotorsCurrentLimit = 30;
 
                 public static final double intakeStoppedVelocity = 0.0;
-                public static final double intakeIntakingVelocity = -0.7;
+                public static final double intakeIntakingVelocity = -1;
                 public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = -0.1;
 

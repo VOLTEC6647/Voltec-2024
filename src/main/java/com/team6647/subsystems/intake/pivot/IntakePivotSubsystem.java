@@ -105,15 +105,16 @@ public class IntakePivotSubsystem extends SubsystemBase {
     io.setPushingPosition(position);
   }
 
+  @AutoLogOutput(key="Intake/Pivot/PushingInTolerance")
   public boolean pushingInTolerance() {
-    return Math.abs(inputs.intakePivotLeftMotorPosition - pushingSetpoint) < 1;
+    return Math.abs(inputs.intakePushingMotorPosition - pushingSetpoint) < 1;
   }
 
   public double intakePosition() {
     return inputs.intakePivotAbsoluteEncoderPosition;
   }
 
-  @AutoLogOutput(key = "Intake/Pivot/InTolerance")
+  @AutoLogOutput(key = "Intake/Pivot/IntakeInTolerance")
   public boolean inTolerance() {
     return Math.abs(inputs.intakePivotAbsoluteEncoderPosition - setpoint) < IntakeConstants.homedTolerance;
   }

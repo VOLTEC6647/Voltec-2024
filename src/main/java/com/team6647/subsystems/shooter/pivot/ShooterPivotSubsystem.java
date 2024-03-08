@@ -120,7 +120,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     System.out.println("Setpoint changed to " + newSetpoint);
 
-    //setMState(mState); TODO FIX
+    //setMState(mState);
 
     setpoint = newSetpoint;
 

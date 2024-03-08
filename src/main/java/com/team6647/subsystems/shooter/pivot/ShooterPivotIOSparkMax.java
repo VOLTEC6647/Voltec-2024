@@ -22,7 +22,7 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
     private SuperSparkMax shooterPivotMotor = new SuperSparkMax(
             ShooterConstants.shooterPivotMotorID,
-            GlobalIdleMode.Brake, ShooterConstants.shooterPivotMotorInverted,
+            GlobalIdleMode.Coast, ShooterConstants.shooterPivotMotorInverted,
             ShooterConstants.shooterMotorCurrentLimit,
             ShooterConstants.armEncoderPositionConversionFactor,
             ShooterConstants.armEncoderZeroOffset,
@@ -35,7 +35,7 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
     private double setpoint;
 
     private double arbitraryFeedforward = 0;
-    private double horizontalPosition = 127;
+    private double horizontalPosition = 112;
     private double maxGravityFF = ShooterConstants.pivotKf;
 
     ProfiledPIDController controller = new ProfiledPIDController(ShooterConstants.pivotKp, ShooterConstants.pivotKi,
@@ -44,10 +44,8 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
     public ShooterPivotIOSparkMax() {
         pivotEncoder = shooterPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
-
         shooterPivotMotor.setSoftLimit(SoftLimitDirection.kForward, (float) ShooterConstants.pivotMaxPosition);
         shooterPivotMotor.setSoftLimit(SoftLimitDirection.kReverse, (float) ShooterConstants.pivotMinPosition);
-        shooterPivotMotor.stopMotor();
 
         forwardLimitSwitch = new DigitalInput(ShooterConstants.forwardLimitSwitchID);
         

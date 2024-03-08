@@ -68,7 +68,7 @@ public class ShootingStationary extends Command {
       this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
           AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
     } else {
-      this.parameters = new ShootingParameters(new Rotation2d(), 150, 5000);
+      this.parameters = new ShootingParameters(new Rotation2d(),110 , 5000);
     }
 
     SuperStructure.updateShootingParameters(parameters);
@@ -118,11 +118,12 @@ public class ShootingStationary extends Command {
       flywheelSubsystem.setMFlywheelState(FlywheelState.SHOOTING);
       pivotSubsystem.setMState(ShooterPivotState.SHOOTING);
 
-      if (readyToShoot) {
-        if (flywheelSubsystem.topInTolerance() && flywheelSubsystem.bottomInTolerance()) {
-          if (pivotSubsystem.inTolerance()) {
-            rollerSubsystem.setMRollerState(ShooterFeederState.INTAKING);
-          }
+    }
+
+    if (readyToShoot) {
+      if (flywheelSubsystem.topInTolerance() && flywheelSubsystem.bottomInTolerance()) {
+        if (pivotSubsystem.inTolerance()) {
+          rollerSubsystem.setMRollerState(ShooterFeederState.INTAKING);
         }
       }
     }
@@ -139,6 +140,6 @@ public class ShootingStationary extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return !flywheelSubsystem.getBeamBrake();
+    return flywheelSubsystem.getBeamBrake();
   }
 }

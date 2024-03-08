@@ -22,7 +22,7 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
     private static SuperSparkMax pushingPivotMotor = new SuperSparkMax(
             IntakeConstants.intakePushingMotor,
             GlobalIdleMode.Coast,
-            IntakeConstants.intakePivotEncoderInverted,
+            IntakeConstants.intakePushingMotorInverted,
             IntakeConstants.intakeMotorsCurrentLimit,
             IntakeConstants.intakePivotEncoderPositionConversionFactor,
             IntakeConstants.intakePivotEncoderZeroOffset,

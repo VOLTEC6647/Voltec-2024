@@ -11,6 +11,7 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.team6647.util.Constants.ShooterConstants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -19,12 +20,12 @@ public class ShooterIOKraken implements ShooterIO {
 
         private static SuperTalonFX topFlywheelMotor = new SuperTalonFX(
                         ShooterConstants.flywheelTopMotorID,
-                        GlobalIdleMode.Coast,
+                        GlobalIdleMode.Brake,
                         true);
 
         private static SuperTalonFX botttomFlywheelMotor = new SuperTalonFX(
                         ShooterConstants.flywheelBottomMotorID,
-                        GlobalIdleMode.Coast,
+                        GlobalIdleMode.Brake,
                         true);
 
         private static DigitalInput shooterBeamBrake = new DigitalInput(ShooterConstants.shooterBeamBrakeChannel);
@@ -89,6 +90,8 @@ public class ShooterIOKraken implements ShooterIO {
 
                 topMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
+                topMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
                 topMotorConfig.Slot0.kP = p;
                 topMotorConfig.Slot0.kI = i;
                 topMotorConfig.Slot0.kD = d;
@@ -104,6 +107,8 @@ public class ShooterIOKraken implements ShooterIO {
                 TalonFXConfiguration bottomMotorConfig = new TalonFXConfiguration();
 
                 bottomMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+
+                bottomMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
 
                 bottomMotorConfig.Slot0.kP = p;
                 bottomMotorConfig.Slot0.kI = i;

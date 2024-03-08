@@ -140,9 +140,20 @@ public class SuperStructure {
     }
 
     private static Command shootingStationary() {
-
-        return new ShootingStationary(andromedaSwerve, shooterSubsystem, shooterPivotSubsystem, rollerSubsystem,
-                visionSubsystem, true);
+        return Commands.sequence(
+                Commands.either(
+                        Commands.sequence(
+                                new ShooterRollerTarget(
+                                        rollerSubsystem,
+                                        ShooterFeederState.INTAKING),
+                                Commands.waitUntil(() -> !shooterSubsystem.getBeamBrake())),
+                        Commands.waitSeconds(0),
+                        () -> shooterSubsystem.getBeamBrake()),
+                new ShooterRollerTarget(rollerSubsystem,
+                        ShooterFeederState.STOPPED),
+                new ShootingStationary(andromedaSwerve, shooterSubsystem,
+                        shooterPivotSubsystem, rollerSubsystem,
+                        visionSubsystem, false));
     }
 
     /* Pathfinding */
