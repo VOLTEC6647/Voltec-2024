@@ -111,9 +111,9 @@ public class AndromedaModuleConfig {
         double driveKp = 0.1;
         double driveKi = 0.0;
         double driveKd = 0.0;
-        double driveKs = 0.18225;
-        double driveKv = 2.3503;
-        double driveKa = 0.05414;
+        double driveKs = 0.1468;
+        double driveKv = 2.333;
+        double driveKa = 0.08205;
 
         double openLoopRamp = 0.25;
         double closedLoopRamp = 0.0;
