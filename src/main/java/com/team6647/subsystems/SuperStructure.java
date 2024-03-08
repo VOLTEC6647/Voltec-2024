@@ -69,6 +69,8 @@ public class SuperStructure {
         IDLE,
         INTAKING,
         SHOOTING_SPEAKER,
+        SHOOTING_SUBWOOFER,
+        INTELLIGENT_SHOOTING_SPEAKER,
         SCORING_AMP,
         SHOOTING_TRAP,
         SHOOTING_MOVING,
@@ -87,6 +89,9 @@ public class SuperStructure {
             case SHOOTING_SPEAKER:
                 mRobotState = SuperStructureState.SHOOTING_SPEAKER;
                 return shootingStationary();
+            case SHOOTING_SUBWOOFER:
+                mRobotState = SuperStructureState.SHOOTING_SUBWOOFER;
+                return shootingSubwoofer();
             case SCORING_AMP:
                 mRobotState = SuperStructureState.SCORING_AMP;
                 return scoreAmp();
@@ -102,6 +107,11 @@ public class SuperStructure {
                 mRobotState = SuperStructureState.INTAKE_ALIGN;
                 return new VisionIntakeAlign(neuralVisionSubsystem,
                         andromedaSwerve);
+            case INTELLIGENT_SHOOTING_SPEAKER:
+                mRobotState = SuperStructureState.INTELLIGENT_SHOOTING_SPEAKER;
+                return intelligentShooting();
+            default:
+                break;
         }
 
         return Commands.waitSeconds(0);
@@ -140,6 +150,12 @@ public class SuperStructure {
     }
 
     private static Command shootingStationary() {
+        return new ShootingStationary(andromedaSwerve, shooterSubsystem,
+                shooterPivotSubsystem, rollerSubsystem,
+                visionSubsystem, true);
+    }
+
+    private static Command intelligentShooting() {
         return Commands.sequence(
                 Commands.either(
                         Commands.sequence(
@@ -153,7 +169,13 @@ public class SuperStructure {
                         ShooterFeederState.STOPPED),
                 new ShootingStationary(andromedaSwerve, shooterSubsystem,
                         shooterPivotSubsystem, rollerSubsystem,
-                        visionSubsystem, false));
+                        visionSubsystem, true));
+    }
+
+    private static Command shootingSubwoofer() {
+        return new ShootingStationary(andromedaSwerve, shooterSubsystem,
+                shooterPivotSubsystem, rollerSubsystem,
+                visionSubsystem, false);
     }
 
     /* Pathfinding */

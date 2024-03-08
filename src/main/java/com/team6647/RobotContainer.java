@@ -63,6 +63,7 @@ import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -210,7 +211,8 @@ public class RobotContainer extends SuperRobotContainer {
                 autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
                 autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Auto"));
 
-                autoDashboardChooser.addOption("Middle Wing 2Piece Auto", AutoBuilder.buildAuto("Middle Wing 2Piece Auto"));
+                autoDashboardChooser.addOption("Middle Wing 2Piece Auto",
+                                AutoBuilder.buildAuto("Middle Wing 2Piece Auto"));
 
                 // -------- Engame alers (Credits: 6328) --------
                 Function<Double, Command> controllerRumbleCommandFactory = time -> Commands.sequence(
@@ -249,7 +251,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
 
-                //configSysIdBindings();
+                // configSysIdBindings();
         }
 
         @Override
@@ -266,11 +268,8 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Gyro Commands --------
 
-                /*
-                 * OperatorConstants.RESET_GYRO
-                 * .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(new
-                 * Rotation2d())));
-                 */
+                OperatorConstants.RESET_GYRO
+                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(new Rotation2d())));
 
                 /* Driver 2 */
 
@@ -289,21 +288,14 @@ public class RobotContainer extends SuperRobotContainer {
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // Subwoofer shootings
-                OperatorConstants.driverController2.a()
-                                .whileTrue(Commands.sequence(
-                                                Commands.either(
-                                                                Commands.sequence(
-                                                                                new ShooterRollerTarget(
-                                                                                                shooterRollerSubsystem,
-                                                                                                ShooterFeederState.INTAKING),
-                                                                                Commands.waitUntil(() -> !shooterSubsystem.getBeamBrake())),
-                                                                Commands.waitSeconds(0),
-                                                                () -> shooterSubsystem.getBeamBrake()),
-                                                new ShooterRollerTarget(shooterRollerSubsystem,
-                                                                ShooterFeederState.STOPPED),
-                                                new ShootingStationary(andromedaSwerve, shooterSubsystem,
-                                                                shooterPivotSubsystem, shooterRollerSubsystem,
-                                                                visionSubsytem, false)))
+                OperatorConstants.SHOOT_SUBWOOFER
+                                .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                // Shooting with feeder detection
+
+                OperatorConstants.INTELLIGENT_SHOOTING
+                                .whileTrue(SuperStructure.update(SuperStructureState.INTELLIGENT_SHOOTING_SPEAKER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Amp Commands --------
