@@ -1,0 +1,79 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.2272099220088524,
+      "y": 4.33
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BottomToMiddle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

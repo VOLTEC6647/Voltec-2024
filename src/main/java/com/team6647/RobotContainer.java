@@ -210,6 +210,9 @@ public class RobotContainer extends SuperRobotContainer {
                 autoDashboardChooser.addOption("Do nothing auto", Commands.waitSeconds(0));
                 autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
                 autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Auto"));
+                autoDashboardChooser.addOption("2 Piece Bottom", AutoBuilder.buildAuto("2 Note Bottom"));
+                autoDashboardChooser.addOption("Bottom 1",AutoBuilder.buildAuto("Bottom Wing Auto") );
+                autoDashboardChooser.addOption("Test1", AutoBuilder.buildAuto("ShootT"));
 
                 autoDashboardChooser.addOption("Middle Wing 2Piece Auto",
                                 AutoBuilder.buildAuto("Middle Wing 2Piece Auto"));
@@ -348,8 +351,7 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return Commands.sequence(
-                                new InitIntake(intakePivotSubsystem),
-                                autoDashboardChooser.get());
+                return 
+                                new InitIntake(intakePivotSubsystem).andThen(autoDashboardChooser.get());
         }
 }

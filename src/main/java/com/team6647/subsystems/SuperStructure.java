@@ -152,7 +152,7 @@ public class SuperStructure {
     private static Command shootingStationary() {
         return new ShootingStationary(andromedaSwerve, shooterSubsystem,
                 shooterPivotSubsystem, rollerSubsystem,
-                visionSubsystem, true);
+                visionSubsystem, false);//was true
     }
 
     private static Command intelligentShooting() {

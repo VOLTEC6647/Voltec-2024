@@ -22,7 +22,7 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
 
     private SuperSparkMax shooterPivotMotor = new SuperSparkMax(
             ShooterConstants.shooterPivotMotorID,
-            GlobalIdleMode.Coast, ShooterConstants.shooterPivotMotorInverted,
+            GlobalIdleMode.Brake, ShooterConstants.shooterPivotMotorInverted,
             ShooterConstants.shooterMotorCurrentLimit,
             ShooterConstants.armEncoderPositionConversionFactor,
             ShooterConstants.armEncoderZeroOffset,

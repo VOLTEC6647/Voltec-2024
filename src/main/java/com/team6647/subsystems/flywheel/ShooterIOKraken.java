@@ -20,12 +20,12 @@ public class ShooterIOKraken implements ShooterIO {
 
         private static SuperTalonFX topFlywheelMotor = new SuperTalonFX(
                         ShooterConstants.flywheelTopMotorID,
-                        GlobalIdleMode.Brake,
+                        GlobalIdleMode.Coast,
                         true);
 
         private static SuperTalonFX botttomFlywheelMotor = new SuperTalonFX(
                         ShooterConstants.flywheelBottomMotorID,
-                        GlobalIdleMode.Brake,
+                        GlobalIdleMode.Coast,
                         true);
 
         private static DigitalInput shooterBeamBrake = new DigitalInput(ShooterConstants.shooterBeamBrakeChannel);
