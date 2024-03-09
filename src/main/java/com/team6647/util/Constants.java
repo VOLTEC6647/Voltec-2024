@@ -345,7 +345,7 @@ public class Constants {
                 public static final int intakeMotorsCurrentLimit = 30;
 
                 public static final double intakeStoppedVelocity = 0.0;
-                public static final double intakeIntakingVelocity = -1;
+                public static final double intakeIntakingVelocity = -0.7;
                 public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = -0.1;
 
