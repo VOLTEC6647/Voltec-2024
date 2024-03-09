@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import lombok.val;
 
 public class Constants {
 
@@ -249,22 +250,20 @@ public class Constants {
 
                 static {
                         // Distance, Angle
-                        shooterPivotMap.put(1.095979334274389, 150.0);
-                        shooterPivotMap.put(1.282133452297385, 155.0);
-                        shooterPivotMap.put(1.4342617709538774, 157.0);
-                        shooterPivotMap.put(1.4342617709538774, 162.0);
-                        shooterPivotMap.put(1.8687062887987802, 163.0);
-                        shooterPivotMap.put(2.0448387211045267, 167.0);
-                        shooterPivotMap.put(2.259941229448083, 169.0);
-                        shooterPivotMap.put(2.3849374678265636, 171.0);
-                        shooterPivotMap.put(2.6708614771998826, 173.0);
-                        shooterPivotMap.put(2.8698417854532146, 175.0);
-                        shooterPivotMap.put(3.0614379417757864, 176.0);
-                        shooterPivotMap.put(3.21703461348205, 177.0);
-                        shooterPivotMap.put(3.45334674644738, 178.0);
-                        shooterPivotMap.put(3.805586983598703, 178.5);
-                        shooterPivotMap.put(4.150999154490105, 179.0);
-                        shooterPivotMap.put(4.532950393382253, 181.0);
+                        // shooterPivotMap.put(1.0810042396944568, 108.0);
+                        // shooterPivotMap.put(1.1925201207020137, 105.0);
+                        // shooterPivotMap.put(1.2020858030598693, 111.0);
+                        // shooterPivotMap.put(1.3801720103239374, 111.0);
+                        // shooterPivotMap.put(1.4670866119735877, 115.0);
+                        // shooterPivotMap.put(1.5872513575703706, 113.0);
+                        // shooterPivotMap.put(1.6923915411392143, 113.0);
+                        // shooterPivotMap.put(1.8492929713559911, 120.0);
+                        shooterPivotMap.put(1.1291407697432299, 111.0);
+                        shooterPivotMap.put(1.1291407697432299, 111.0);
+                        shooterPivotMap.put(1.1291407697432299, 111.0);
+                        
+                        
+                       
 
                 }
 
