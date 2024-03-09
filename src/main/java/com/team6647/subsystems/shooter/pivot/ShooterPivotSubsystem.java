@@ -79,18 +79,31 @@ public class ShooterPivotSubsystem extends SubsystemBase {
       io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
 
       changeSetpoint(pid[4]);
-
     }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
 
-    if (mState != ShooterPivotState.EMERGENCY_DISABLED || mState != ShooterPivotState.SHOOTING
-        || mState != ShooterPivotState.CUSTOM) {
-      setpoint = mState.setpoint;
-
-      io.setShooterReference(mState.setpoint);
-    }
-
-    if (mState == ShooterPivotState.SHOOTING) {
-      io.setShooterReference(currentParameters.pivotAngle());
+    switch (mState) {
+      case HOMED:
+        io.setShooterReference(mState.setpoint);
+        break;
+      case SHOOTING:
+        io.setShooterReference(currentParameters.pivotAngle());
+        break;
+      case AMP:
+        io.setShooterReference(mState.setpoint);
+        break;
+      case INDEXING:
+        io.setShooterReference(mState.setpoint);
+        break;
+      case CLIMBING:
+        io.setShooterReference(mState.setpoint);
+        break;
+      case EMERGENCY_DISABLED:
+        io.setShooterReference(inputs.pivotMotorPosition);
+        io.disablePivot();
+        break;
+      case CUSTOM:
+        io.setShooterReference(setpoint);
+        break;
     }
   }
 
@@ -120,7 +133,12 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     System.out.println("Setpoint changed to " + newSetpoint);
 
-    //setMState(mState);
+    // Filters initial changes to the setpoint
+    if (newSetpoint == ShooterConstants.pivotHomedPosition) {
+      setMState(ShooterPivotState.HOMED);
+    } else {
+      setMState(ShooterPivotState.CUSTOM);
+    }
 
     setpoint = newSetpoint;
 
