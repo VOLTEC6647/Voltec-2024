@@ -34,4 +34,8 @@ public class Functions {
 
         return (Math.abs(value) > Math.abs(deadband)) ? scaledValue : 0;
     }
+
+    public static boolean isAround(double value, double target, double tolerance) {
+        return Math.abs(value - target) <= tolerance;
+    }
 }

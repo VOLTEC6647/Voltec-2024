@@ -5,6 +5,7 @@ package com.team6647.commands;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.andromedalib.math.Functions;
 import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.util.Constants.IntakeConstants;
@@ -55,6 +56,8 @@ public class IntakeHome extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return mController.atSetpoint() || intakePivotSubsystem.emergencyDisabled();
+    return Functions.isAround(
+        intakePivotSubsystem.intakePosition(), IntakeConstants.intakeHomedPosition, IntakeConstants.homedTolerance)
+        || mController.atSetpoint();
   }
 }
