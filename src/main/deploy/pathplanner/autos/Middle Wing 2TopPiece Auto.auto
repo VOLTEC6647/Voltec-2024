@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3842846515935527,
-      "y": 5.562647359246215
+      "x": 1.2994393226127086,
+      "y": 5.612298798671672
     },
     "rotation": 1.1796376863995455
   },
@@ -14,13 +14,38 @@
         {
           "type": "named",
           "data": {
+            "name": "Idle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ShootStay"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "New Path"
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GrabPiece"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle"
+                }
+              }
+            ]
           }
         },
         {
@@ -37,6 +62,12 @@
                 "type": "named",
                 "data": {
                   "name": "GrabPiece"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "MiddleToTop"
                 }
               }
             ]

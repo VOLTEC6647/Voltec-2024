@@ -194,13 +194,16 @@ public class RobotContainer extends SuperRobotContainer {
                 // -------- Auto Declaration --------
 
                 NamedCommands.registerCommand("ShootStay",
-                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
+                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));//was 7
                 NamedCommands.registerCommand("GrabPiece",
-                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(3));
+                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(4));
                 NamedCommands.registerCommand("Idle",
                                 SuperStructure.update(SuperStructureState.IDLE).withTimeout(0.1));
                 NamedCommands.registerCommand("VisionAlign",
                                 SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
+
+                NamedCommands.registerCommand("IntakeDown",
+                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(1));
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
@@ -215,7 +218,11 @@ public class RobotContainer extends SuperRobotContainer {
                 autoDashboardChooser.addOption("Test1", AutoBuilder.buildAuto("ShootT"));
 
                 autoDashboardChooser.addOption("Middle Wing 2Piece Auto",
-                                AutoBuilder.buildAuto("Middle Wing 2Piece Auto"));
+                                AutoBuilder.buildAuto("Middle Wing 2TopPiece Auto"));
+                autoDashboardChooser.addOption("3 Note Bottom",
+                                AutoBuilder.buildAuto("3 Note Bottom"));
+                                autoDashboardChooser.addOption("V23 Note Top",
+                                AutoBuilder.buildAuto("V23 Note Top"));
 
                 // -------- Engame alers (Credits: 6328) --------
                 Function<Double, Command> controllerRumbleCommandFactory = time -> Commands.sequence(

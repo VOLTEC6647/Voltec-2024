@@ -75,7 +75,9 @@ public class ShootingStationary extends Command {
 
     swerve.setHeadingOverride(true);
     swerve.setTargetHeading(parameters.robotAngle());
+     pivotSubsystem.setMState(ShooterPivotState.SHOOTING);
   }
+  
 
   @Override
   public void execute() {
@@ -116,8 +118,7 @@ public class ShootingStationary extends Command {
       readyToShoot = true;
 
       flywheelSubsystem.setMFlywheelState(FlywheelState.SHOOTING);
-      pivotSubsystem.setMState(ShooterPivotState.SHOOTING);
-
+     
     }
 
     if (readyToShoot) {
@@ -141,5 +142,6 @@ public class ShootingStationary extends Command {
   @Override
   public boolean isFinished() {
     return flywheelSubsystem.getBeamBrake();
+    //return false;
   }
 }

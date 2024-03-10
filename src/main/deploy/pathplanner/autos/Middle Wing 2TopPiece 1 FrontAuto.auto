@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3835689893602012,
-      "y": 6.76043636346532
+      "x": 1.2994393226127086,
+      "y": 5.612298798671672
     },
-    "rotation": 0
+    "rotation": 1.1796376863995455
   },
   "command": {
     "type": "sequential",
@@ -14,7 +14,44 @@
         {
           "type": "named",
           "data": {
+            "name": "ShootStay"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "Idle"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GrabPiece"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Middle"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
           }
         },
         {
@@ -26,7 +63,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopTo2"
+            "pathName": "MiddleToTop"
           }
         },
         {
@@ -42,12 +79,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "2ToWing"
-          }
-        },
-        {
           "type": "named",
           "data": {
             "name": "ShootStay"
@@ -56,25 +87,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Idle"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "WingTo3Top"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "VisionAlign"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "GrabPiece"
+            "name": "IDLE"
           }
         }
       ]

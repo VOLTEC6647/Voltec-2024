@@ -152,7 +152,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput(key = "Shooter/Flywheel/bottomInTolerance")
   public boolean bottomInTolerance() {
-    return Math.abs(inputs.topMotorVelocity - mVelocitySetpoint) < ShooterConstants.shooterTolerance;
+    return Math.abs(inputs.bottomMotorVelocity - mVelocitySetpoint) < ShooterConstants.shooterTolerance;
   }
 
   public boolean getBeamBrake() {

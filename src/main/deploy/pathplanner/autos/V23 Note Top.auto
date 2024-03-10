@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top"
+            "pathName": "2 Top Leave"
           }
         },
         {
@@ -42,15 +42,57 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Amp"
+            "pathName": "TopToMiddle"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
+            "name": "IntakeAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleToBottom"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
           }
         }
       ]

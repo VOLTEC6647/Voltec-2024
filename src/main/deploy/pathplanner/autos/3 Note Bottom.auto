@@ -18,9 +18,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "Bottom"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GrabPiece"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "Bottom"
+                }
+              }
+            ]
           }
         },
         {
@@ -51,12 +64,6 @@
           "type": "path",
           "data": {
             "pathName": "BottomToMiddle"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "IntakeAlign"
           }
         },
         {
@@ -98,6 +105,6 @@
       ]
     }
   },
-  "folder": "MXPU",
+  "folder": null,
   "choreoAuto": false
 }
