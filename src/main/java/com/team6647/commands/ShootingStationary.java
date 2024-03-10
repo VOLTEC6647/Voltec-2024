@@ -115,8 +115,8 @@ public class ShootingStationary extends Command {
     } else {
       readyToShoot = true;
 
-      flywheelSubsystem.setMFlywheelState(FlywheelState.SHOOTING);
-      pivotSubsystem.setMState(ShooterPivotState.SHOOTING);
+      flywheelSubsystem.setFlywheelState(FlywheelState.SHOOTING);
+      pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
 
     }
 

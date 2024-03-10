@@ -24,7 +24,7 @@ public class ShooterPivotTarget extends Command {
 
   @Override
   public void initialize() {
-    shooterPivotSubsystem.setMState(pivotState);
+    shooterPivotSubsystem.setShooterPivotState(pivotState);
   }
 
   @Override

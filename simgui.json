@@ -26,6 +26,21 @@
           "open": true
         },
         "open": true
+      },
+      "SmartDashboard": {
+        "TunableNumbers": {
+          "Shooter": {
+            "Flywheel": {
+              "open": true
+            },
+            "Pivot": {
+              "open": true
+            },
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
       }
     }
   },
