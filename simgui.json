@@ -8,9 +8,6 @@
     }
   },
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {

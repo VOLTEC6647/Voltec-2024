@@ -20,6 +20,7 @@ import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.ShootingStationary;
 import com.team6647.commands.VisionIntakeAlign;
+import com.team6647.commands.VisionSpeakerAlign;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.IntakeCommands;
@@ -34,7 +35,9 @@ import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
 import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.util.Constants.FieldConstants;
+import com.team6647.util.Constants.FieldConstants.Speaker;
 import com.team6647.util.Constants.ShooterConstants;
+import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -150,9 +153,19 @@ public class SuperStructure {
     }
 
     private static Command shootingStationary() {
-        return new ShootingStationary(andromedaSwerve, shooterSubsystem,
-                shooterPivotSubsystem, rollerSubsystem,
-                visionSubsystem, false);//was true
+        return Commands.sequence(
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = ShootingCalculatorUtil.getShootingParameters(
+                            andromedaSwerve.getPose(),
+                            AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+
+                    updateShootingParameters(ampParams);
+                }),
+                new VisionSpeakerAlign(andromedaSwerve, visionSubsystem),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
     private static Command intelligentShooting() {
@@ -167,15 +180,32 @@ public class SuperStructure {
                         () -> shooterSubsystem.getBeamBrake()),
                 new ShooterRollerTarget(rollerSubsystem,
                         ShooterFeederState.STOPPED),
-                new ShootingStationary(andromedaSwerve, shooterSubsystem,
-                        shooterPivotSubsystem, rollerSubsystem,
-                        visionSubsystem, true));
+                Commands.sequence(
+                        new InstantCommand(() -> {
+                            ShootingParameters ampParams = ShootingCalculatorUtil.getShootingParameters(
+                                    andromedaSwerve.getPose(),
+                                    AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+
+                            updateShootingParameters(ampParams);
+                        }),
+                        new VisionSpeakerAlign(andromedaSwerve, visionSubsystem),
+                        Commands.parallel(
+                                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
     }
 
     private static Command shootingSubwoofer() {
-        return new ShootingStationary(andromedaSwerve, shooterSubsystem,
-                shooterPivotSubsystem, rollerSubsystem,
-                visionSubsystem, false);
+        return Commands.sequence(
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), 110, 5000);
+
+                    updateShootingParameters(ampParams);
+                }),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
     /* Pathfinding */
@@ -194,7 +224,7 @@ public class SuperStructure {
                     updateShootingParameters(ampParams);
                 }),
                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(1),
-                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING).withTimeout(1),
                 Commands.waitSeconds(1),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
