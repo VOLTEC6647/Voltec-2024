@@ -8,9 +8,6 @@
     }
   },
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
@@ -26,6 +23,21 @@
       },
       "AndromedaSwerveTable": {
         "SwerveModule": {
+          "open": true
+        },
+        "open": true
+      },
+      "SmartDashboard": {
+        "TunableNumbers": {
+          "Shooter": {
+            "Flywheel": {
+              "open": true
+            },
+            "Pivot": {
+              "open": true
+            },
+            "open": true
+          },
           "open": true
         },
         "open": true

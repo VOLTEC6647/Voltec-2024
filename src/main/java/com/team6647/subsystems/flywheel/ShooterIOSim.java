@@ -20,8 +20,8 @@ public class ShooterIOSim implements ShooterIO {
 
     private double setpoint = 0.0;
 
-    private SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.0, 0.01);
-    private PIDController driveFeedback = new PIDController(0.6, 0.0, 0.0);
+    private SimpleMotorFeedforward flywheelFeedforward = new SimpleMotorFeedforward(0.0, 0.01);
+    private PIDController flywheelFeedback = new PIDController(0.6, 0.0, 0.0);
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
@@ -31,10 +31,10 @@ public class ShooterIOSim implements ShooterIO {
         inputs.topMotorVelocity = topMotor.getAngularVelocityRPM();
         inputs.bottomMotorVelocity = bottomMotor.getAngularVelocityRPM();
 
-        topMotor.setInputVoltage(driveFeedback.calculate(topMotor.getAngularVelocityRPM(), setpoint)
-                + driveFeedforward.calculate(setpoint));
-        bottomMotor.setInputVoltage(driveFeedback.calculate(bottomMotor.getAngularVelocityRPM(), setpoint)
-                + driveFeedforward.calculate(setpoint));
+        topMotor.setInputVoltage(flywheelFeedback.calculate(topMotor.getAngularVelocityRPM(), setpoint)
+                + flywheelFeedforward.calculate(setpoint));
+        bottomMotor.setInputVoltage(flywheelFeedback.calculate(bottomMotor.getAngularVelocityRPM(), setpoint)
+                + flywheelFeedforward.calculate(setpoint));
     }
 
     @Override

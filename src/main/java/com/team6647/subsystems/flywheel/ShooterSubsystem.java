@@ -24,13 +24,11 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 public class ShooterSubsystem extends SubsystemBase {
 
   private static ShooterSubsystem instance;
 
-  @Setter
   @AutoLogOutput(key = "Shooter/Flywheel/State")
   public FlywheelState mFlywheelState = FlywheelState.STOPPED;
 
@@ -109,6 +107,25 @@ public class ShooterSubsystem extends SubsystemBase {
     public final double velocity;
   }
 
+  public void setFlywheelState(FlywheelState state) {
+    mFlywheelState = state;
+    switch (state) {
+      case STOPPED:
+        setShooterSpeed(ShooterConstants.shooterStoppedSpeed);
+        break;
+      case EXHAUSTING:
+
+        setShooterSpeed(ShooterConstants.shooterExhaustSpeed);
+        break;
+      case SHOOTING:
+        setShooterSpeed(currentParameters.flywheelRPM());
+        break;
+      case IDLE:
+        setShooterSpeed(ShooterConstants.shooterIdleSpeed);
+        break;
+    }
+  }
+
   @Override
   public void periodic() {
     io.updateInputs(inputs);
@@ -123,12 +140,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }, bottomShooterKp, bottomShooterKi, bottomShooterKd, bottomShooterKs, bottomShooterKv, bottomShooterKa,
         topShooterKp, topShooterKi, topShooterKd, topShooterKs, topShooterKv, topShooterKa, shooterVelocity);
-
-    if (mFlywheelState == FlywheelState.SHOOTING) {
-      setShooterSpeed(currentParameters.flywheelRPM());
-    } else {
-      setShooterSpeed(mFlywheelState.velocity);
-    }
   }
 
   /**

@@ -17,13 +17,11 @@ import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 
 public class ShooterPivotSubsystem extends SubsystemBase {
 
   private static ShooterPivotSubsystem instance;
 
-  @Setter
   @AutoLogOutput(key = "Shooter/Pivot/State")
   public ShooterPivotState mState = ShooterPivotState.HOMED;
 
@@ -67,6 +65,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     if (inputs.shooterAbsoluteEncoderPosition == 0) {
       DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
           true);
+      setShooterPivotState(ShooterPivotState.EMERGENCY_DISABLED);
       io.disablePivot();
     }
 
@@ -81,30 +80,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
       changeSetpoint(pid[4]);
     }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
 
-    switch (mState) {
-      case HOMED:
-        io.setShooterReference(mState.setpoint);
-        break;
-      case SHOOTING:
-        io.setShooterReference(currentParameters.pivotAngle());
-        break;
-      case AMP:
-        io.setShooterReference(mState.setpoint);
-        break;
-      case INDEXING:
-        io.setShooterReference(mState.setpoint);
-        break;
-      case CLIMBING:
-        io.setShooterReference(mState.setpoint);
-        break;
-      case EMERGENCY_DISABLED:
-        io.setShooterReference(inputs.pivotMotorPosition);
-        io.disablePivot();
-        break;
-      case CUSTOM:
-        io.setShooterReference(setpoint);
-        break;
-    }
   }
 
   @RequiredArgsConstructor
@@ -120,6 +95,35 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     private final double setpoint;
   }
 
+  public void setShooterPivotState(ShooterPivotState state) {
+    mState = state;
+
+    switch (state) {
+      case HOMED:
+        changeSetpoint(state.setpoint);
+        break;
+      case SHOOTING:
+        changeSetpoint(currentParameters.pivotAngle());
+        break;
+      case AMP:
+        changeSetpoint(state.setpoint);
+        break;
+      case INDEXING:
+        changeSetpoint(state.setpoint);
+        break;
+      case CLIMBING:
+        changeSetpoint(state.setpoint);
+        break;
+      case EMERGENCY_DISABLED:
+        changeSetpoint(inputs.pivotMotorPosition);
+        io.disablePivot();
+        break;
+      case CUSTOM:
+        changeSetpoint(setpoint);
+        break;
+    }
+  }
+
   /**
    * Public security measure for arbitrarily changing the setpoint
    * 
@@ -132,13 +136,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     System.out.println("Setpoint changed to " + newSetpoint);
-
-    // Filters initial changes to the setpoint
-    if (newSetpoint == ShooterConstants.pivotHomedPosition) {
-      setMState(ShooterPivotState.HOMED);
-    } else {
-      setMState(ShooterPivotState.CUSTOM);
-    }
 
     setpoint = newSetpoint;
 
