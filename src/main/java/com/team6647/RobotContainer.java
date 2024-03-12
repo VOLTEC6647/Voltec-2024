@@ -86,8 +86,7 @@ public class RobotContainer extends SuperRobotContainer {
          */
         public static SuperStructure superStructure;
 
-        private static LoggedDashboardChooser<Command> autoDashboardChooser = new LoggedDashboardChooser<>(
-                        "Auto chooser");
+        private static LoggedDashboardChooser<Command> autoDashboardChooser;
 
         private RobotContainer() {
         }
@@ -205,22 +204,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
-                autoDashboardChooser.addOption("Shoot stay auto",
-                                new ShootingStationary(andromedaSwerve, shooterSubsystem,
-                                                shooterPivotSubsystem, shooterRollerSubsystem, visionSubsytem, false));
-                autoDashboardChooser.addOption("Do nothing auto", Commands.waitSeconds(0));
-                autoDashboardChooser.addDefaultOption("Basic auto", AutoBuilder.buildAuto("Basic Auto"));
-                autoDashboardChooser.addOption("Top", AutoBuilder.buildAuto("Top Auto"));
-                autoDashboardChooser.addOption("2 Piece Bottom", AutoBuilder.buildAuto("2 Note Bottom"));
-                autoDashboardChooser.addOption("Bottom 1",AutoBuilder.buildAuto("Bottom Wing Auto") );
-                autoDashboardChooser.addOption("Test1", AutoBuilder.buildAuto("ShootT"));
-
-                autoDashboardChooser.addOption("Middle Wing 2Piece Auto",
-                                AutoBuilder.buildAuto("Middle Wing 2TopPiece Auto"));
-                autoDashboardChooser.addOption("3 Note Bottom",
-                                AutoBuilder.buildAuto("3 Note Bottom"));
-                                autoDashboardChooser.addOption("V23 Note Top",
-                                AutoBuilder.buildAuto("V23 Note Top"));
+                autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser", AutoBuilder.buildAutoChooser());
 
                 // -------- Engame alers (Credits: 6328) --------
                 Function<Double, Command> controllerRumbleCommandFactory = time -> Commands.sequence(

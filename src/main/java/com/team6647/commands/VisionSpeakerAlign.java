@@ -29,7 +29,7 @@ public class VisionSpeakerAlign extends Command {
 
   private ShootingParameters parameters;
 
-  private double targetigVel = 0.0;
+  private double targetigVel = 0.2;
 
   /** Creates a new VisionSpeakerAlign. */
   public VisionSpeakerAlign(AndromedaSwerve swevre, VisionSubsystem visionSubsystem) {
@@ -62,7 +62,6 @@ public class VisionSpeakerAlign extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     if (visionSubsystem.hasTargetID(stageID)) {
       // kP (constant of proportionality)
       // this is a hand-tuned number that determines the aggressiveness of our
