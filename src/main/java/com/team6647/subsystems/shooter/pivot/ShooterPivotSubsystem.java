@@ -135,8 +135,6 @@ public class ShooterPivotSubsystem extends SubsystemBase {
           ShooterConstants.pivotMaxPosition);
     }
 
-    System.out.println("Setpoint changed to " + newSetpoint);
-
     setpoint = newSetpoint;
 
     io.setShooterReference(newSetpoint);
