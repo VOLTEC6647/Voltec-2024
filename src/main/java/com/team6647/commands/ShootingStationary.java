@@ -75,7 +75,7 @@ public class ShootingStationary extends Command {
 
     swerve.setHeadingOverride(true);
     swerve.setTargetHeading(parameters.robotAngle());
-     pivotSubsystem.setMState(ShooterPivotState.SHOOTING);
+     pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
   }
   
 

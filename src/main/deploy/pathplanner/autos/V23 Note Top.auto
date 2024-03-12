@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.0712665453108685,
-      "y": 6.981745845094965
+      "x": 0.45563783435259325,
+      "y": 7.035130224106603
     },
     "rotation": 0
   },
@@ -20,7 +20,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "2 Top Leave"
+            "pathName": "TopWall"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
           }
         },
         {
@@ -30,9 +36,9 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "VisionAlign"
+            "pathName": "TopCorner"
           }
         },
         {

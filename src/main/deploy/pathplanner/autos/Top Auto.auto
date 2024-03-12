@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3753145608143071,
-      "y": 6.981745845094965
+      "x": 0.4063031202985497,
+      "y": 7.390340165295715
     },
     "rotation": 0
   },
@@ -14,7 +14,67 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top Leave"
+            "pathName": "TopWall"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Top"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopToMiddle"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
           }
         }
       ]

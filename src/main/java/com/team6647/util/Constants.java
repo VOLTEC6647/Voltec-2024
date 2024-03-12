@@ -185,10 +185,10 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 0.1;
-                public static final double pivotKi = 0.0015;
+                public static final double pivotKp = 0.2;
+                public static final double pivotKi = 0.0004;
                 public static final double pivotKd = 0.0;
-                public static final double pivotKf = 0.45;
+                public static final double pivotKf = 0.05;
                 public static final double pidPositionTolerance = 0.05;
                 public static final double positionTolerance = 1;
 
@@ -206,7 +206,7 @@ public class Constants {
 
                 public static final double pivotMinPosition = 70;
                 public static final double pivotMaxPosition = 240;
-                public static final double pivotHomedPosition = 71;
+                public static final double pivotHomedPosition = 72;
                 public static final double pivotIndexingPosition = 114;
                 public static final double pivotAmpPosition = 185;
                 public static final double pivotClimbPosition = 235;
