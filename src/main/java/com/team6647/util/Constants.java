@@ -186,7 +186,7 @@ public class Constants {
                 public static final double shooterTolerance = 100.0;
 
                 public static final double pivotKp = 0.2;
-                public static final double pivotKi = 0.0004;
+                public static final double pivotKi = 0.0009;
                 public static final double pivotKd = 0.0;
                 public static final double pivotKf = 0.05;
                 public static final double pidPositionTolerance = 0.05;
