@@ -39,7 +39,7 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
     private double maxGravityFF = ShooterConstants.pivotKf;
 
     ProfiledPIDController controller = new ProfiledPIDController(ShooterConstants.pivotKp, ShooterConstants.pivotKi,
-            ShooterConstants.pivotKd, new TrapezoidProfile.Constraints(6000, 6000));
+            ShooterConstants.pivotKd, new TrapezoidProfile.Constraints(10000, 8000));
 
     public ShooterPivotIOSparkMax() {
         pivotEncoder = shooterPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);
