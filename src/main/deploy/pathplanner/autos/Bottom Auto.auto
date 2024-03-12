@@ -46,6 +46,30 @@
           "data": {
             "name": "GrabPiece"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5ToBottom"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "4ToBottom"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "BottomShootTo3"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "3ToBottom"
+          }
         }
       ]
     }

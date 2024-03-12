@@ -20,7 +20,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Top"
+            "pathName": "TopStart"
           }
         },
         {
@@ -98,6 +98,6 @@
       ]
     }
   },
-  "folder": "MXPU",
+  "folder": null,
   "choreoAuto": false
 }

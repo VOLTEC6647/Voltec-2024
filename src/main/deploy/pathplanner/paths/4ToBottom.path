@@ -3,41 +3,41 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.557296653054846,
-        "y": 6.981745845094965
+        "x": 7.83,
+        "y": 2.43
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.2795559170178183,
-        "y": 6.813212980251458
+        "x": 7.452941139721925,
+        "y": 1.7586382376946104
       },
       "isLocked": false,
-      "linkedName": "TopPiece"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.1479053189587862,
-        "y": 6.511972125796103
+        "x": 3.7938798207693503,
+        "y": 1.9869004786553273
       },
       "prevControl": {
-        "x": 2.142514216702352,
-        "y": 6.798423742031281
+        "x": 5.399506724624746,
+        "y": 1.5165162014761777
       },
       "nextControl": {
-        "x": 2.1576443569553807,
-        "y": 5.994496655659978
+        "x": 2.1882529169139544,
+        "y": 2.457284755834477
       },
       "isLocked": false,
-      "linkedName": "MiddlePiece"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.445777359147311,
-        "y": 5.597215166652556
+        "x": 1.6861688092308225,
+        "y": 3.472334905834861
       },
       "prevControl": {
-        "x": 1.999503758266776,
-        "y": 5.585694597315121
+        "x": 0.6861688092308225,
+        "y": 3.472334905834861
       },
       "nextControl": null,
       "isLocked": false,
@@ -60,6 +60,9 @@
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
-  "useDefaultConstraints": false
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
 }
