@@ -51,7 +51,8 @@ public class Constants {
                                 INTELLIGENT_SHOOTING = driverController2.y(),
                                 CLIMB_TOP = driverController2.povUp(),
                                 INTAKE_FEEDER = driverController2.rightTrigger(),
-                                EXHAUST_FEEDER = driverController2.leftTrigger();
+                                EXHAUST_FEEDER = driverController2.leftTrigger(),
+                                FORCE_IDLE = driverController2.povLeft();
         }
 
         public static class RobotConstants {
