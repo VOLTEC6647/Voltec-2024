@@ -6,6 +6,7 @@
 package com.team6647.commands;
 
 import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
+import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -36,6 +37,7 @@ public class InitIntake extends Command {
   public void end(boolean interrupted) {
     intakePivotSubsystem.setPushingPercentage(0);
     intakePivotSubsystem.setPushingPosition(0);
+    intakePivotSubsystem.setPushingReference(IntakeConstants.pushingHomedPosition);
   }
 
   // Returns true when the command should end.

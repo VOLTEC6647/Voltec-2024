@@ -35,7 +35,7 @@ public class ShooterPivotIOSparkMax implements ShooterPivotIO {
     private double setpoint;
 
     private double arbitraryFeedforward = 0;
-    private double horizontalPosition = 94;
+    private double horizontalPosition = 106;
     private double maxGravityFF = ShooterConstants.pivotKf;
 
     ProfiledPIDController controller = new ProfiledPIDController(ShooterConstants.pivotKp, ShooterConstants.pivotKi,

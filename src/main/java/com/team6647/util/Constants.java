@@ -186,10 +186,10 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 0.2;
-                public static final double pivotKi = 0.0009;
+                public static final double pivotKp = 0.16;      
+                public static final double pivotKi = 0.0;
                 public static final double pivotKd = 0.0;
-                public static final double pivotKf = 0.05;
+                public static final double pivotKf = 0.3;
                 public static final double pidPositionTolerance = 0.05;
                 public static final double positionTolerance = 1;
 
@@ -207,7 +207,7 @@ public class Constants {
 
                 public static final double pivotMinPosition = 70;
                 public static final double pivotMaxPosition = 240;
-                public static final double pivotHomedPosition = 72;
+                public static final double pivotHomedPosition = 73;
                 public static final double pivotIndexingPosition = 114;
                 public static final double pivotAmpPosition = 185;
                 public static final double pivotClimbPosition = 235;
@@ -272,11 +272,6 @@ public class Constants {
                         shooterPivotMap.put(2.9085266866060753, 133.0);
                         shooterPivotMap.put(3.221723202073086, 133.0);
                         shooterPivotMap.put(3.3994745957510353, 135.0);
-                    
-                        
-                        
-                       
-
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterTimeMap = new InterpolatingDoubleTreeMap();
@@ -361,7 +356,7 @@ public class Constants {
                 public static final double intakeIdleVelocity = -0.1;
 
                 public static final double pushingAcutatingPosition = 20;
-                public static final double pushingHomedPosition = 1;
+                public static final double pushingHomedPosition = 2;
 
                 public static final int pushingLimitSwitch = 9;
                 public static final int intakeLimitSwitch = 8;

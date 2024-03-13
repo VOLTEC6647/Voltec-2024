@@ -24,15 +24,22 @@
           }
         },
         {
-          "type": "path",
+          "type": "parallel",
           "data": {
-            "pathName": "TopCorner"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "GrabPiece"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "TopCorner"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "GrabPiece"
+                }
+              }
+            ]
           }
         },
         {
@@ -45,12 +52,6 @@
           "type": "named",
           "data": {
             "name": "ShootStay"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Idle"
           }
         },
         {

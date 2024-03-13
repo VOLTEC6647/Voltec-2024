@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.2994393226127086,
-      "y": 5.612298798671672
+      "x": 1.3140196323188638,
+      "y": 5.4806715034257465
     },
     "rotation": 1.1796376863995455
   },
@@ -14,13 +14,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Idle"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootStay"
+            "name": "ShootSubwoofer"
           }
         },
         {
@@ -30,7 +24,7 @@
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -51,11 +45,17 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootStay"
+            "name": "ShootMiddle"
           }
         },
         {
-          "type": "parallel",
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "deadline",
           "data": {
             "commands": [
               {
@@ -76,12 +76,12 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootStay"
+            "name": "ShootTop"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Working",
   "choreoAuto": false
 }

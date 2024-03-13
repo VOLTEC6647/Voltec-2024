@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5762369299346287,
-      "y": 3.923130242836806
+      "x": 0.4122852182936875,
+      "y": 7.178742802564065
     },
     "rotation": 0
   },
@@ -12,14 +12,20 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "TopToAmp"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "ShootStay"
+            "name": "AmpScore"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Working",
   "choreoAuto": false
 }

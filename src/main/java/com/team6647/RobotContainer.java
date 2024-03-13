@@ -41,6 +41,7 @@ import com.team6647.subsystems.intake.roller.IntakeIOSim;
 import com.team6647.subsystems.intake.roller.IntakeIOTalonFX;
 import com.team6647.subsystems.intake.roller.IntakeSubsystem;
 import com.team6647.subsystems.intake.roller.IntakeSubsystem.IntakeRollerState;
+import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.subsystems.neural.NeuralVisionIO;
 import com.team6647.subsystems.neural.NeuralVisionIOLimelight;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
@@ -81,9 +82,9 @@ public class RobotContainer extends SuperRobotContainer {
         public static ShooterRollerSubsystem shooterRollerSubsystem;
         public static VisionSubsystem visionSubsytem;
         public static NeuralVisionSubsystem neuralVisionSubsystem;
-        /*
-         * private static final LEDSubsystem leds = LEDSubsystem.getInstance();
-         */
+
+        private static final LEDSubsystem leds = LEDSubsystem.getInstance();
+
         public static SuperStructure superStructure;
 
         private static LoggedDashboardChooser<Command> autoDashboardChooser;
@@ -190,15 +191,22 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Auto Declaration --------
 
+                NamedCommands.registerCommand("ShootSubwoofer",
+                                SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).withTimeout(7));
+                NamedCommands.registerCommand("ShootMiddle",
+                                SuperStructure.autoMiddleCommand().withTimeout(7));
+                NamedCommands.registerCommand("ShootTop",
+                                SuperStructure.autoTopCommand().withTimeout(7));
+                NamedCommands.registerCommand("AmpScore",
+                                SuperStructure.update(SuperStructureState.SCORING_AMP));
                 NamedCommands.registerCommand("ShootStay",
-                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));//was 7
+                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
                 NamedCommands.registerCommand("GrabPiece",
-                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(4));
+                                SuperStructure.update(SuperStructureState.AUTO_INTAKING));
                 NamedCommands.registerCommand("Idle",
-                                SuperStructure.update(SuperStructureState.IDLE).withTimeout(0.1));
+                                SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
                 NamedCommands.registerCommand("VisionAlign",
                                 SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
-
                 NamedCommands.registerCommand("IntakeDown",
                                 SuperStructure.update(SuperStructureState.INTAKING).withTimeout(1));
 
@@ -223,7 +231,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                         .setRumble(RumbleType.kBothRumble, 0.0);
                                                         OperatorConstants.driverController2.getHID()
                                                                         .setRumble(RumbleType.kBothRumble, 0.0);
-                                                        /* leds.endgameAlert = false; */
+                                                        leds.endgameAlert = false;
                                                 }));
                 new Trigger(
                                 () -> DriverStation.isTeleopEnabled()
@@ -340,7 +348,6 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return 
-                                new InitIntake(intakePivotSubsystem).andThen(autoDashboardChooser.get());
+                return SuperStructure.update(SuperStructureState.IDLE).andThen(autoDashboardChooser.get());
         }
 }

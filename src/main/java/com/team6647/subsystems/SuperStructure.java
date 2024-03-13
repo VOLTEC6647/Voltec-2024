@@ -69,7 +69,9 @@ public class SuperStructure {
 
     public enum SuperStructureState {
         IDLE,
+        AUTO_IDLE,
         INTAKING,
+        AUTO_INTAKING,
         SHOOTING_SPEAKER,
         SHOOTING_SUBWOOFER,
         INTELLIGENT_SHOOTING_SPEAKER,
@@ -85,9 +87,15 @@ public class SuperStructure {
             case IDLE:
                 mRobotState = SuperStructureState.IDLE;
                 return idleCommand();
+            case AUTO_IDLE:
+                mRobotState = SuperStructureState.AUTO_IDLE;
+                return autoIdleCommand();
             case INTAKING:
                 mRobotState = SuperStructureState.INTAKING;
                 return intakingCommand();
+            case AUTO_INTAKING:
+                mRobotState = SuperStructureState.AUTO_INTAKING;
+                return autoIntakingCommand();
             case SHOOTING_SPEAKER:
                 mRobotState = SuperStructureState.SHOOTING_SPEAKER;
                 return shootingStationary();
@@ -129,9 +137,20 @@ public class SuperStructure {
                 .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }
 
+    private static Command autoIntakingCommand() {
+
+        return Commands.deadline(
+                ShooterCommands.getShooterIntakingCommand(),
+                Commands.sequence(
+                        IntakeCommands.getIntakeCommand(),
+                        Commands.waitSeconds(0.5)))
+                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
+    }
+
     private static Command idleCommand() {
 
         return Commands.sequence(
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
                 new InitIntake(intakePivotSubsystem),
                 Commands.parallel(
                         Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
@@ -139,6 +158,19 @@ public class SuperStructure {
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED),
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
                         new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED)));
+    }
+
+    private static Command autoIdleCommand() {
+
+        return Commands.sequence(
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
+                new InitIntake(intakePivotSubsystem),
+                Commands.parallel(
+                        Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
+                        new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED).withTimeout(0.1),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING).withTimeout(0.5)));
     }
 
     private static Command homeElevator() {
@@ -214,18 +246,20 @@ public class SuperStructure {
     }
 
     private static Command scoreAmp() {
-        return Commands.sequence(
-                new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(),
-                            ShooterConstants.pivotAmpPosition,
-                            ShooterConstants.flywheelAmpRPM);
+        return Commands.deadline(
+                Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
+                Commands.sequence(
+                        new InstantCommand(() -> {
+                            ShootingParameters ampParams = new ShootingParameters(new Rotation2d(),
+                                    ShooterConstants.pivotAmpPosition,
+                                    ShooterConstants.flywheelAmpRPM);
 
-                    updateShootingParameters(ampParams);
-                }),
-                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(1),
-                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING).withTimeout(1),
-                Commands.waitSeconds(1),
-                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+                            updateShootingParameters(ampParams);
+                        }),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(1),
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING).withTimeout(1),
+                        Commands.waitSeconds(1),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
     }
 
     /* Util */
@@ -235,4 +269,29 @@ public class SuperStructure {
         ShooterPivotSubsystem.updateShootingParameters(newParameters);
     }
 
+    public static Command autoMiddleCommand() {
+        return Commands.sequence(
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), 125, 5000);
+
+                    updateShootingParameters(ampParams);
+                }),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+    }
+
+    public static Command autoTopCommand() {
+        return Commands.sequence(
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), 132, 5000);
+
+                    updateShootingParameters(ampParams);
+                }),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+    }
 }

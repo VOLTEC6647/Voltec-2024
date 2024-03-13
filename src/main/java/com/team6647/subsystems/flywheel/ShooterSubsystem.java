@@ -12,6 +12,7 @@ import static edu.wpi.first.units.Units.Volts;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
@@ -140,6 +141,12 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }, bottomShooterKp, bottomShooterKi, bottomShooterKd, bottomShooterKs, bottomShooterKv, bottomShooterKa,
         topShooterKp, topShooterKi, topShooterKd, topShooterKs, topShooterKv, topShooterKa, shooterVelocity);
+
+    if (!getBeamBrake()) {
+      LEDSubsystem.getInstance().shooterHasNote = true;
+    } else {
+      LEDSubsystem.getInstance().shooterHasNote = false;
+    }
   }
 
   /**

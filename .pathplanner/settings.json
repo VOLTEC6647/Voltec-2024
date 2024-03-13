@@ -2,12 +2,10 @@
   "robotWidth": 0.66,
   "robotLength": 0.66,
   "holonomicMode": true,
-  "pathFolders": [
-    "New Folder",
-    "New New Folder"
-  ],
+  "pathFolders": [],
   "autoFolders": [
-    "ricky"
+    "ricky",
+    "Working"
   ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,

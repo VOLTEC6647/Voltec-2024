@@ -10,6 +10,7 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.math.Functions;
+import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
@@ -80,6 +81,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
       changeSetpoint(pid[4]);
     }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
 
+    if (mState != ShooterPivotState.HOMED) {
+      LEDSubsystem.getInstance().pivotHomed = false;
+    } else {
+      LEDSubsystem.getInstance().pivotHomed = true;
+    }
   }
 
   @RequiredArgsConstructor

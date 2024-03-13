@@ -94,8 +94,8 @@ public class AndromedaSwerve extends SubsystemBase {
           },
           this));
 
-  private ProfiledPIDController headingController = new ProfiledPIDController(2, 0.0, 0.00001,
-      new TrapezoidProfile.Constraints(10, 10));
+  private ProfiledPIDController headingController = new ProfiledPIDController(3, 0.0, 0.00001,
+      new TrapezoidProfile.Constraints(50, 50));
   private SwerveModulePosition[] lastPositions = new SwerveModulePosition[4];
   private Rotation2d rawGyroRotation;
 
@@ -266,8 +266,9 @@ public class AndromedaSwerve extends SubsystemBase {
     headingController.setGoal(target.getRadians());
   }
 
+  @AutoLogOutput(key="Swerve/AngleInTolerance")
   public boolean angleInTolerance() {
-    return Math.abs(getSwerveAngle().getDegrees() - targetHeading.getRadians()) < 1;
+    return Math.abs(getSwerveAngle().getDegrees() - targetHeading.getDegrees()) < 2;
   }
 
   /**
