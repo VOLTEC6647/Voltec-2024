@@ -90,7 +90,7 @@ public class ShooterIOKraken implements ShooterIO {
 
                 topMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-                topMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+                topMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
                 topMotorConfig.Slot0.kP = p;
                 topMotorConfig.Slot0.kI = i;
@@ -108,7 +108,7 @@ public class ShooterIOKraken implements ShooterIO {
 
                 bottomMotorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
 
-                bottomMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+                bottomMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
                 bottomMotorConfig.Slot0.kP = p;
                 bottomMotorConfig.Slot0.kI = i;

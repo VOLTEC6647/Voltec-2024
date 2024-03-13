@@ -3,9 +3,9 @@
  */
 package com.team6647.commands;
 
+import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.subsystems.SuperStructure;
-import com.team6647.subsystems.drive.AndromedaSwerve;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem;
@@ -68,16 +68,15 @@ public class ShootingStationary extends Command {
       this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
           AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
     } else {
-      this.parameters = new ShootingParameters(new Rotation2d(),110 , 5000);
+      this.parameters = new ShootingParameters(new Rotation2d(), 110, 5000);
     }
 
     SuperStructure.updateShootingParameters(parameters);
 
     swerve.setHeadingOverride(true);
     swerve.setTargetHeading(parameters.robotAngle());
-     pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
+    pivotSubsystem.setShooterPivotState(ShooterPivotState.SHOOTING);
   }
-  
 
   @Override
   public void execute() {
@@ -143,6 +142,6 @@ public class ShootingStationary extends Command {
   @Override
   public boolean isFinished() {
     return flywheelSubsystem.getBeamBrake();
-    //return false;
+    // return false;
   }
 }
