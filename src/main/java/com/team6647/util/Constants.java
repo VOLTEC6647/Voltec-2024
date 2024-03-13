@@ -249,18 +249,20 @@ public class Constants {
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {
-                        // Distance, Angle
-                        // shooterPivotMap.put(1.0810042396944568, 108.0);
-                        // shooterPivotMap.put(1.1925201207020137, 105.0);
-                        // shooterPivotMap.put(1.2020858030598693, 111.0);
-                        // shooterPivotMap.put(1.3801720103239374, 111.0);
-                        // shooterPivotMap.put(1.4670866119735877, 115.0);
-                        // shooterPivotMap.put(1.5872513575703706, 113.0);
-                        // shooterPivotMap.put(1.6923915411392143, 113.0);
-                        // shooterPivotMap.put(1.8492929713559911, 120.0);
-                        shooterPivotMap.put(1.1291407697432299, 111.0);
-                        shooterPivotMap.put(1.1291407697432299, 111.0);
-                        shooterPivotMap.put(1.1291407697432299, 111.0);
+                        shooterPivotMap.put(1.1068959854194218, 108.0);
+                        shooterPivotMap.put(1.231308756125935, 110.0);
+                        shooterPivotMap.put(1.4074709863827106, 116.0);
+                        shooterPivotMap.put(1.6231261714703098, 118.0);
+                        shooterPivotMap.put(1.7800743398462238, 119.0);
+                        shooterPivotMap.put(1.945262518815042, 122.0);
+                        shooterPivotMap.put(2.1508395790058574, 125.0);
+                        shooterPivotMap.put(2.222785100583583, 126.0);
+                        shooterPivotMap.put(2.345946278792441, 130.0);
+                        shooterPivotMap.put(2.5270242136154883, 131.0);
+                        shooterPivotMap.put(2.778057991594421, 132.0);
+                        shooterPivotMap.put(2.9085266866060753, 133.0);
+                        shooterPivotMap.put(3.221723202073086, 133.0);
+                        shooterPivotMap.put(3.3994745957510353, 135.0);
                         
                         
                        
