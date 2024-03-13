@@ -1,0 +1,49 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.82,
+      "y": 7.2
+    },
+    "rotation": 0.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TestCristian"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabPiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TestCristian2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

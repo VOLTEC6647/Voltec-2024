@@ -34,6 +34,7 @@ public class IntakePush extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intakePivotSubsystem.setPushingReference(IntakeConstants.pushingHomedPosition);
   }
 
   // Returns true when the command should end.

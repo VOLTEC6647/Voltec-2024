@@ -226,26 +226,7 @@ public class Constants {
                 public static final int forwardLimitSwitchID = 7;
 
                 public static final double shootingRPM = 5000;
-                /*
-                 * public static final InterpolatingDoubleTreeMap shooterRPMMap = new
-                 * InterpolatingDoubleTreeMap();
-                 * 
-                 * static {
-                 * // Distance, RPM
-                 * shooterRPMMap.put(1.018170626, 3000.0);
-                 * shooterRPMMap.put(1.136725279, 3000.0);
-                 * shooterRPMMap.put(1.547120287, 3000.0);
-                 * shooterRPMMap.put(2.18457, 3000.0);
-                 * shooterRPMMap.put(2.4435, 3000.0);
-                 * shooterRPMMap.put(2.805406493, 3000.0);
-                 * shooterRPMMap.put(3.031418358, 3000.0);
-                 * shooterRPMMap.put(3.392893597, 3200.0);
-                 * shooterRPMMap.put(3.812472063, 3400.0);
-                 * shooterRPMMap.put(3.970896016, 3500.0);
-                 * shooterRPMMap.put(4.311056677, 4500.0);
-                 * 
-                 * }
-                 */
+
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {

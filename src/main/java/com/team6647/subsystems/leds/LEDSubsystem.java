@@ -121,7 +121,7 @@ public class LEDSubsystem extends SubsystemBase {
     loadingNotifier.stop();
 
     if (DriverStation.isDisabled()) {
-      wave(); // Default to off
+      sinelon(); // Default to off
     }
     
     if (estopped) {
@@ -158,7 +158,7 @@ public class LEDSubsystem extends SubsystemBase {
   }
 
   private void solidGreen() {
-    leds.set(0.73);
+    leds.set(0.77);
   }
 
   private void solidOrange() {
@@ -175,6 +175,10 @@ public class LEDSubsystem extends SubsystemBase {
 
   private void wave() {
     leds.set(-0.31);
+  }
+
+  private void sinelon(){
+    leds.set(-0.75);
   }
 
   public static boolean isRed() {

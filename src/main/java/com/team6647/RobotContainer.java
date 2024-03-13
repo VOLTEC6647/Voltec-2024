@@ -222,7 +222,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                         .setRumble(RumbleType.kBothRumble, 1.0);
                                                         OperatorConstants.driverController2.getHID()
                                                                         .setRumble(RumbleType.kBothRumble, 1.0);
-                                                        /* leds.endgameAlert = true; */
+                                                        leds.endgameAlert = true;
                                                 }),
                                 Commands.waitSeconds(time),
                                 Commands.runOnce(
@@ -272,6 +272,9 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(new Rotation2d())));
 
                 /* Driver 2 */
+
+                OperatorConstants.FORCE_IDLE
+                                .whileTrue(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Superstructure --------
 

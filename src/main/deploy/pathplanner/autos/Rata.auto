@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5846709517493112,
-      "y": 4.108923884514436
+      "x": 0.91,
+      "y": 7.12
     },
     "rotation": 0
   },
@@ -12,27 +12,9 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Idle"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "BottomUndisturbed"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootStay"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "BottomUndisturbedTo5"
+            "pathName": "RataTopStartShoot"
           }
         },
         {
@@ -44,25 +26,67 @@
         {
           "type": "named",
           "data": {
+            "name": "ShootStay"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RataShootTo1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "GrabPiece"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "5ToBottom"
+            "pathName": "Rata1ToTop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BottomTo4"
+            "pathName": "RataTopTo4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabPiece"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "4ToBottom"
+            "pathName": "Rata4ToTop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "VisionAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
           }
         }
       ]
