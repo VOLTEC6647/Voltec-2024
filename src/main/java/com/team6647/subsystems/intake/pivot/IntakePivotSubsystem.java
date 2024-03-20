@@ -9,9 +9,10 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.math.Functions;
+import com.team6647.util.Alert;
+import com.team6647.util.Alert.AlertType;
 import com.team6647.util.Constants.IntakeConstants;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import lombok.Setter;
 
@@ -31,6 +32,8 @@ public class IntakePivotSubsystem extends SubsystemBase {
 
   @AutoLogOutput(key = "Intake/Pivot/PushingSetpoint")
   private double pushingSetpoint = IntakeConstants.pushingAcutatingPosition;
+
+  private Alert pivotEncoderAlert = new Alert("Intake Pivot Encoder disconnected", AlertType.WARNING);
 
   /** Creates a new IntakePivotSubsystem. */
   private IntakePivotSubsystem(IntakePivotIO io) {
@@ -61,9 +64,11 @@ public class IntakePivotSubsystem extends SubsystemBase {
       Logger.recordOutput("Intake/Pivot/CurrentCommand", "");
     }
 
+    pivotEncoderAlert.set(inputs.intakePivotAbsoluteEncoderPosition == 0);
+
     if (inputs.intakePivotAbsoluteEncoderPosition == 0) {
       mState = IntakePivotState.EMERGENCY_DISABLED;
-      DriverStation.reportError("[ " + getName() + " ] Error. Absolute Position Encoder position out of range", true);
+      io.disableIntake();
     }
 
     switch (mState) {

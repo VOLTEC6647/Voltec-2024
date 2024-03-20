@@ -11,11 +11,12 @@ import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.math.Functions;
 import com.team6647.subsystems.leds.LEDSubsystem;
+import com.team6647.util.Alert;
 import com.team6647.util.LoggedTunableNumber;
+import com.team6647.util.Alert.AlertType;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import lombok.RequiredArgsConstructor;
 
@@ -45,6 +46,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
   private double setpoint = ShooterConstants.pivotHomedPosition;
 
+  private Alert pivotEncoderAlert = new Alert("Shooter Pivot Encoder disconnected", AlertType.WARNING);
+
   /** Creates a new ShooterPivotSubsystem. */
   private ShooterPivotSubsystem(
       ShooterPivotIO io) {
@@ -63,9 +66,9 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
 
+    pivotEncoderAlert.set(inputs.shooterAbsoluteEncoderPosition == 0);
+
     if (inputs.shooterAbsoluteEncoderPosition == 0) {
-      DriverStation.reportError("[" + getName() + "] Absolute Encoder position is not in range. Emergency disabled",
-          true);
       setShooterPivotState(ShooterPivotState.EMERGENCY_DISABLED);
       io.disablePivot();
     }

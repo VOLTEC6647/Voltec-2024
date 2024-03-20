@@ -14,6 +14,8 @@ import org.littletonrobotics.junction.Logger;
 
 import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.util.LoggedTunableNumber;
+import com.team6647.util.Alert;
+import com.team6647.util.Alert.AlertType;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
@@ -87,6 +89,8 @@ public class ShooterSubsystem extends SubsystemBase {
           },
           this));
 
+  private Alert rollerBeamBrakeAlert = new Alert("Shooter Roller Beam Brake note detected", AlertType.INFO);
+
   private ShooterSubsystem(ShooterIO io) {
     this.io = io;
   }
@@ -115,7 +119,6 @@ public class ShooterSubsystem extends SubsystemBase {
         setShooterSpeed(ShooterConstants.shooterStoppedSpeed);
         break;
       case EXHAUSTING:
-
         setShooterSpeed(ShooterConstants.shooterExhaustSpeed);
         break;
       case SHOOTING:
@@ -142,6 +145,8 @@ public class ShooterSubsystem extends SubsystemBase {
     }, bottomShooterKp, bottomShooterKi, bottomShooterKd, bottomShooterKs, bottomShooterKv, bottomShooterKa,
         topShooterKp, topShooterKi, topShooterKd, topShooterKs, topShooterKv, topShooterKa, shooterVelocity);
 
+    rollerBeamBrakeAlert.set(!getBeamBrake());
+    
     if (!getBeamBrake()) {
       LEDSubsystem.getInstance().shooterHasNote = true;
     } else {

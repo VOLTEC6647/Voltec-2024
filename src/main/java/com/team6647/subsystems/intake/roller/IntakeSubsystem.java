@@ -9,6 +9,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.team6647.subsystems.leds.LEDSubsystem;
+import com.team6647.util.Alert;
+import com.team6647.util.Alert.AlertType;
 import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -25,6 +27,9 @@ public class IntakeSubsystem extends SubsystemBase {
 
   private IntakeIO io;
   private IntakeIOInputsAutoLogged inputs = new IntakeIOInputsAutoLogged();
+
+  private Alert beamBrakeAlert = new Alert("Intake Beam Brake note detected",
+      AlertType.INFO);
 
   /** Creates a new IntakeSubsystem. */
   private IntakeSubsystem(IntakeIO io) {
@@ -54,6 +59,8 @@ public class IntakeSubsystem extends SubsystemBase {
     Logger.processInputs("Intake/Rollers", inputs);
 
     io.setIntakeVelocity(mState.velocity);
+
+    beamBrakeAlert.set(!getBeamBrake());
 
     if (!getBeamBrake()) {
       LEDSubsystem.getInstance().intakeHasNote = true;

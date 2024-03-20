@@ -58,7 +58,7 @@ public class Constants {
         public static class RobotConstants {
                 public static final Mode currentMode = Mode.SIM;
 
-                public static final boolean tuningMode = true;
+                public static final boolean tuningMode = false;
 
                 public static Mode getMode() {
                         if ((currentMode == Mode.SIM || currentMode == Mode.REPLAY) && RobotBase.isReal()) {
@@ -74,7 +74,6 @@ public class Constants {
                         return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
 
                 }
-
         }
 
         /**
