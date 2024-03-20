@@ -95,6 +95,7 @@ public class VisionSpeakerAlign extends Command {
   public void end(boolean interrupted) {
     visionSubsystem.changePipeline(VisionConstants.odometryPipelineNumber);
     swerve.setHeadingOverride(false);
+    swerve.drive(new ChassisSpeeds());
   }
 
   // Returns true when the command should end.
