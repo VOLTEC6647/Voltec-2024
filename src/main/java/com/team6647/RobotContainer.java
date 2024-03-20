@@ -191,6 +191,8 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Auto Declaration --------
 
+                NamedCommands.registerCommand("InitIntake",
+                                new InitIntake(intakePivotSubsystem));
                 NamedCommands.registerCommand("ShootSubwoofer",
                                 SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).withTimeout(7));
                 NamedCommands.registerCommand("ShootMiddle",
@@ -198,7 +200,7 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("ShootTop",
                                 SuperStructure.autoTopCommand().withTimeout(7));
                 NamedCommands.registerCommand("AmpScore",
-                                SuperStructure.update(SuperStructureState.SCORING_AMP));
+                                SuperStructure.update(SuperStructureState.AUTO_AMP));
                 NamedCommands.registerCommand("ShootStay",
                                 SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
                 NamedCommands.registerCommand("GrabPiece",
@@ -351,6 +353,6 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return SuperStructure.update(SuperStructureState.IDLE).andThen(autoDashboardChooser.get());
+                return autoDashboardChooser.get();
         }
 }

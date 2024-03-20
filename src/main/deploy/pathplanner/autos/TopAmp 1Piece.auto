@@ -12,6 +12,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "InitIntake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "TopToAmp"
@@ -21,6 +27,12 @@
           "type": "named",
           "data": {
             "name": "AmpScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
           }
         }
       ]

@@ -94,7 +94,7 @@ public class AndromedaSwerve extends SubsystemBase {
           },
           this));
 
-  private ProfiledPIDController headingController = new ProfiledPIDController(3, 0.0, 0.00001,
+  private ProfiledPIDController headingController = new ProfiledPIDController(3.5, 0.0, 0.00001,
       new TrapezoidProfile.Constraints(50, 50));
   private SwerveModulePosition[] lastPositions = new SwerveModulePosition[4];
   private Rotation2d rawGyroRotation;
