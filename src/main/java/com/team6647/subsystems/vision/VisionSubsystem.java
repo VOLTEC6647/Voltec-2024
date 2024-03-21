@@ -40,7 +40,6 @@ public class VisionSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Vision", inputs);
     computeVisionMeasurements();
-    Logger.recordOutput("IsAutonomous", DriverStation.isAutonomous());
   }
 
   public void computeVisionMeasurements() {
