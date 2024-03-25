@@ -5,6 +5,8 @@
  */
 package com.team6647;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import java.util.function.Function;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -14,10 +16,6 @@ import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIOSim;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIOTalonFX;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIOPigeon2;
-import com.andromedalib.andromedaSwerve.commands.SwerveDriveCommand;
-import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
-import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.AndromedaProfiles;
-import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -25,9 +23,9 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
-import com.team6647.commands.ShootingStationary;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
+import com.team6647.subsystems.drive.Drive;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
@@ -62,7 +60,11 @@ import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -74,7 +76,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
 
-        public static AndromedaSwerve andromedaSwerve;
+        public static Drive andromedaSwerve;
         public static IntakePivotSubsystem intakePivotSubsystem;
         public static IntakeSubsystem intakeSubsystem;
         public static ShooterPivotSubsystem shooterPivotSubsystem;
@@ -104,27 +106,22 @@ public class RobotContainer extends SuperRobotContainer {
         public void initSubsystems() {
                 switch (RobotConstants.getMode()) {
                         case REAL:
-                                andromedaSwerve = AndromedaSwerve.getInstance(
+                                andromedaSwerve = Drive.getInstance(
                                                 new GyroIOPigeon2(DriveConstants.gyroID, "6647_CANivore"),
                                                 new AndromedaModuleIO[] {
                                                                 new AndromedaModuleIOTalonFX(0,
-                                                                                AndromedaModuleConfig.getConfig(
-                                                                                                AndromedaProfiles.ANDROMEDA_CONFIG,
+                                                                                DriveConstants.andromedModuleConfig(
                                                                                                 AndromedaMap.mod1Const)),
                                                                 new AndromedaModuleIOTalonFX(1,
-                                                                                AndromedaModuleConfig.getConfig(
-                                                                                                AndromedaProfiles.ANDROMEDA_CONFIG,
+                                                                                DriveConstants.andromedModuleConfig(
                                                                                                 AndromedaMap.mod2Const)),
                                                                 new AndromedaModuleIOTalonFX(2,
-                                                                                AndromedaModuleConfig.getConfig(
-                                                                                                AndromedaProfiles.ANDROMEDA_CONFIG,
+                                                                                DriveConstants.andromedModuleConfig(
                                                                                                 AndromedaMap.mod3Const)),
                                                                 new AndromedaModuleIOTalonFX(3,
-                                                                                AndromedaModuleConfig.getConfig(
-                                                                                                AndromedaProfiles.ANDROMEDA_CONFIG,
+                                                                                DriveConstants.andromedModuleConfig(
                                                                                                 AndromedaMap.mod4Const)),
-                                                }, DriveConstants.andromedaSwerveConfig,
-                                                DriveConstants.holonomicPathConfig);
+                                                }, DriveConstants.andromedaSwerveConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOTalonFX());
                                 intakePivotSubsystem = IntakePivotSubsystem
                                                 .getInstance(new IntakePivotIOSparkMaxKraken());
@@ -137,15 +134,14 @@ public class RobotContainer extends SuperRobotContainer {
                                                 .getInstance(new NeuralVisionIOLimelight());
                                 break;
                         case SIM:
-                                andromedaSwerve = AndromedaSwerve.getInstance(
+                                andromedaSwerve = Drive.getInstance(
                                                 new GyroIO() {
                                                 }, new AndromedaModuleIO[] {
                                                                 new AndromedaModuleIOSim(0.1),
                                                                 new AndromedaModuleIOSim(0.1),
                                                                 new AndromedaModuleIOSim(0.1),
                                                                 new AndromedaModuleIOSim(0.1),
-                                                }, DriveConstants.andromedaSwerveConfig,
-                                                DriveConstants.holonomicPathConfig);
+                                                }, DriveConstants.andromedaSwerveConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOSim());
                                 intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSim());
@@ -157,7 +153,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 break;
 
                         default:
-                                andromedaSwerve = AndromedaSwerve.getInstance(
+                                andromedaSwerve = Drive.getInstance(
                                                 new GyroIO() {
                                                 }, new AndromedaModuleIO[] {
                                                                 new AndromedaModuleIO() {
@@ -168,8 +164,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 },
                                                                 new AndromedaModuleIO() {
                                                                 },
-                                                }, DriveConstants.andromedaSwerveConfig,
-                                                DriveConstants.holonomicPathConfig);
+                                                }, DriveConstants.andromedaSwerveConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIO() {
                                 });
 
@@ -190,32 +185,34 @@ public class RobotContainer extends SuperRobotContainer {
                 superStructure = SuperStructure.getInstance();
 
                 // -------- Auto Declaration --------
-
-                NamedCommands.registerCommand("InitIntake",
-                                new InitIntake(intakePivotSubsystem));
-                NamedCommands.registerCommand("ShootSubwoofer",
-                                SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).withTimeout(7));
-                NamedCommands.registerCommand("ShootMiddle",
-                                SuperStructure.autoMiddleCommand().withTimeout(7));
-                NamedCommands.registerCommand("ShootTop",
-                                SuperStructure.autoTopCommand().withTimeout(7));
-                NamedCommands.registerCommand("AmpScore",
-                                SuperStructure.update(SuperStructureState.AUTO_AMP));
-                NamedCommands.registerCommand("ShootStay",
-                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
-                NamedCommands.registerCommand("GrabPiece",
-                                SuperStructure.update(SuperStructureState.AUTO_INTAKING));
-                NamedCommands.registerCommand("Idle",
-                                SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
-                NamedCommands.registerCommand("VisionAlign",
-                                SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
-                NamedCommands.registerCommand("IntakeDown",
-                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(1));
-
-                NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
-
-                autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser", AutoBuilder.buildAutoChooser());
-
+                /*
+                 * NamedCommands.registerCommand("InitIntake",
+                 * new InitIntake(intakePivotSubsystem));
+                 * NamedCommands.registerCommand("ShootSubwoofer",
+                 * SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).withTimeout(7))
+                 * ;
+                 * NamedCommands.registerCommand("ShootMiddle",
+                 * SuperStructure.autoMiddleCommand().withTimeout(7));
+                 * NamedCommands.registerCommand("ShootTop",
+                 * SuperStructure.autoTopCommand().withTimeout(7));
+                 * NamedCommands.registerCommand("AmpScore",
+                 * SuperStructure.update(SuperStructureState.AUTO_AMP));
+                 * NamedCommands.registerCommand("ShootStay",
+                 * SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
+                 * NamedCommands.registerCommand("GrabPiece",
+                 * SuperStructure.update(SuperStructureState.AUTO_INTAKING));
+                 * NamedCommands.registerCommand("Idle",
+                 * SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
+                 * NamedCommands.registerCommand("VisionAlign",
+                 * SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
+                 * NamedCommands.registerCommand("IntakeDown",
+                 * SuperStructure.update(SuperStructureState.INTAKING).withTimeout(1));
+                 * 
+                 * NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
+                 * 
+                 * autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
+                 * AutoBuilder.buildAutoChooser());
+                 */
                 // -------- Engame alers (Credits: 6328) --------
                 Function<Double, Command> controllerRumbleCommandFactory = time -> Commands.sequence(
                                 Commands.runOnce(
@@ -256,22 +253,58 @@ public class RobotContainer extends SuperRobotContainer {
                 // configSysIdBindings();
         }
 
+        private double omega = 0.0;
         @Override
         public void configureBindings() {
                 andromedaSwerve.setDefaultCommand(
-                                new SwerveDriveCommand(
-                                                andromedaSwerve,
-                                                () -> -OperatorConstants.driverController1.getLeftX(),
-                                                () -> -OperatorConstants.driverController1.getLeftY(),
-                                                () -> -OperatorConstants.driverController1.getRightX(),
-                                                () -> OperatorConstants.driverController1.leftStick().getAsBoolean()));
+                                andromedaSwerve.run(
+                                                () -> {
+
+                                                        double linearMagnitude = MathUtil.applyDeadband(
+                                                                        Math.hypot(-OperatorConstants.driverController1
+                                                                                        .getLeftX(),
+                                                                                        -OperatorConstants.driverController1
+                                                                                                        .getLeftY()),
+                                                                        0.1);
+                                                        Rotation2d linearDirection = new Rotation2d(
+                                                                        -OperatorConstants.driverController1
+                                                                                        .getLeftX(),
+                                                                        -OperatorConstants.driverController1
+                                                                                        .getLeftY());
+                                                        omega = MathUtil.applyDeadband(
+                                                                        -OperatorConstants.driverController1
+                                                                                        .getRightX(),
+                                                                        0.1);
+                                                      
+                                                        // Calcaulate new linear velocity
+                                                        Translation2d linearVelocity = new Pose2d(new Translation2d(),
+                                                                        linearDirection)
+                                                                        .transformBy(new Transform2d(linearMagnitude,
+                                                                                        0.0, new Rotation2d()))
+                                                                        .getTranslation();
+
+                                                        andromedaSwerve.acceptTeleopInputs(
+                                                                        linearVelocity,
+                                                                        () ->  omega,
+                                                                        () -> true);
+                                                        /* andromedaSwerve.acceptTeleopInputs(
+                                                                        () -> -OperatorConstants.driverController1
+                                                                                        .getLeftX(),
+                                                                        () -> -OperatorConstants.driverController1
+                                                                                        .getLeftY(),
+                                                                        () -> -OperatorConstants.driverController1
+                                                                                        .getRightX(),
+                                                                        () -> !OperatorConstants.driverController1
+                                                                                        .leftStick()
+                                                                                        .getAsBoolean()); */
+                                                }));
 
                 /* Driver 1 */
 
                 // -------- Gyro Commands --------
 
                 OperatorConstants.RESET_GYRO
-                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(new Rotation2d())));
+                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
 
                 /* Driver 2 */
 
@@ -353,6 +386,6 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return autoDashboardChooser.get();
+                return Commands.waitSeconds(0); // autoDashboardChooser.get();
         }
 }

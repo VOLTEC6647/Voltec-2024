@@ -15,6 +15,7 @@ import com.andromedalib.robot.SuperRobot;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.hal.AllianceStationID;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 
 public class Robot extends SuperRobot {
@@ -61,13 +62,8 @@ public class Robot extends SuperRobot {
             "_sim")));
         break;
     }
-
     AutoLogOutputManager.addPackage("com.andromedalib");
-
-    // Default to blue alliance in sim
-    if (RobotConstants.getMode() == Mode.SIM) {
-      DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
-    }
+    DriverStationSim.setAllianceStationId(AllianceStationID.Red2);
 
     // Start AdvantageKit Logger, no more fields can be added
     Logger.start();
