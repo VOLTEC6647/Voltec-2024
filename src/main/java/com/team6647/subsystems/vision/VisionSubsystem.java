@@ -7,7 +7,6 @@ package com.team6647.subsystems.vision;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.team6647.util.Constants.VisionConstants;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -45,7 +44,7 @@ public class VisionSubsystem extends SubsystemBase {
   public void computeVisionMeasurements() {
     if (inputs.hasTarget) {
       if (inputs.targetDistance < 3.5) {
-        AndromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
+        //Drive.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
       }
     }
   }

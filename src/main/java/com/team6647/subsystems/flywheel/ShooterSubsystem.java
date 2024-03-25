@@ -12,10 +12,10 @@ import static edu.wpi.first.units.Units.Volts;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.andromedalib.util.Alert;
+import com.andromedalib.util.Alert.AlertType;
 import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.util.LoggedTunableNumber;
-import com.team6647.util.Alert;
-import com.team6647.util.Alert.AlertType;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 

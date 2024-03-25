@@ -9,8 +9,6 @@ package com.team6647.subsystems;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 
-import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
-import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.RobotContainer;
 import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.InitIntake;
@@ -20,6 +18,7 @@ import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.VisionIntakeAlign;
 import com.team6647.commands.VisionSpeakerAlign;
+import com.team6647.subsystems.drive.Drive;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.IntakeCommands;
@@ -36,6 +35,7 @@ import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.util.Constants.FieldConstants;
 import com.team6647.util.Constants.FieldConstants.Speaker;
 import com.team6647.util.Constants.ShooterConstants;
+import com.team6647.util.AllianceFlipUtil;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
@@ -48,7 +48,7 @@ public class SuperStructure {
 
     private static SuperStructure instance;
 
-    private static AndromedaSwerve andromedaSwerve = RobotContainer.andromedaSwerve;
+    private static Drive andromedaSwerve = RobotContainer.andromedaSwerve;
     private static ShooterSubsystem shooterSubsystem = RobotContainer.shooterSubsystem;
     private static ShooterRollerSubsystem rollerSubsystem = RobotContainer.shooterRollerSubsystem;
     private static ShooterPivotSubsystem shooterPivotSubsystem = RobotContainer.shooterPivotSubsystem;
@@ -124,7 +124,6 @@ public class SuperStructure {
     }
 
     private static Command intakingCommand() {
-
         return Commands.deadline(
                 ShooterCommands.getShooterIntakingCommand(),
                 setGoalCommand(SuperStructureState.INTAKING),
@@ -135,7 +134,6 @@ public class SuperStructure {
     }
 
     private static Command autoIntakingCommand() {
-
         return Commands.deadline(
             ShooterCommands.getShooterIntakingCommand(),
             setGoalCommand(SuperStructureState.AUTO_INTAKING),
@@ -146,7 +144,6 @@ public class SuperStructure {
     }
 
     private static Command idleCommand() {
-
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.IDLE),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
@@ -160,7 +157,6 @@ public class SuperStructure {
     }
 
     private static Command autoIdleCommand() {
-
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.AUTO_IDLE),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
@@ -245,9 +241,9 @@ public class SuperStructure {
 
     /* Pathfinding */
 
-    public static Command goToAmp() {
+    /* public static Command goToAmp() {
         return andromedaSwerve.getPathFindPath(AllianceFlipUtil.apply(FieldConstants.amp));
-    }
+    } */
 
     private static Command autoScoreAmp() {
         return Commands.deadline(

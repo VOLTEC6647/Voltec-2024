@@ -9,8 +9,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.math.Functions;
-import com.team6647.util.Alert;
-import com.team6647.util.Alert.AlertType;
+import com.andromedalib.util.Alert;
+import com.andromedalib.util.Alert.AlertType;
 import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;

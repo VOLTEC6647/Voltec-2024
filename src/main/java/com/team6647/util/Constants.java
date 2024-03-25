@@ -3,8 +3,15 @@
  */
 package com.team6647.util;
 
+import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
+import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.ModuleMotorConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
+import com.andromedalib.andromedaSwerve.utils.AndromedModuleIDs;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
@@ -25,6 +32,9 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class Constants {
 
         public static class OperatorConstants {
+
+                public static final double controllerDeadband = 0.1;
+
                 public static final int kDriverControllerPort = 0;
                 public static final int kDriverControllerPort2 = 1;
 
@@ -58,7 +68,7 @@ public class Constants {
         public static class RobotConstants {
                 public static final Mode currentMode = Mode.SIM;
 
-                public static final boolean tuningMode = false;
+                public static final boolean tuningMode = true;
 
                 public static Mode getMode() {
                         if ((currentMode == Mode.SIM || currentMode == Mode.REPLAY) && RobotBase.isReal()) {
@@ -185,7 +195,7 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 0.1;      
+                public static final double pivotKp = 0.1;
                 public static final double pivotKi = 0.006;
                 public static final double pivotKd = 0.0015;
                 public static final double pivotKf = 0.28;
@@ -229,15 +239,6 @@ public class Constants {
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {
-                        // Distance, Angle
-                        // shooterPivotMap.put(1.0810042396944568, 108.0);
-                        // shooterPivotMap.put(1.1925201207020137, 105.0);
-                        // shooterPivotMap.put(1.2020858030598693, 111.0);
-                        // shooterPivotMap.put(1.3801720103239374, 111.0);
-                        // shooterPivotMap.put(1.4670866119735877, 115.0);
-                        // shooterPivotMap.put(1.5872513575703706, 113.0);
-                        // shooterPivotMap.put(1.6923915411392143, 113.0);
-                        // shooterPivotMap.put(1.8492929713559911, 120.0);
                         shooterPivotMap.put(1.1068959854194218, 108.0);
                         shooterPivotMap.put(1.231308756125935, 110.0);
                         shooterPivotMap.put(1.4074709863827106, 116.0);
@@ -355,6 +356,103 @@ public class Constants {
         }
 
         public static class DriveConstants {
+
+                public static AndromedaModuleConfig andromedModuleConfig(AndromedModuleIDs moduleIDs) {
+                        TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
+                        TalonFXConfiguration turningMotorConfig = new TalonFXConfiguration();
+                        CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
+
+                        String swerveCANBus = "6647_CANivore";
+
+                        double wheelDiameter = Units.inchesToMeters(4.0);
+
+                        double steeringGearRatio = ((150.0 / 7.0) / 1.0);
+                        double driveGearRatio = (6.75 / 1.0);
+
+                        double turningKp = 38.0;
+                        double turningKi = 0.0;
+                        double turningKd = 0.0;
+
+                        double driveKp = 0.1;
+                        double driveKi = 0.0;
+                        double driveKd = 0.0;
+                        double driveKs = 0.1468;
+                        double driveKv = 2.333;
+                        double driveKa = 0.08205;
+
+                        double openLoopRamp = 0.25;
+                        double closedLoopRamp = 0.0;
+
+                        InvertedValue driveMotorInvert = InvertedValue.CounterClockwise_Positive; // False
+                        InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive; // True
+                        SensorDirectionValue canCoderInvert = SensorDirectionValue.CounterClockwise_Positive; // False
+
+                        /* Current Limiting */
+                        int driveContinuousCurrentLimit = 35;
+                        int drivePeakCurrentLimit = 60;
+                        double drivePeakCurrentDuration = 0.1;
+                        boolean driveEnableCurrentLimit = true;
+
+                        int angleContinuousCurrentLimit = 25;
+                        int anglePeakCurrentLimit = 40;
+                        double anglePeakCurrentDuration = 0.1;
+                        boolean angleEnableCurrentLimit = true;
+
+                        /* Drive Motor Configuration */
+                        driveMotorConfig.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = openLoopRamp;
+                        driveMotorConfig.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = closedLoopRamp;
+
+                        driveMotorConfig.Slot0.kP = driveKp;
+                        driveMotorConfig.Slot0.kI = driveKi;
+                        driveMotorConfig.Slot0.kD = driveKd;
+                        driveMotorConfig.Slot0.kS = driveKs;
+                        driveMotorConfig.Slot0.kV = driveKv;
+                        driveMotorConfig.Slot0.kA = driveKa;
+
+                        driveMotorConfig.MotorOutput.Inverted = driveMotorInvert;
+
+                        driveMotorConfig.Feedback.SensorToMechanismRatio = driveGearRatio;
+                        driveMotorConfig.Audio.BeepOnBoot = true;
+                        driveMotorConfig.Audio.BeepOnConfig = true;
+
+                        driveMotorConfig.CurrentLimits.SupplyCurrentLimit = driveContinuousCurrentLimit;
+                        driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = driveEnableCurrentLimit;
+                        driveMotorConfig.CurrentLimits.SupplyCurrentThreshold = drivePeakCurrentLimit;
+                        driveMotorConfig.CurrentLimits.SupplyTimeThreshold = drivePeakCurrentDuration;
+
+                        driveMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+
+                        ModuleMotorConfig motorConfig = ModuleMotorConfig.FALCON_CONFIG;
+                        /* CANCoder */
+
+                        cancoderConfig.MagnetSensor.SensorDirection = canCoderInvert;
+
+                        /* Turning Motor */
+
+                        turningMotorConfig.Slot0.kP = turningKp;
+                        turningMotorConfig.Slot0.kI = turningKi;
+                        turningMotorConfig.Slot0.kD = turningKd;
+
+                        turningMotorConfig.MotorOutput.Inverted = angleMotorInvert;
+
+                        turningMotorConfig.Feedback.SensorToMechanismRatio = steeringGearRatio;
+                        turningMotorConfig.Audio.BeepOnBoot = true;
+                        turningMotorConfig.Audio.BeepOnConfig = true;
+
+                        turningMotorConfig.CurrentLimits.SupplyCurrentLimit = angleContinuousCurrentLimit;
+                        turningMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = angleEnableCurrentLimit;
+                        turningMotorConfig.CurrentLimits.SupplyCurrentThreshold = anglePeakCurrentLimit;
+                        turningMotorConfig.CurrentLimits.SupplyTimeThreshold = anglePeakCurrentDuration;
+
+                        turningMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
+
+                        turningMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+
+                        return new AndromedaModuleConfig(moduleIDs, driveMotorConfig, turningMotorConfig,
+                                        cancoderConfig, wheelDiameter,
+                                        swerveCANBus, motorConfig);
+                }
+
                 public static final double trackWidth = Units.inchesToMeters(18.5);
                 public static final double wheelBase = Units.inchesToMeters(18.5);
                 public static final double wheelDiameter = Units.inchesToMeters(4.0);
@@ -366,11 +464,15 @@ public class Constants {
                  * out left of the robot (you can verify this with the right-hand rule, +z is up
                  * so counter-clockwise rotation is positive, which checks out).
                  */
-                public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+                public static final Translation2d[] moduleTranslations = new Translation2d[] {
                                 new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
                                 new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0),
                                 new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-                                new Translation2d(wheelBase / 2.0, trackWidth / 2.0));
+                                new Translation2d(wheelBase / 2.0, trackWidth / 2.0)
+                };
+
+                public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
+                                moduleTranslations);
 
                 public static final double maxSpeed = 4.641013629172587;
                 public static final double maxAcceleration = maxSpeed * 0.85; // 13.804786438404268;
@@ -380,7 +482,8 @@ public class Constants {
 
                 public static final AndromedaSwerveConfig andromedaSwerveConfig = new AndromedaSwerveConfig(0.1,
                                 trackWidth,
-                                wheelBase, swerveKinematics, maxSpeed, maxAcceleration, maxAngularVelocity,
+                                wheelBase, swerveKinematics, moduleTranslations, maxSpeed, maxAcceleration,
+                                maxAngularVelocity,
                                 maxAngularAcceleration, wheelDiameter);
 
                 public static final int gyroID = 13;

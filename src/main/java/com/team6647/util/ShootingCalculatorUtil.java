@@ -6,7 +6,6 @@
 
 package com.team6647.util;
 
-import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.util.Constants.FieldConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
