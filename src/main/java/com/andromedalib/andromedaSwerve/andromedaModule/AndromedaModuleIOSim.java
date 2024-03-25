@@ -13,18 +13,25 @@
 
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Radians;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class AndromedaModuleIOSim implements AndromedaModuleIO {
     private static final double LOOP_PERIOD_SECS = 0.02;
 
-    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getNEO(1), 6.75, 0.025);
-    private DCMotorSim turnSim = new DCMotorSim(DCMotor.getNEO(1), 150.0 / 7.0, 0.004);
+    private DCMotorSim driveSim = new DCMotorSim(DCMotor.getKrakenX60(1), 6.75, 0.025);
+    private DCMotorSim turnSim = new DCMotorSim(DCMotor.getKrakenX60(1), 150.0 / 7.0, 0.004);
 
     private final Rotation2d turnAbsoluteInitPosition = new Rotation2d(Math.random() * 2.0 * Math.PI);
     private double driveAppliedVolts = 0.0;
@@ -39,7 +46,7 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
     public AndromedaModuleIOSim(double wheelDiameter) {
         driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
         driveFeedback = new PIDController(0.1, 0.0, 0.0);
-        turnFeedback = new PIDController(10, 0.0, 0.0);
+        turnFeedback = new PIDController(10.0, 0.0, 0.0);
         wheelRadius = wheelDiameter / 2;
 
         turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
@@ -50,13 +57,20 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
         driveSim.update(LOOP_PERIOD_SECS);
         turnSim.update(LOOP_PERIOD_SECS);
 
-        inputs.drivePosition = driveSim.getAngularPositionRad() * (wheelRadius);
-        inputs.driveVelocity = driveSim.getAngularVelocityRadPerSec() * (wheelRadius);
-        inputs.driveAppliedVolts = driveAppliedVolts;
+        inputs.drivePosition.mut_replace(driveSim.getAngularPositionRad() * (wheelRadius), Meters);
+        inputs.driveVelocity.mut_replace(driveSim.getAngularVelocityRadPerSec() * (wheelRadius),
+                MetersPerSecond);
+        inputs.driveApplied.mut_replace(driveAppliedVolts, Volts);
 
-        inputs.encoderAbsolutePosition = new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition);
-        inputs.steerAngle = new Rotation2d(turnSim.getAngularPositionRad());
-        inputs.turnAppliedVolts = turnAppliedVolts;
+        inputs.encoderAbsolutePosition.mut_replace(
+                new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition).getRotations(),
+                Rotations);
+        inputs.steerAngle.mut_replace(turnSim.getAngularPositionRad(), Radians);
+        inputs.turnAppliedVolts.mut_replace(turnAppliedVolts, Volts);
+
+        inputs.odometryTimestamps = new double[] { Timer.getFPGATimestamp() };
+        inputs.odometryDrivePositions = new double[] { inputs.drivePosition.in(Meters) };
+        inputs.odometryTurnPositions = new Rotation2d[] { Rotation2d.fromRotations(inputs.steerAngle.in(Rotations)) };
     }
 
     @Override

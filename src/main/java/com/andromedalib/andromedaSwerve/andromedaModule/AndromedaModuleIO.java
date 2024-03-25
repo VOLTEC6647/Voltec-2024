@@ -1,22 +1,45 @@
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
+import static edu.wpi.first.units.Units.Rotation;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.Distance;
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 
 public interface AndromedaModuleIO {
 
     @AutoLog
     public static class AndromedaModuleIOInputs {
-        public double driveVelocity = 0.0;
-        public double drivePosition = 0.0;
-        public double driveAppliedVolts = 0.0;
-        public double driveAcceleration = 0.0;
+        public boolean angleMotorConnected = true;
+        public boolean driveMotorConnected = true;
 
-        public Rotation2d steerAngle = new Rotation2d(0.0);
-        public double turnAppliedVolts = 0.0;
-        public double turnVelocity = 0.0;
-        public Rotation2d encoderAbsolutePosition = new Rotation2d(0.0);
+        public MutableMeasure<Velocity<Distance>> driveVelocity = MutableMeasure.zero(MetersPerSecond);
+        public MutableMeasure<Distance> drivePosition = MutableMeasure.zero(Meters);
+        public MutableMeasure<Voltage> driveApplied = MutableMeasure.zero(Volts);
+        public MutableMeasure<Velocity<Velocity<Distance>>> driveAcceleration = MutableMeasure
+                .zero(MetersPerSecondPerSecond);
+
+        public MutableMeasure<Angle> steerAngle = MutableMeasure.zero(Rotation);
+        public MutableMeasure<Voltage> turnAppliedVolts = MutableMeasure.zero(Volts);
+        public MutableMeasure<Velocity<Angle>> turnVelocity = MutableMeasure.zero(RotationsPerSecond);
+        public MutableMeasure<Angle> encoderAbsolutePosition = MutableMeasure.zero(Rotations);
+
+        public double[] odometryTimestamps = new double[] {};
+        public double[] odometryDrivePositions = new double[] {};
+        public Rotation2d[] odometryTurnPositions = new Rotation2d[] {};
+
     }
 
     /** Updates the set of loggable inputs. */
@@ -32,7 +55,7 @@ public interface AndromedaModuleIO {
     }
 
     /** Runs the drive motor for characterization */
-    public default void runDriveCharacterization(double volts) {
+    public default void runDriveCharacterization(Measure<Voltage> volts) {
     }
 
 }

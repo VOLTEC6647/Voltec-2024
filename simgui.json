@@ -18,13 +18,15 @@
             "open": true
           },
           "open": true
-        },
-        "open": true
+        }
       },
       "AndromedaSwerveTable": {
         "SwerveModule": {
           "open": true
         },
+        "open": true
+      },
+      "FMSInfo": {
         "open": true
       },
       "SmartDashboard": {
@@ -39,8 +41,7 @@
             "open": true
           },
           "open": true
-        },
-        "open": true
+        }
       }
     }
   },

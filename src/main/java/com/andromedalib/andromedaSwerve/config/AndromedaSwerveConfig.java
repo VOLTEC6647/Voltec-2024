@@ -2,6 +2,7 @@
 
 package com.andromedalib.andromedaSwerve.config;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 
 /* Represents the entire config */
@@ -12,6 +13,7 @@ public class AndromedaSwerveConfig {
     public final double wheelBase;
 
     public final SwerveDriveKinematics swerveKinematics;
+    public final Translation2d[] moduleTranslations;
 
     public final double maxSpeed;
     public final double maxAcceleration;
@@ -23,12 +25,14 @@ public class AndromedaSwerveConfig {
     public final double wheelCircumference;
 
     public AndromedaSwerveConfig(double deadband, double trackWidth, double wheelBase,
-            SwerveDriveKinematics swerveKinematics, double maxSpeed, double maxAcceleration, double maxAngularVelocity,
+            SwerveDriveKinematics swerveKinematics, Translation2d[] moduleTranslation2ds, double maxSpeed,
+            double maxAcceleration, double maxAngularVelocity,
             double maxAngularAcceleration, double wheelDiameter) {
         this.deadband = deadband;
         this.trackWidth = trackWidth;
         this.wheelBase = wheelBase;
         this.swerveKinematics = swerveKinematics;
+        this.moduleTranslations = moduleTranslation2ds;
         this.maxSpeed = maxSpeed;
         this.maxAcceleration = maxAcceleration;
         this.maxAngularVelocity = maxAngularVelocity;
@@ -42,5 +46,4 @@ public class AndromedaSwerveConfig {
         REPLAY,
         SIM
     }
-
 }
