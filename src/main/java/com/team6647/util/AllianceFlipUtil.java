@@ -7,8 +7,6 @@
 
 package com.team6647.util;
 
-import org.littletonrobotics.junction.Logger;
-
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
 import com.team6647.util.Constants.FieldConstants;
 import com.team6647.util.Constants.RobotConstants;
