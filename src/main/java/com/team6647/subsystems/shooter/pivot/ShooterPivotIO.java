@@ -33,10 +33,6 @@ public interface ShooterPivotIO {
         public MutableMeasure<Voltage> shooterPivotLeftMotorAppliedVolts = MutableMeasure.zero(Volts);
         public MutableMeasure<Voltage> shooterPivotRightMotorAppliedVolts = MutableMeasure.zero(Volts);
 
-        public double arbitraryFeedforward = 0.0;
-        public double shooterPivotAppliedVolts = 0.0;
-        public double output = 0.0;
-
         public boolean inTolerance = false;
 
         public boolean limitSwitchPressed = false;
