@@ -6,20 +6,36 @@
 
 package com.team6647.subsystems.shooter.pivot;
 
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
+
 import org.littletonrobotics.junction.AutoLog;
+
+import edu.wpi.first.units.Angle;
+import edu.wpi.first.units.MutableMeasure;
+import edu.wpi.first.units.Velocity;
+import edu.wpi.first.units.Voltage;
 
 public interface ShooterPivotIO {
 
     @AutoLog
     public static class ShooterPivotIOInputs {
-        public double shooterAbsoluteEncoderPosition = 0.0;
-        public double shooterAbsoluteEncoderVelocity = 0.0;
+
+        public MutableMeasure<Angle> cancoderAbsolutePosition = MutableMeasure.zero(Rotations);
+        public MutableMeasure<Velocity<Angle>> cancoderAbsoluteVelocity = MutableMeasure.zero(RotationsPerSecond);
+
+        public MutableMeasure<Angle> shooterPivotLeftMotorPosition = MutableMeasure.zero(Rotations);
+        public MutableMeasure<Angle> shooterPivotRightMotorPosition = MutableMeasure.zero(Rotations);
+        public MutableMeasure<Velocity<Angle>> shooterPivotLeftMotorVelocity = MutableMeasure.zero(RotationsPerSecond);
+        public MutableMeasure<Velocity<Angle>> shooterPivotRightMotorVelocity = MutableMeasure.zero(RotationsPerSecond);
+
+        public MutableMeasure<Voltage> shooterPivotLeftMotorAppliedVolts = MutableMeasure.zero(Volts);
+        public MutableMeasure<Voltage> shooterPivotRightMotorAppliedVolts = MutableMeasure.zero(Volts);
 
         public double arbitraryFeedforward = 0.0;
         public double shooterPivotAppliedVolts = 0.0;
         public double output = 0.0;
-
-        public double pivotMotorPosition = 0.0;
 
         public boolean inTolerance = false;
 

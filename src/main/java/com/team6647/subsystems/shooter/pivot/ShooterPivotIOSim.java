@@ -17,15 +17,18 @@ public class ShooterPivotIOSim implements ShooterPivotIO {
 
     private double setpoint;
 
-    private ProfiledPIDController turnFeedback = new ProfiledPIDController(0.1, 0.0, 0.0, new TrapezoidProfile.Constraints(5000, 5000));
+    private ProfiledPIDController turnFeedback = new ProfiledPIDController(0.1, 0.0, 0.0,
+            new TrapezoidProfile.Constraints(5000, 5000));
 
     @Override
     public void updateInputs(ShooterPivotIOInputs inputs) {
         pivotMotorSim.update(LOOP_PERIOD_SECS);
 
-        inputs.shooterAbsoluteEncoderPosition = pivotMotorSim.getAngularPositionRotations();
-        inputs.pivotMotorPosition = pivotMotorSim.getAngularPositionRotations();
-
+        /*
+         * inputs.shooterAbsoluteEncoderPosition =
+         * pivotMotorSim.getAngularPositionRotations();
+         * inputs.pivotMotorPosition = pivotMotorSim.getAngularPositionRotations();
+         */
         pivotMotorSim.setInputVoltage(turnFeedback.calculate(pivotMotorSim.getAngularVelocityRPM(), setpoint));
     }
 
