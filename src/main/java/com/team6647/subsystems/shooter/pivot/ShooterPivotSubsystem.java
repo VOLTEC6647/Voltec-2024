@@ -6,6 +6,8 @@
 
 package com.team6647.subsystems.shooter.pivot;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
@@ -66,15 +68,15 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
 
-    pivotEncoderAlert.set(inputs.shooterAbsoluteEncoderPosition == 0);
+    pivotEncoderAlert.set(inputs.cancoderAbsolutePosition.in(Rotations) == 0);
 
-    if (inputs.shooterAbsoluteEncoderPosition == 0) {
+    if (inputs.cancoderAbsolutePosition.in(Rotations) == 0) {
       setShooterPivotState(ShooterPivotState.EMERGENCY_DISABLED);
       io.disablePivot();
     }
 
     if (mState == ShooterPivotState.EMERGENCY_DISABLED) {
-      io.setShooterReference(inputs.pivotMotorPosition);
+      io.setShooterReference(inputs.cancoderAbsolutePosition.in(Rotations));
       io.disablePivot();
     }
 
@@ -124,7 +126,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         changeSetpoint(state.setpoint);
         break;
       case EMERGENCY_DISABLED:
-        changeSetpoint(inputs.pivotMotorPosition);
+        changeSetpoint(inputs.cancoderAbsolutePosition.in(Rotations));
         io.disablePivot();
         break;
       case CUSTOM:
