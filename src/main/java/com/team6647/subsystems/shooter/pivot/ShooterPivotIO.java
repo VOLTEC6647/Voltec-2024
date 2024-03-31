@@ -6,33 +6,28 @@
 
 package com.team6647.subsystems.shooter.pivot;
 
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
 import org.littletonrobotics.junction.AutoLog;
-
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
 
 public interface ShooterPivotIO {
 
     @AutoLog
     public static class ShooterPivotIOInputs {
 
-        public MutableMeasure<Angle> cancoderAbsolutePosition = MutableMeasure.zero(Rotations);
-        public MutableMeasure<Velocity<Angle>> cancoderAbsoluteVelocity = MutableMeasure.zero(RotationsPerSecond);
+        public double cancoderAbsolutePosition = 0.0;
+        public double cancoderAbsoluteVelocity = 0.0;
 
-        public MutableMeasure<Angle> shooterPivotLeftMotorPosition = MutableMeasure.zero(Rotations);
-        public MutableMeasure<Angle> shooterPivotRightMotorPosition = MutableMeasure.zero(Rotations);
-        public MutableMeasure<Velocity<Angle>> shooterPivotLeftMotorVelocity = MutableMeasure.zero(RotationsPerSecond);
-        public MutableMeasure<Velocity<Angle>> shooterPivotRightMotorVelocity = MutableMeasure.zero(RotationsPerSecond);
+        public double shooterPivotLeftMotorPosition = 0.0;
+        public double shooterPivotRightMotorPosition = 0.0;
+        public double shooterPivotLeftMotorVelocity = 0.0;
+        public double shooterPivotRightMotorVelocity = 0.0;
 
-        public MutableMeasure<Voltage> shooterPivotLeftMotorAppliedVolts = MutableMeasure.zero(Volts);
-        public MutableMeasure<Voltage> shooterPivotRightMotorAppliedVolts = MutableMeasure.zero(Volts);
+        public double shooterPivotLeftMotorAppliedVolts = 0.0;
+        public double shooterPivotRightMotorAppliedVolts = 0.0;
 
+        public double shooterPivotLeftMotorTemperatureCelsius = 0.0;
+        public double shooterPivotRightMotorTemperatureCelsius = 0.0;
+
+        public double arbitraryFeedforward = 0.0;
         public boolean inTolerance = false;
 
         public boolean limitSwitchPressed = false;
@@ -48,6 +43,8 @@ public interface ShooterPivotIO {
     }
 
     public default void disablePivot() {
+    }
 
+    public default void runPivotCharacterization(double volts) {
     }
 }

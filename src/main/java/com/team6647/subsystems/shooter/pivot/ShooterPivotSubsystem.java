@@ -7,6 +7,9 @@
 package com.team6647.subsystems.shooter.pivot;
 
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
+import static edu.wpi.first.units.Units.Volts;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
@@ -19,7 +22,12 @@ import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
+import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import lombok.RequiredArgsConstructor;
 
 public class ShooterPivotSubsystem extends SubsystemBase {
@@ -50,6 +58,24 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
   private Alert pivotEncoderAlert = new Alert("Shooter Pivot Encoder disconnected", AlertType.WARNING);
 
+  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+      new SysIdRoutine.Config(Volts.of(1).per(Seconds.of(1)), Volts.of(2), Seconds.of(10)),
+      new SysIdRoutine.Mechanism(
+          (Measure<Voltage> volts) -> {
+            runPivotCharacterization(volts.in(Units.Volts));
+          },
+          log -> {
+            log.motor("left-pivot")
+                .voltage(Volts.of(inputs.shooterPivotLeftMotorAppliedVolts))
+                .angularPosition(Rotations.of(inputs.shooterPivotLeftMotorPosition))
+                .angularVelocity(RotationsPerSecond.of(inputs.shooterPivotLeftMotorVelocity / 60));
+            log.motor("right-pivot")
+                .voltage(Volts.of(inputs.shooterPivotRightMotorAppliedVolts))
+                .angularPosition(Rotations.of(inputs.shooterPivotRightMotorPosition))
+                .angularVelocity(RotationsPerSecond.of(inputs.shooterPivotRightMotorVelocity / 60));
+          },
+          this));
+
   /** Creates a new ShooterPivotSubsystem. */
   private ShooterPivotSubsystem(
       ShooterPivotIO io) {
@@ -68,15 +94,15 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
 
-    pivotEncoderAlert.set(inputs.cancoderAbsolutePosition.in(Rotations) == 0);
+    pivotEncoderAlert.set(inputs.cancoderAbsolutePosition == 0);
 
-    if (inputs.cancoderAbsolutePosition.in(Rotations) == 0) {
+    if (inputs.cancoderAbsolutePosition == 0) {
       setShooterPivotState(ShooterPivotState.EMERGENCY_DISABLED);
       io.disablePivot();
     }
 
     if (mState == ShooterPivotState.EMERGENCY_DISABLED) {
-      io.setShooterReference(inputs.cancoderAbsolutePosition.in(Rotations));
+      io.setShooterReference(inputs.cancoderAbsolutePosition);
       io.disablePivot();
     }
 
@@ -126,7 +152,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         changeSetpoint(state.setpoint);
         break;
       case EMERGENCY_DISABLED:
-        changeSetpoint(inputs.cancoderAbsolutePosition.in(Rotations));
+        changeSetpoint(inputs.cancoderAbsolutePosition);
         io.disablePivot();
         break;
       case CUSTOM:
@@ -157,5 +183,19 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
   public static void updateShootingParameters(ShootingParameters newParameters) {
     currentParameters = newParameters;
+  }
+
+  /* Characterization */
+
+  public void runPivotCharacterization(double volts) {
+    io.runPivotCharacterization(volts);
+  }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.quasistatic(direction);
+  }
+
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return m_sysIdRoutine.dynamic(direction);
   }
 }
