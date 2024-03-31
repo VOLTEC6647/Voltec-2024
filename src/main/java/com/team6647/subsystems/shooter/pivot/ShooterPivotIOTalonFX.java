@@ -12,8 +12,6 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import java.io.ObjectInputFilter.Status;
-
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.team6647.util.Constants.ShooterConstants;
 

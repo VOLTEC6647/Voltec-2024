@@ -32,6 +32,7 @@ import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem.ShooterPivotS
 import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
 import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 import com.team6647.subsystems.vision.VisionSubsystem;
+import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.FieldConstants;
 import com.team6647.util.Constants.FieldConstants.Speaker;
 import com.team6647.util.Constants.ShooterConstants;
@@ -77,6 +78,7 @@ public class SuperStructure {
         SHOOTING_SUBWOOFER,
         INTELLIGENT_SHOOTING_SPEAKER,
         SCORING_AMP,
+        PREPARING_AMP,
         SHOOTING_TRAP,
         SHOOTING_MOVING,
         STOPPING_CLIMB,
@@ -101,6 +103,8 @@ public class SuperStructure {
                 return shootingSubwoofer();
             case SCORING_AMP:
                 return scoreAmp();
+            case PREPARING_AMP:
+                return prepareScoreAmp();
             case SHOOTING_TRAP:
                 return Commands.waitSeconds(0);
             case SHOOTING_MOVING:
@@ -135,8 +139,8 @@ public class SuperStructure {
 
     private static Command autoIntakingCommand() {
         return Commands.deadline(
-            ShooterCommands.getShooterIntakingCommand(),
-            setGoalCommand(SuperStructureState.AUTO_INTAKING),
+                ShooterCommands.getShooterIntakingCommand(),
+                setGoalCommand(SuperStructureState.AUTO_INTAKING),
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5)))
@@ -241,31 +245,31 @@ public class SuperStructure {
 
     /* Pathfinding */
 
-    /* public static Command goToAmp() {
-        return andromedaSwerve.getPathFindPath(AllianceFlipUtil.apply(FieldConstants.amp));
-    } */
+    public static Command goToAmp() {
+        return Commands.sequence(
+                andromedaSwerve.getPathFindPath(AllianceFlipUtil.apply(FieldConstants.amp),
+                        DriveConstants.pathFindingConstraints),
+                prepareScoreAmp(),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
+
+    }
 
     private static Command autoScoreAmp() {
         return Commands.deadline(
                 Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
-                setGoalCommand(SuperStructureState.AUTO_AMP),
                 Commands.sequence(
-                        new InstantCommand(() -> {
-                            ShootingParameters ampParams = new ShootingParameters(new Rotation2d(),
-                                    ShooterConstants.pivotAmpPosition,
-                                    ShooterConstants.flywheelAmpRPM);
-
-                            updateShootingParameters(ampParams);
-                        }),
-                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(1),
-                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING).withTimeout(1),
+                        prepareScoreAmp(),
                         Commands.waitSeconds(1),
+                        setGoalCommand(SuperStructureState.AUTO_AMP),
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
     }
 
-    private static Command scoreAmp() {
+    private static Command prepareScoreAmp() {
         return Commands.sequence(
-                setGoalCommand(SuperStructureState.SCORING_AMP),
+                setGoalCommand(SuperStructureState.PREPARING_AMP),
                 new InstantCommand(() -> {
                     ShootingParameters ampParams = new ShootingParameters(new Rotation2d(),
                             ShooterConstants.pivotAmpPosition,
@@ -274,8 +278,14 @@ public class SuperStructure {
                     updateShootingParameters(ampParams);
                 }),
                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(1),
-                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING).withTimeout(1),
+                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING).withTimeout(1));
+    }
+
+    private static Command scoreAmp() {
+        return Commands.sequence(
+                prepareScoreAmp(),
                 Commands.waitSeconds(1),
+                setGoalCommand(SuperStructureState.SCORING_AMP),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 

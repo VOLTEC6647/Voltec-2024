@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
@@ -170,10 +171,12 @@ public class Constants {
         }
 
         public static class ShooterConstants {
-                public static final int shooterPivotMotorID = 21;
-                public static final int flywheelBottomMotorID = 22;
-                public static final int flywheelTopMotorID = 23;
-                public static final int shooterRollerMotorID = 24;
+                public static final int shooterPivotCANCoderID = 20;
+                public static final int shooterPivotLeftMotorID = 21;
+                public static final int shooterPivotRightMotorID = 22;
+                public static final int flywheelBottomMotorID = 23;
+                public static final int flywheelTopMotorID = 24;
+                public static final int shooterRollerMotorID = 25;
 
                 public static final double bottomShooterKp = 0.44998;
                 public static final double bottomShooterKi = 0.001;
@@ -196,9 +199,14 @@ public class Constants {
                 public static final double shooterTolerance = 100.0;
 
                 public static final double pivotKp = 0.1;
-                public static final double pivotKi = 0.006;
-                public static final double pivotKd = 0.0015;
+                public static final double pivotKi = 0.000;
+                public static final double pivotKd = 0.000;
                 public static final double pivotKf = 0.28;
+
+                public static final double pivotKs = 0.755282;
+                public static final double pivotKv = 5.9701;
+                public static final double pivotKg = 0.186197;
+
                 public static final double pidPositionTolerance = 0.05;
                 public static final double positionTolerance = 1;
 
@@ -209,10 +217,8 @@ public class Constants {
                 public static final int shooterMotorCurrentLimit = 80;
                 public static final int rollerMotorCurrentLimit = 80;
 
-                public static final double armEncoderPositionConversionFactor = 360;
-                public static final double armEncoderZeroOffset = 100;
-                public static final boolean armEncoderInverted = true;
-                public static final boolean shooterPivotMotorInverted = true;
+                public static final double shooterPivotEncoderOffset = 0.15;
+                public static final SensorDirectionValue shooterPivotEncoderInverted = SensorDirectionValue.CounterClockwise_Positive;
 
                 public static final double pivotMinPosition = 70;
                 public static final double pivotMaxPosition = 240;
@@ -349,10 +355,14 @@ public class Constants {
                 public static final String neuralLimeNTName = "limelight-intake";
 
                 public static final int speakerBlueCenterTagID = 7;
-                public static final int speakerRedCentgerTagID = 4;
+                public static final int speakerRedCenterTagID = 4;
+
+                public static final int ampBlueTagID = 6;
+                public static final int ampRedTagID = 5;
 
                 public static final int odometryPipelineNumber = 0;
                 public static final int speakerPipelineNumber = 1;
+                public static final int ampPipelineNumber = 2;
         }
 
         public static class DriveConstants {
@@ -500,6 +510,11 @@ public class Constants {
                                 translationD);
                 public static final PIDConstants rotationConstants = new PIDConstants(rotationP, rotationI,
                                 rotationD);
+                public static PathConstraints pathFindingConstraints = new PathConstraints(
+                                3, 4,
+                                edu.wpi.first.math.util.Units.degreesToRadians(560),
+                                edu.wpi.first.math.util.Units.degreesToRadians(720));
+
                 public static final HolonomicPathFollowerConfig holonomicPathConfig = new HolonomicPathFollowerConfig(
                                 DriveConstants.translationConstants,
                                 DriveConstants.rotationConstants,

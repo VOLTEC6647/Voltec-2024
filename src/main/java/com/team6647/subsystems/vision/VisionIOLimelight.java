@@ -26,7 +26,7 @@ public class VisionIOLimelight implements VisionIO {
 
     @Override
     public synchronized void updateInputs(VisionIOInputs inputs) {
-        LimelightHelpers.Results result = LimelightHelpers
+        /* LimelightHelpers.Results result = LimelightHelpers
                 .getLatestResults(VisionConstants.aprilLimeNTName).targetingResults;
 
         inputs.TA = LimelightHelpers.getTA(VisionConstants.aprilLimeNTName);
@@ -53,7 +53,7 @@ public class VisionIOLimelight implements VisionIO {
             inputs.hasTarget = false;
             inputs.targetDistance = 0.0;
             inputs.targetID = 0;
-        }
+        } */
     }
 
     public double computeTagDistance() {

@@ -45,7 +45,7 @@ import com.team6647.subsystems.neural.NeuralVisionIOLimelight;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
 import com.team6647.subsystems.shooter.pivot.ShooterPivotIO;
 import com.team6647.subsystems.shooter.pivot.ShooterPivotIOSim;
-import com.team6647.subsystems.shooter.pivot.ShooterPivotIOSparkMax;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotIOTalonFX;
 import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem;
 import com.team6647.subsystems.shooter.roller.ShooterIORollerSim;
 import com.team6647.subsystems.shooter.roller.ShooterIORollerSparkMax;
@@ -125,7 +125,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOTalonFX());
                                 intakePivotSubsystem = IntakePivotSubsystem
                                                 .getInstance(new IntakePivotIOSparkMaxKraken());
-                                shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSparkMax());
+                                shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOTalonFX());
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOKraken());
                                 shooterRollerSubsystem = ShooterRollerSubsystem
                                                 .getInstance(new ShooterIORollerSparkMax());
@@ -185,34 +185,33 @@ public class RobotContainer extends SuperRobotContainer {
                 superStructure = SuperStructure.getInstance();
 
                 // -------- Auto Declaration --------
-                /*
-                 * NamedCommands.registerCommand("InitIntake",
-                 * new InitIntake(intakePivotSubsystem));
-                 * NamedCommands.registerCommand("ShootSubwoofer",
-                 * SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).withTimeout(7))
-                 * ;
-                 * NamedCommands.registerCommand("ShootMiddle",
-                 * SuperStructure.autoMiddleCommand().withTimeout(7));
-                 * NamedCommands.registerCommand("ShootTop",
-                 * SuperStructure.autoTopCommand().withTimeout(7));
-                 * NamedCommands.registerCommand("AmpScore",
-                 * SuperStructure.update(SuperStructureState.AUTO_AMP));
-                 * NamedCommands.registerCommand("ShootStay",
-                 * SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
-                 * NamedCommands.registerCommand("GrabPiece",
-                 * SuperStructure.update(SuperStructureState.AUTO_INTAKING));
-                 * NamedCommands.registerCommand("Idle",
-                 * SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
-                 * NamedCommands.registerCommand("VisionAlign",
-                 * SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
-                 * NamedCommands.registerCommand("IntakeDown",
-                 * SuperStructure.update(SuperStructureState.INTAKING).withTimeout(1));
-                 * 
-                 * NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
-                 * 
-                 * autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
-                 * AutoBuilder.buildAutoChooser());
-                 */
+
+                NamedCommands.registerCommand("InitIntake",
+                                new InitIntake(intakePivotSubsystem));
+                NamedCommands.registerCommand("ShootSubwoofer",
+                                SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).withTimeout(7));
+                NamedCommands.registerCommand("ShootMiddle",
+                                SuperStructure.autoMiddleCommand().withTimeout(7));
+                NamedCommands.registerCommand("ShootTop",
+                                SuperStructure.autoTopCommand().withTimeout(7));
+                NamedCommands.registerCommand("AmpScore",
+                                SuperStructure.update(SuperStructureState.AUTO_AMP));
+                NamedCommands.registerCommand("ShootStay",
+                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
+                NamedCommands.registerCommand("GrabPiece",
+                                SuperStructure.update(SuperStructureState.AUTO_INTAKING));
+                NamedCommands.registerCommand("Idle",
+                                SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
+                NamedCommands.registerCommand("VisionAlign",
+                                SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
+                NamedCommands.registerCommand("IntakeDown",
+                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(1));
+
+                NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
+
+                autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
+                                AutoBuilder.buildAutoChooser());
+
                 // -------- Engame alers (Credits: 6328) --------
                 Function<Double, Command> controllerRumbleCommandFactory = time -> Commands.sequence(
                                 Commands.runOnce(
@@ -249,11 +248,9 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 controllerRumbleCommandFactory.apply(0.2),
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
-
-                // configSysIdBindings();
+                configSysIdBindings();
         }
 
-        private double omega = 0.0;
         @Override
         public void configureBindings() {
                 andromedaSwerve.setDefaultCommand(
@@ -271,11 +268,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                                         .getLeftX(),
                                                                         -OperatorConstants.driverController1
                                                                                         .getLeftY());
-                                                        omega = MathUtil.applyDeadband(
-                                                                        -OperatorConstants.driverController1
-                                                                                        .getRightX(),
-                                                                        0.1);
-                                                      
+
                                                         // Calcaulate new linear velocity
                                                         Translation2d linearVelocity = new Pose2d(new Translation2d(),
                                                                         linearDirection)
@@ -285,18 +278,23 @@ public class RobotContainer extends SuperRobotContainer {
 
                                                         andromedaSwerve.acceptTeleopInputs(
                                                                         linearVelocity,
-                                                                        () ->  omega,
+                                                                        () -> MathUtil.applyDeadband(
+                                                                                        -OperatorConstants.driverController1
+                                                                                                        .getRightX(),
+                                                                                        0.1),
                                                                         () -> true);
-                                                        /* andromedaSwerve.acceptTeleopInputs(
-                                                                        () -> -OperatorConstants.driverController1
-                                                                                        .getLeftX(),
-                                                                        () -> -OperatorConstants.driverController1
-                                                                                        .getLeftY(),
-                                                                        () -> -OperatorConstants.driverController1
-                                                                                        .getRightX(),
-                                                                        () -> !OperatorConstants.driverController1
-                                                                                        .leftStick()
-                                                                                        .getAsBoolean()); */
+                                                        /*
+                                                         * andromedaSwerve.acceptTeleopInputs(
+                                                         * () -> -OperatorConstants.driverController1
+                                                         * .getLeftX(),
+                                                         * () -> -OperatorConstants.driverController1
+                                                         * .getLeftY(),
+                                                         * () -> -OperatorConstants.driverController1
+                                                         * .getRightX(),
+                                                         * () -> !OperatorConstants.driverController1
+                                                         * .leftStick()
+                                                         * .getAsBoolean());
+                                                         */
                                                 }));
 
                 /* Driver 1 */
@@ -363,14 +361,14 @@ public class RobotContainer extends SuperRobotContainer {
 
         public void configSysIdBindings() {
                 OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(andromedaSwerve.sysIdQuasistatic(Direction.kForward));
+                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kForward));
                 OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(andromedaSwerve.sysIdQuasistatic(Direction.kReverse));
+                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kReverse));
 
                 OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(andromedaSwerve.sysIdDynamic(Direction.kForward));
+                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kForward));
                 OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(andromedaSwerve.sysIdDynamic(Direction.kReverse));
+                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kReverse));
         }
 
         public void configTuningBindings() {
@@ -386,6 +384,6 @@ public class RobotContainer extends SuperRobotContainer {
 
         @Override
         public Command getAutonomousCommand() {
-                return Commands.waitSeconds(0); // autoDashboardChooser.get();
+                return autoDashboardChooser.get();
         }
 }

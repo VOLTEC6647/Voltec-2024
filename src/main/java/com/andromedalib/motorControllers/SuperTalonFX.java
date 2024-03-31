@@ -28,7 +28,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      * @param inverted      Inverted state of the motor controller
      * @param configuration Stator current limit configuration
      */
-    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, boolean isInverted,
             TalonFXConfiguration configuration) {
         super(motorID);
         getConfigurator().apply(new TalonFXConfiguration());
@@ -46,7 +46,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      * @param configuration Stator current limit configuration
      * @param canbus        Device Canbus
      */
-    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, boolean isInverted,
             TalonFXConfiguration configuration, String canbus) {
         super(motorID, canbus);
         getConfigurator().apply(new TalonFXConfiguration());
@@ -62,11 +62,23 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      * @param idleMode   Idle mode of the motor controller
      * @param isInverted Inverted state of the motor controller
      */
-    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted) {
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, boolean isInverted) {
         super(motorID);
         getConfigurator().apply(new TalonFXConfiguration());
         setMode(idleMode);
         setInverted(isInverted);
+    }
+
+    /**
+     * Configures SuperTalonFX motor controller
+     * 
+     * @param motorID  ID of the motor controller
+     * @param idleMode Idle mode of the motor controller
+     */
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode) {
+        super(motorID);
+        getConfigurator().apply(new TalonFXConfiguration());
+        setMode(idleMode);
     }
 
     /**
@@ -77,7 +89,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      * @param isInverted Inverted state of the motor controller
      * @param canbus     Device canbus
      */
-    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted, String canbus) {
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, boolean isInverted, String canbus) {
         super(motorID, canbus);
         getConfigurator().apply(new TalonFXConfiguration());
         setMode(idleMode);
@@ -130,7 +142,6 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
         getConfigurator().apply(new TalonFXConfiguration());
         setMode(GlobalIdleMode.Coast);
         getConfigurator().apply(configuration);
-
     }
 
     /**
@@ -151,10 +162,11 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
 
     /**
      * Configures a SuperTalonFX
-     * @param driveMotorID ID of the motor controller
-     * @param mode Idle mode of the motor controller
+     * 
+     * @param driveMotorID            ID of the motor controller
+     * @param mode                    Idle mode of the motor controller
      * @param driveMotorConfiguration Motor configuration
-     * @param swerveCANBus Device canbus
+     * @param swerveCANBus            Device canbus
      */
     public SuperTalonFX(int driveMotorID, GlobalIdleMode mode, TalonFXConfiguration driveMotorConfiguration,
             String swerveCANBus) {

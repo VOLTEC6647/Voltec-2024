@@ -1,60 +1,57 @@
 /**
  * Written by Juan Pablo Gutiérrez
  * 
- * 10 03 2024
+ * 30 03 2024
  */
 package com.team6647.commands;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.drive.Drive;
 import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.subsystems.vision.VisionSubsystem;
-import com.team6647.util.Constants.DriveConstants;
-import com.team6647.util.Constants.FieldConstants.Speaker;
-import com.team6647.util.Constants.VisionConstants;
 import com.team6647.util.AllianceFlipUtil;
-import com.team6647.util.ShootingCalculatorUtil;
+import com.team6647.util.Constants.DriveConstants;
+import com.team6647.util.Constants.FieldConstants;
+import com.team6647.util.Constants.VisionConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class VisionSpeakerAlign extends Command {
+public class VisionAmpAlign extends Command {
+
   private Drive swerve;
   private VisionSubsystem visionSubsystem;
 
-  private int stageID;
-  private Translation2d speakerPose;
-
-  private ShootingParameters parameters;
+  private int ampID;
+  private Translation2d ampPose;
 
   private double targetigVel = 0.0;
 
-  public VisionSpeakerAlign(Drive swevre, VisionSubsystem visionSubsystem) {
-    this.swerve = swevre;
+  /** Creates a new VisionAmpAlign. */
+  public VisionAmpAlign(Drive swerve, VisionSubsystem visionSubsystem) {
+    this.swerve = swerve;
     this.visionSubsystem = visionSubsystem;
 
+    ampPose = AllianceFlipUtil.apply(FieldConstants.amp).getTranslation();
+    ampID = AllianceFlipUtil.shouldFlip() ? VisionConstants.ampRedTagID
+        : VisionConstants.ampBlueTagID;
+    Logger.recordOutput("VisionAmpAlign/AmpPose", ampPose);
+
     addRequirements(visionSubsystem);
-    speakerPose = AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d());
-    stageID = AllianceFlipUtil.shouldFlip() ? VisionConstants.speakerRedCenterTagID
-        : VisionConstants.speakerBlueCenterTagID;
-    Logger.recordOutput("VisionSpeakerAlign/SpeakerPose", speakerPose);
   }
 
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
-        speakerPose);
-    SuperStructure.updateShootingParameters(parameters);
-
-    if (visionSubsystem.hasTargetID(stageID)) {
+    if (visionSubsystem.hasTargetID(ampID)) {
       double kP = .005;
       targetigVel = visionSubsystem.getTX() * kP;
 
@@ -64,10 +61,6 @@ public class VisionSpeakerAlign extends Command {
 
       swerve.acceptTeleopInputs(() -> 0, () -> 0, () -> targetigVel, () -> false);
       swerve.setMDriveMode(DriveMode.TELEOP);
-    } else {
-      swerve.setMDriveMode(DriveMode.HEADING_LOCK);
-
-      swerve.setTargetHeading(parameters.robotAngle());
     }
   }
 
@@ -82,6 +75,6 @@ public class VisionSpeakerAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return swerve.headingInTolerance();
+    return visionSubsystem.getTY() < -12;
   }
 }

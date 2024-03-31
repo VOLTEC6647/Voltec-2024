@@ -273,6 +273,15 @@ public class AndromedaSwerve extends SubsystemBase {
   }
 
   /**
+   * Resets the robot's position on the field
+   * 
+   * @param pose2d New position
+   */
+  public void resetPose(Pose2d pose2d) {
+    poseEstimator.resetPosition(getSwerveAngle(), getPositions(), pose2d);
+  }
+
+  /**
    * Stops the drive and turns the modules to an X arrangement to resist movement.
    * The modules will
    * return to their normal orientations the next time a nonzero velocity is

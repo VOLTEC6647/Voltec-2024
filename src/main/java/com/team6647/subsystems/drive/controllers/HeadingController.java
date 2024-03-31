@@ -45,4 +45,8 @@ public class HeadingController {
 
         return headingController.calculate(currentHeading.getRadians(), targetHeading.getRadians());
     }
+
+    public boolean inTolerance() {
+        return headingController.atGoal();
+    }
 }

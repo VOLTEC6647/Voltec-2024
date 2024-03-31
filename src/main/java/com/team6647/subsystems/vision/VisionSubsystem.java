@@ -9,7 +9,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.team6647.util.Constants.VisionConstants;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
@@ -22,7 +21,7 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   private VisionSubsystem(VisionIO io) {
     this.io = io;
-    
+
     changePipeline(VisionConstants.odometryPipelineNumber);
   }
 
@@ -44,7 +43,7 @@ public class VisionSubsystem extends SubsystemBase {
   public void computeVisionMeasurements() {
     if (inputs.hasTarget) {
       if (inputs.targetDistance < 3.5) {
-        //Drive.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
+        // Drive.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
       }
     }
   }
@@ -54,7 +53,8 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public boolean hasTargetID(int ID) {
-    return inputs.hasTarget && inputs.targetID == ID;
+    return true;
+    // return inputs.hasTarget && inputs.targetID == ID;
   }
 
   public void changePipeline(int pipelineNumber) {
@@ -62,10 +62,12 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public double getTY() {
-    return inputs.TY;
+    return 0.0;
+    // return inputs.TY;
   }
 
   public double getTX() {
-    return inputs.TX;
+    return 0.0;
+    // return inputs.TX;
   }
 }
