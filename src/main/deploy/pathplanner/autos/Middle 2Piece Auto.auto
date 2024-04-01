@@ -42,7 +42,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Middle"
+                  "pathName": "MiddleToCenter"
                 }
               }
             ]
@@ -57,6 +57,6 @@
       ]
     }
   },
-  "folder": "Working",
+  "folder": null,
   "choreoAuto": false
 }

@@ -28,7 +28,10 @@ public interface ShooterPivotIO {
         public double shooterPivotRightMotorTemperatureCelsius = 0.0;
 
         public double arbitraryFeedforward = 0.0;
+        public double pidValue = 0.0;
+        public double output = 0.0;
         public boolean inTolerance = false;
+        public double setpoint;
 
         public boolean limitSwitchPressed = false;
     }

@@ -22,6 +22,8 @@ import com.andromedalib.andromedaSwerve.andromedaModule.GyroIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIOInputsAutoLogged;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,6 +32,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
@@ -54,9 +57,15 @@ public class AndromedaSwerve extends SubsystemBase {
   private Rotation2d rawGyroRotation = new Rotation2d();
   private SwerveModulePosition[] lastModulePositions = new SwerveModulePosition[4];
 
-  private SwerveDrivePoseEstimator poseEstimator;
+  private static SwerveDrivePoseEstimator poseEstimator;
 
   public static final Lock odometryLock = new ReentrantLock();
+
+  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.03, 0.03,
+      edu.wpi.first.math.util.Units.degreesToRadians(1));
+
+  private final Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5,
+      edu.wpi.first.math.util.Units.degreesToRadians(50));
 
   /* Characterization */
   private final MutableMeasure<Voltage> m_appliedVoltage = MutableMeasure.zero(Volts);
@@ -105,7 +114,7 @@ public class AndromedaSwerve extends SubsystemBase {
     this.gyroIO = gyroIO;
 
     poseEstimator = new SwerveDrivePoseEstimator(andromedaProfile.swerveKinematics, rawGyroRotation,
-        lastModulePositions, new Pose2d());
+        lastModulePositions, new Pose2d(), stateStandardDeviations, visionmeasurementStandardDeviations);
   }
 
   @Override
@@ -282,6 +291,27 @@ public class AndromedaSwerve extends SubsystemBase {
   }
 
   /**
+   * Adds a vision measurement to the pose estimator
+   * 
+   * @param observedPose     The pose of the vision target
+   * @param timestampLatency The latency of the vision system
+   */
+  public static void addVisionMeasurements(Pose2d observedPose, double timestampLatency) {
+    poseEstimator.addVisionMeasurement(observedPose, timestampLatency);
+  }
+
+  /**
+   * Adds a vision measurement to the pose estimator
+   * 
+   * @param observedPose       The pose of the vision target
+   * @param timestampLatency   The latency of the vision system
+   * @param standardDeviations The standard deviations of the vision measurements
+   */
+  public static void addVisionMeasurement(Pose2d observedPose, double timestampLatency, Vector<N3> standardDeviations) {
+    poseEstimator.addVisionMeasurement(observedPose, timestampLatency, standardDeviations);
+  }
+
+  /**
    * Stops the drive and turns the modules to an X arrangement to resist movement.
    * The modules will
    * return to their normal orientations the next time a nonzero velocity is
@@ -292,6 +322,11 @@ public class AndromedaSwerve extends SubsystemBase {
     for (int i = 0; i < 4; i++) {
       headings[i] = andromedaProfile.moduleTranslations[i].getAngle();
     }
+    SwerveModuleState[] states = andromedaProfile.swerveKinematics.toSwerveModuleStates(new ChassisSpeeds());
+    for (int i = 0; i < 4; i++) {
+      states[i].angle = headings[i];
+    }
+    setModuleStates(states);
     andromedaProfile.swerveKinematics.resetHeadings(headings);
     stop();
   }

@@ -6,9 +6,6 @@
 
 package com.team6647.subsystems.neural;
 
-import com.andromedalib.vision.LimelightHelpers;
-import com.team6647.util.Constants.VisionConstants;
-
 public class NeuralVisionIOLimelight implements NeuralVisionIO {
 
     @Override

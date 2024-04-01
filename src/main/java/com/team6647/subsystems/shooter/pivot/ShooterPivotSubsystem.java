@@ -65,14 +65,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
             runPivotCharacterization(volts.in(Units.Volts));
           },
           log -> {
-            log.motor("left-pivot")
-                .voltage(Volts.of(inputs.shooterPivotLeftMotorAppliedVolts))
-                .angularPosition(Rotations.of(inputs.shooterPivotLeftMotorPosition))
-                .angularVelocity(RotationsPerSecond.of(inputs.shooterPivotLeftMotorVelocity / 60));
-            log.motor("right-pivot")
+            log.motor("pivot")
                 .voltage(Volts.of(inputs.shooterPivotRightMotorAppliedVolts))
                 .angularPosition(Rotations.of(inputs.shooterPivotRightMotorPosition))
-                .angularVelocity(RotationsPerSecond.of(inputs.shooterPivotRightMotorVelocity / 60));
+                .angularVelocity(RotationsPerSecond.of(inputs.shooterPivotRightMotorVelocity));
           },
           this));
 
@@ -93,10 +89,11 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
+    pivotEncoderAlert.set(inputs.cancoderAbsolutePosition < ShooterConstants.pivotMinPosition
+        || inputs.cancoderAbsolutePosition > ShooterConstants.pivotMaxPosition);
 
-    pivotEncoderAlert.set(inputs.cancoderAbsolutePosition == 0);
-
-    if (inputs.cancoderAbsolutePosition == 0) {
+    if (inputs.cancoderAbsolutePosition < ShooterConstants.pivotMinPosition
+        || inputs.cancoderAbsolutePosition > ShooterConstants.pivotMaxPosition) {
       setShooterPivotState(ShooterPivotState.EMERGENCY_DISABLED);
       io.disablePivot();
     }

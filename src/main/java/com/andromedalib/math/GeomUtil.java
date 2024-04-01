@@ -65,6 +65,10 @@ public class GeomUtil {
         return new Transform2d(pose.getTranslation(), pose.getRotation());
     }
 
+    public static Transform2d toTransform2d(Transform3d transform) {
+        return new Transform2d(transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d());
+    }
+
     public static Pose2d inverse(Pose2d pose) {
         Rotation2d rotationInverse = pose.getRotation().unaryMinus();
         return new Pose2d(

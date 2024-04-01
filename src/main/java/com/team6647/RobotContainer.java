@@ -54,7 +54,7 @@ import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
 import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.subsystems.vision.VisionIO;
-import com.team6647.subsystems.vision.VisionIOLimelight;
+import com.team6647.subsystems.vision.VisionIOPhotonVision;
 import com.team6647.subsystems.vision.VisionIOSim;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
@@ -129,7 +129,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOKraken());
                                 shooterRollerSubsystem = ShooterRollerSubsystem
                                                 .getInstance(new ShooterIORollerSparkMax());
-                                visionSubsytem = VisionSubsystem.getInstance(new VisionIOLimelight());
+                                visionSubsytem = VisionSubsystem.getInstance(new VisionIOPhotonVision());
                                 neuralVisionSubsystem = NeuralVisionSubsystem
                                                 .getInstance(new NeuralVisionIOLimelight());
                                 break;
@@ -248,7 +248,6 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 controllerRumbleCommandFactory.apply(0.2),
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
-                configSysIdBindings();
         }
 
         @Override

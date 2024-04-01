@@ -14,7 +14,6 @@ import com.team6647.util.AllianceFlipUtil;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.FieldConstants;
 import com.team6647.util.Constants.VisionConstants;
-import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;

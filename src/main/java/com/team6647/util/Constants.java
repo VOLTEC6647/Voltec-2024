@@ -198,14 +198,10 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 0.1;
-                public static final double pivotKi = 0.000;
-                public static final double pivotKd = 0.000;
-                public static final double pivotKf = 0.28;
-
-                public static final double pivotKs = 0.755282;
-                public static final double pivotKv = 5.9701;
-                public static final double pivotKg = 0.186197;
+                public static final double pivotKp = 11.0;
+                public static final double pivotKi = 3.0;
+                public static final double pivotKd = 0.0;
+                public static final double pivotKf = 0.37;
 
                 public static final double pidPositionTolerance = 0.05;
                 public static final double positionTolerance = 1;
@@ -217,15 +213,15 @@ public class Constants {
                 public static final int shooterMotorCurrentLimit = 80;
                 public static final int rollerMotorCurrentLimit = 80;
 
-                public static final double shooterPivotEncoderOffset = 0.15;
+                public static final double shooterPivotEncoderOffset = -0.154785;
                 public static final SensorDirectionValue shooterPivotEncoderInverted = SensorDirectionValue.CounterClockwise_Positive;
 
-                public static final double pivotMinPosition = 70;
-                public static final double pivotMaxPosition = 240;
-                public static final double pivotHomedPosition = 73;
-                public static final double pivotIndexingPosition = 114;
-                public static final double pivotAmpPosition = 185;
-                public static final double pivotClimbPosition = 235;
+                public static final double pivotMinPosition = -95;
+                public static final double pivotMaxPosition = 90;
+                public static final double pivotHomedPosition = -85;
+                public static final double pivotIndexingPosition = -43;
+                public static final double pivotAmpPosition = 25;
+                public static final double pivotClimbPosition = 5;
 
                 public static final double flywheelAmpRPM = 1000;
 
@@ -245,28 +241,13 @@ public class Constants {
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {
-                        shooterPivotMap.put(1.1068959854194218, 108.0);
-                        shooterPivotMap.put(1.231308756125935, 110.0);
-                        shooterPivotMap.put(1.4074709863827106, 116.0);
-                        shooterPivotMap.put(1.6231261714703098, 118.0);
-                        shooterPivotMap.put(1.7800743398462238, 119.0);
-                        shooterPivotMap.put(1.945262518815042, 122.0);
-                        shooterPivotMap.put(2.1508395790058574, 125.0);
-                        shooterPivotMap.put(2.222785100583583, 126.0);
-                        shooterPivotMap.put(2.345946278792441, 130.0);
-                        shooterPivotMap.put(2.5270242136154883, 131.0);
-                        shooterPivotMap.put(2.778057991594421, 132.0);
-                        shooterPivotMap.put(2.9085266866060753, 133.0);
-                        shooterPivotMap.put(3.221723202073086, 133.0);
-                        shooterPivotMap.put(3.3994745957510353, 135.0);
+
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterTimeMap = new InterpolatingDoubleTreeMap();
 
                 static {
                         // Distance, Seconds
-                        shooterTimeMap.put(1.095979334274389, 0.3);
-
                 }
         }
 

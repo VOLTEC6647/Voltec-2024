@@ -58,7 +58,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "AmpToTop"
+                        "pathName": "AmpToLeft"
                       }
                     }
                   ]
@@ -70,7 +70,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopPieceToAmp"
+            "pathName": "LeftToAmp"
           }
         },
         {
@@ -88,6 +88,6 @@
       ]
     }
   },
-  "folder": "Working",
+  "folder": null,
   "choreoAuto": false
 }

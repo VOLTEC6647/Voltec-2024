@@ -233,7 +233,7 @@ public class SuperStructure {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
                 new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), 110, 3000);
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 3000);
 
                     updateShootingParameters(ampParams);
                 }),
@@ -299,7 +299,7 @@ public class SuperStructure {
     public static Command autoMiddleCommand() {
         return Commands.sequence(
                 new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), 125, 5000);
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 5000);
 
                     updateShootingParameters(ampParams);
                 }),
@@ -312,7 +312,7 @@ public class SuperStructure {
     public static Command autoTopCommand() {
         return Commands.sequence(
                 new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), 132, 5000);
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 5000);
 
                     updateShootingParameters(ampParams);
                 }),

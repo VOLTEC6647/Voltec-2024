@@ -42,7 +42,38 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "MiddleToCenter"
+                  "pathName": "MiddleToRight"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootBottom"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GrabPiece"
+                }
+              },
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "RightToCenter"
                 }
               }
             ]
