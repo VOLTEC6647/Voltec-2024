@@ -7,9 +7,7 @@
 
 package com.team6647.util;
 
-import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
 import com.team6647.util.Constants.FieldConstants;
-import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -17,7 +15,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 
 /** Utility functions for flipping from the blue to red alliance. */
 public class AllianceFlipUtil {
