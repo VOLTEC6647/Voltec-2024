@@ -198,8 +198,8 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 11.0;
-                public static final double pivotKi = 3.0;
+                public static final double pivotKp = 35.0;
+                public static final double pivotKi = 5.75;
                 public static final double pivotKd = 0.0;
                 public static final double pivotKf = 0.37;
 
@@ -220,7 +220,7 @@ public class Constants {
                 public static final double pivotMaxPosition = 90;
                 public static final double pivotHomedPosition = -85;
                 public static final double pivotIndexingPosition = -43;
-                public static final double pivotAmpPosition = 25;
+                public static final double pivotAmpPosition = 20;
                 public static final double pivotClimbPosition = 5;
 
                 public static final double flywheelAmpRPM = 1000;
@@ -332,7 +332,7 @@ public class Constants {
         }
 
         public static class VisionConstants {
-                public static final String aprilLimeNTName = "limelight-backcam";
+                public static final String aprilLimeNTName = "limelight";
                 public static final String neuralLimeNTName = "limelight-intake";
 
                 public static final int speakerBlueCenterTagID = 7;

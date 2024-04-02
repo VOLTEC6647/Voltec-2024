@@ -284,7 +284,7 @@ public class SuperStructure {
     private static Command scoreAmp() {
         return Commands.sequence(
                 prepareScoreAmp(),
-                Commands.waitSeconds(1),
+                Commands.waitSeconds(0.1),
                 setGoalCommand(SuperStructureState.SCORING_AMP),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }

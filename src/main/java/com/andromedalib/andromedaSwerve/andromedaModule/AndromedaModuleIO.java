@@ -25,16 +25,15 @@ public interface AndromedaModuleIO {
         public boolean angleMotorConnected = true;
         public boolean driveMotorConnected = true;
 
-        public MutableMeasure<Velocity<Distance>> driveVelocity = MutableMeasure.zero(MetersPerSecond);
-        public MutableMeasure<Distance> drivePosition = MutableMeasure.zero(Meters);
-        public MutableMeasure<Voltage> driveApplied = MutableMeasure.zero(Volts);
-        public MutableMeasure<Velocity<Velocity<Distance>>> driveAcceleration = MutableMeasure
-                .zero(MetersPerSecondPerSecond);
+        public double driveVelocity = 0.0;
+        public double drivePosition = 0.0;
+        public double driveApplied = 0.0;
+        public double driveAcceleration = 0.0;
 
-        public MutableMeasure<Angle> steerAngle = MutableMeasure.zero(Rotation);
-        public MutableMeasure<Voltage> turnAppliedVolts = MutableMeasure.zero(Volts);
-        public MutableMeasure<Velocity<Angle>> turnVelocity = MutableMeasure.zero(RotationsPerSecond);
-        public MutableMeasure<Angle> encoderAbsolutePosition = MutableMeasure.zero(Rotations);
+        public Rotation2d steerAngle = new Rotation2d();
+        public double turnAppliedVolts = 0.0;
+        public double turnVelocity = 0.0;
+        public Rotation2d encoderAbsolutePosition = new Rotation2d();
 
         public double[] odometryTimestamps = new double[] {};
         public double[] odometryDrivePositions = new double[] {};

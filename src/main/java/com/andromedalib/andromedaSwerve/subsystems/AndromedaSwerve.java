@@ -21,6 +21,9 @@ import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIOInputsAutoLogged;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
+import com.andromedalib.andromedaSwerve.utils.PhoenixOdometryThread;
+import com.team6647.util.AllianceFlipUtil;
+import com.team6647.util.Constants.FieldConstants;
 
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.Vector;
@@ -82,17 +85,17 @@ public class AndromedaSwerve extends SubsystemBase {
             log.motor("drive-left")
                 .voltage(
                     m_appliedVoltage.mut_replace(
-                        modules[3].getDriveVoltage()))
+                        modules[3].getDriveVoltage(), Volts))
                 .linearPosition(m_distance.mut_replace(modules[3].getPosition().distanceMeters, Meters))
                 .linearVelocity(
-                    m_velocity.mut_replace(modules[3].getDriveSpeed()));
+                    m_velocity.mut_replace(modules[3].getDriveSpeed(), MetersPerSecond));
             log.motor("drive-right")
                 .voltage(
                     m_appliedVoltage.mut_replace(
-                        modules[0].getDriveVoltage().in(Volts) * RobotController.getBatteryVoltage(), Volts))
+                        modules[0].getDriveVoltage() * RobotController.getBatteryVoltage(), Volts))
                 .linearPosition(m_distance.mut_replace(modules[3].getPosition().distanceMeters, Meters))
                 .linearVelocity(
-                    m_velocity.mut_replace(modules[0].getDriveSpeed()));
+                    m_velocity.mut_replace(modules[0].getDriveSpeed(), MetersPerSecond));
           },
           this));
 
@@ -112,6 +115,8 @@ public class AndromedaSwerve extends SubsystemBase {
     };
 
     this.gyroIO = gyroIO;
+
+    PhoenixOdometryThread.getInstance().start();
 
     poseEstimator = new SwerveDrivePoseEstimator(andromedaProfile.swerveKinematics, rawGyroRotation,
         lastModulePositions, new Pose2d(), stateStandardDeviations, visionmeasurementStandardDeviations);
@@ -144,6 +149,7 @@ public class AndromedaSwerve extends SubsystemBase {
     // Update odometry
     double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
     int sampleCount = sampleTimestamps.length;
+    Logger.recordOutput("Swerve/Samplecount", sampleCount);
     for (int i = 0; i < sampleCount; i++) {
       // Read wheel positions and deltas from each module
       SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
@@ -170,6 +176,14 @@ public class AndromedaSwerve extends SubsystemBase {
       // Apply update
       poseEstimator.updateWithTime(sampleTimestamps[i], rawGyroRotation, modulePositions);
     }
+
+    // Update gyro angle
+    // TODO REMOVE
+    double robotToSpeakerDistance = getPose().getTranslation()
+        .getDistance(AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()));
+
+    Logger.recordOutput("Swerve/RobotSpeakerDistane", robotToSpeakerDistance);
+
   }
 
   /**

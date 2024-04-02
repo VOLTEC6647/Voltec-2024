@@ -10,12 +10,10 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
 import com.andromedalib.robot.SuperRobot;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.hal.AllianceStationID;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.simulation.DriverStationSim;
 
 public class Robot extends SuperRobot {

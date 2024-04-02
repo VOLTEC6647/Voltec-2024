@@ -169,8 +169,8 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 talonConfig.Slot0.kI = i;
                 talonConfig.Slot0.kD = d;
 
-                talonConfig.MotionMagic.MotionMagicCruiseVelocity = 80; // Target cruise velocity of 80 rps
-                talonConfig.MotionMagic.MotionMagicAcceleration = 160; // Target acceleration of 160 rps/s (0.5 seconds)
+                talonConfig.MotionMagic.MotionMagicCruiseVelocity = 20; // Target cruise velocity of 80 rps
+                talonConfig.MotionMagic.MotionMagicAcceleration = 40; // Target acceleration of 160 rps/s (0.5 seconds)
 
                 maxGravityFF = f;
 

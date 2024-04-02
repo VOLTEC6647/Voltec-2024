@@ -4,13 +4,6 @@
 
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.MetersPerSecondPerSecond;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
 import java.util.Queue;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
@@ -104,60 +97,84 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 steeringMotor.getPosition());
 
                 BaseStatusSignal.setUpdateFrequencyForAll(
-                                100.0, drivePosition, turnPosition); // Required for odometry, use faster rate
+                                250.0, drivePosition, turnPosition);
                 BaseStatusSignal.setUpdateFrequencyForAll(
-                                50.0,
+                                100.0,
                                 driveVelocity,
                                 driveAppliedVolts,
                                 turnAbsolutePosition,
                                 turnVelocity,
                                 turnAppliedVolts,
                                 turnCurrent);
+                driveMotor.optimizeBusUtilization();
+                steeringMotor.optimizeBusUtilization();
         }
 
         @Override
         public void updateInputs(AndromedaModuleIOInputs inputs) {
                 BaseStatusSignal.refreshAll(
-                                drivePosition,
-                                driveVelocity,
-                                driveAppliedVolts,
-                                turnAbsolutePosition,
-                                driveAcceleration,
-                                turnPosition,
-                                turnVelocity,
-                                turnAppliedVolts,
-                                turnCurrent,
-                                driveCurrent);
+                                turnAbsolutePosition);
 
                 inputs.driveMotorConnected = BaseStatusSignal.refreshAll(
                                 drivePosition,
                                 driveVelocity,
                                 driveAppliedVolts,
+                                driveAcceleration,
                                 driveCurrent)
                                 .isOK();
                 inputs.angleMotorConnected = BaseStatusSignal.refreshAll(
                                 turnPosition, turnVelocity, turnAppliedVolts, turnCurrent)
                                 .isOK();
 
-                inputs.drivePosition.mut_replace(Units.rotationsToRadians(drivePosition.getValueAsDouble())
-                                * (andromedaModuleConfig.wheelDiameter / 2), Meters);
-                inputs.driveVelocity.mut_replace(Units
+                /*
+                 * * inputs.drivePosition =
+                 * Units.rotationsToRadians(drivePosition.getValueAsDouble())
+                 * (andromedaModuleConfig.wheelDiameter / 2);
+                 * inputs.driveVelocity = Units
+                 * .rotationsToRadians(driveMotor.getVelocity().getValueAsDouble())
+                 * (andromedaModuleConfig.wheelDiameter / 2);
+                 * 
+                 * inputs.driveAcceleration = Units
+                 * .rotationsToRadians(driveMotor.getAcceleration().getValueAsDouble())
+                 * (andromedaModuleConfig.wheelDiameter / 2);
+                 * 
+                 * inputs.driveApplied = driveAppliedVolts.getValueAsDouble();
+                 * 
+                 * inputs.encoderAbsolutePosition =
+                 * Rotation2d.fromRotations(turnAbsolutePosition.getValue());
+                 * 
+                 * inputs.steerAngle =
+                 * Rotation2d.fromRotations(turnPosition.getValueAsDouble());
+                 * 
+                 * inputs.turnVelocity =
+                 * Units.rotationsToRadians(turnVelocity.getValueAsDouble());
+                 * 
+                 * inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
+                 * 
+                 * inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double
+                 * value) -> value).toArray();
+                 * inputs.odometryDrivePositions = drivePositionQueue.stream()
+                 * .mapToDouble((Double value) -> Units.rotationsToRadians(value)
+                 * (andromedaModuleConfig.wheelDiameter / 2))
+                 * .toArray();
+                 * inputs.odometryTurnPositions = turnPositionQueue.stream()
+                 * .map(value -> new Rotation2d(value))
+                 * .toArray(Rotation2d[]::new);
+                 */
+
+                inputs.drivePosition = Units.rotationsToRadians(drivePosition.getValueAsDouble())
+                                * (andromedaModuleConfig.wheelDiameter / 2);
+                inputs.driveVelocity = Units
                                 .rotationsToRadians(driveMotor.getVelocity().getValueAsDouble())
-                                * (andromedaModuleConfig.wheelDiameter / 2), MetersPerSecond);
+                                * (andromedaModuleConfig.wheelDiameter / 2);
 
-                inputs.driveAcceleration.mut_replace(Units
-                                .rotationsToRadians(driveMotor.getAcceleration().getValueAsDouble())
-                                * (andromedaModuleConfig.wheelDiameter / 2), MetersPerSecondPerSecond);
+                inputs.driveApplied = driveAppliedVolts.getValueAsDouble();
 
-                inputs.driveApplied.mut_replace(driveAppliedVolts.getValueAsDouble(), Volts);
+                inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValue());
 
-                inputs.encoderAbsolutePosition.mut_replace(turnAbsolutePosition.getValue(),
-                                Rotations);
-                inputs.steerAngle.mut_replace(turnPosition.getValueAsDouble(), Rotations);
-
-                inputs.turnVelocity.mut_replace(Units.rotationsToRadians(turnVelocity.getValueAsDouble()),
-                                RotationsPerSecond);
-                inputs.turnAppliedVolts.mut_replace(turnAppliedVolts.getValueAsDouble(), Volts);
+                inputs.steerAngle = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
+                inputs.turnVelocity = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
+                inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
 
                 inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
                 inputs.odometryDrivePositions = drivePositionQueue.stream()
@@ -165,7 +182,7 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                                 * (andromedaModuleConfig.wheelDiameter / 2))
                                 .toArray();
                 inputs.odometryTurnPositions = turnPositionQueue.stream()
-                                .map((Double value) -> value)
+                                .map((Double value) -> Rotation2d.fromRotations(value))
                                 .toArray(Rotation2d[]::new);
                 timestampQueue.clear();
                 drivePositionQueue.clear();

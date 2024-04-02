@@ -54,6 +54,7 @@ import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
 import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.subsystems.vision.VisionIO;
+import com.team6647.subsystems.vision.VisionIOLimelight;
 import com.team6647.subsystems.vision.VisionIOPhotonVision;
 import com.team6647.subsystems.vision.VisionIOSim;
 import com.team6647.util.Constants.DriveConstants;
@@ -129,7 +130,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOKraken());
                                 shooterRollerSubsystem = ShooterRollerSubsystem
                                                 .getInstance(new ShooterIORollerSparkMax());
-                                visionSubsytem = VisionSubsystem.getInstance(new VisionIOPhotonVision());
+                                visionSubsytem = VisionSubsystem.getInstance(new VisionIOLimelight());
                                 neuralVisionSubsystem = NeuralVisionSubsystem
                                                 .getInstance(new NeuralVisionIOLimelight());
                                 break;

@@ -28,7 +28,7 @@ public class TeleopController {
         this.controllerX = x;
         this.controllerY = y;
         this.controllerOmega = omega;
-        this.fieldRelative = fieldRelative;
+        this.fieldRelative = true;
     }
 
     public ChassisSpeeds update(Rotation2d currentAngle) {

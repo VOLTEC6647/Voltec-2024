@@ -139,7 +139,6 @@ public class LEDSubsystem extends SubsystemBase {
       solidRed();
     } else {
       solidBlue();
-
     }
     // Update LEDs
   }

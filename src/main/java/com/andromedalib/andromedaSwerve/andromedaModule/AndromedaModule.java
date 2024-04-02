@@ -51,7 +51,7 @@ public class AndromedaModule {
         turnMotorDisconnectedalert = new Alert("Module [" + moduleName + "] Angle Motor disconnected",
                 AlertType.WARNING);
 
-        lastAngle = Rotation2d.fromRotations(getAngle().in(Rotations));
+        lastAngle = getAngle();
     }
 
     public void periodic() {
@@ -80,7 +80,7 @@ public class AndromedaModule {
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
-        desiredState = SwerveModuleState.optimize(desiredState, Rotation2d.fromRotations(getAngle().in(Rotations)));
+        desiredState = SwerveModuleState.optimize(desiredState, getAngle());
 
         setAngle(desiredState);
         setSpeed(desiredState);
@@ -116,7 +116,7 @@ public class AndromedaModule {
      * @return
      */
     public SwerveModuleState getState() {
-        return new SwerveModuleState(getDriveSpeed(), Rotation2d.fromRotations(getAngle().in(Rotations)));
+        return new SwerveModuleState(getDriveSpeed(), getAngle());
     }
 
     /**
@@ -124,7 +124,7 @@ public class AndromedaModule {
      * 
      * @return Speed in meters per second
      */
-    public Measure<Velocity<Distance>> getDriveSpeed() {
+    public double getDriveSpeed() {
         return inputs.driveVelocity;
     }
 
@@ -133,7 +133,7 @@ public class AndromedaModule {
      * 
      * @return Angle in {@link Rotation2d}
      */
-    private Measure<Angle> getAngle() {
+    private Rotation2d getAngle() {
         return inputs.steerAngle;
     }
 
@@ -142,7 +142,7 @@ public class AndromedaModule {
      * 
      * @return Voltage in volts
      */
-    public Measure<Voltage> getDriveVoltage() {
+    public double getDriveVoltage() {
         return inputs.driveApplied;
     }
 
@@ -152,7 +152,7 @@ public class AndromedaModule {
      * @return Current position in {@link SwerveModulePosition}
      */
     public SwerveModulePosition getPosition() {
-        return new SwerveModulePosition(inputs.drivePosition, Rotation2d.fromRotations(getAngle().in(Rotations)));
+        return new SwerveModulePosition(inputs.drivePosition, getAngle());
     }
 
     /** Returns the timestamps of the samples received this cycle. */

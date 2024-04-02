@@ -57,20 +57,17 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
         driveSim.update(LOOP_PERIOD_SECS);
         turnSim.update(LOOP_PERIOD_SECS);
 
-        inputs.drivePosition.mut_replace(driveSim.getAngularPositionRad() * (wheelRadius), Meters);
-        inputs.driveVelocity.mut_replace(driveSim.getAngularVelocityRadPerSec() * (wheelRadius),
-                MetersPerSecond);
-        inputs.driveApplied.mut_replace(driveAppliedVolts, Volts);
+        inputs.drivePosition = driveSim.getAngularPositionRad() * (wheelRadius);
+        inputs.driveVelocity = driveSim.getAngularVelocityRadPerSec() * (wheelRadius);
+        inputs.driveApplied = driveAppliedVolts;
 
-        inputs.encoderAbsolutePosition.mut_replace(
-                new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition).getRotations(),
-                Rotations);
-        inputs.steerAngle.mut_replace(turnSim.getAngularPositionRad(), Radians);
-        inputs.turnAppliedVolts.mut_replace(turnAppliedVolts, Volts);
+        inputs.encoderAbsolutePosition = new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition);
+        inputs.steerAngle = Rotation2d.fromRotations(turnSim.getAngularPositionRad());
+        inputs.turnAppliedVolts = turnAppliedVolts;
 
         inputs.odometryTimestamps = new double[] { Timer.getFPGATimestamp() };
-        inputs.odometryDrivePositions = new double[] { inputs.drivePosition.in(Meters) };
-        inputs.odometryTurnPositions = new Rotation2d[] { Rotation2d.fromRotations(inputs.steerAngle.in(Rotations)) };
+        inputs.odometryDrivePositions = new double[] { inputs.drivePosition };
+        inputs.odometryTurnPositions = new Rotation2d[] { inputs.steerAngle };
     }
 
     @Override
