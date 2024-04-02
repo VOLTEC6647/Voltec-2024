@@ -44,7 +44,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   @Override
-  public void periodic() {
+  public synchronized void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Vision", inputs);
     computeVisionMeasurements();

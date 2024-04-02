@@ -18,18 +18,24 @@ import com.andromedalib.math.GeomUtil;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 
 public class VisionIOPhotonVision implements VisionIO {
     private PhotonCamera camera = new PhotonCamera("Limelight3_back");
     private AprilTagFieldLayout layout = AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo);
-    private Transform3d cameraToRobot = new Transform3d(); /* Todo set */
+    private Transform3d cameraToRobot = new Transform3d(-0.25, 0, 0.15, new Rotation3d(0, Math.PI / 6, Math.PI));
     private PhotonPoseEstimator poseEstimator = new PhotonPoseEstimator(layout,
             PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, cameraToRobot);
 
+    public VisionIOPhotonVision() {
+        layout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+    }
+
     @Override
     public synchronized void updateInputs(VisionIOInputs inputs) {
-        var result = camera.getLatestResult();
+        PhotonPipelineResult result = camera.getLatestResult();
 
         if (result.hasTargets()) {
             inputs.hasTarget = true;
@@ -49,17 +55,22 @@ public class VisionIOPhotonVision implements VisionIO {
                     target.getBestCameraToTarget(),
                     layout.getTagPose(target.getFiducialId()).get(), cameraToRobot);
 
-            EstimatedRobotPose robotPose = getEstimatedGlobalPose(result).get();
-
-            inputs.estimatedRobotPose = robotPose.estimatedPose.toPose2d();
-            inputs.estimatedTimestamp = robotPose.timestampSeconds;
-
             inputs.targetsIDs = getTargetIDs(result);
 
             inputs.targetDistance = PhotonUtils.getDistanceToPose(inputs.observedPose2d,
                     layout.getTagPose(target.getFiducialId()).get().toPose2d());
+
+            Optional<EstimatedRobotPose> robotPose = getEstimatedGlobalPose(result);
+
+            if (robotPose.isPresent()) {
+                inputs.estimatedRobotPose = robotPose.get().estimatedPose.toPose2d();
+                inputs.estimatedTimestamp = robotPose.get().timestampSeconds;
+            } else {
+                System.out.println("EMPTY EMPTY");
+            }
+
         } else {
-            inputs.hasTarget = true;
+            inputs.hasTarget = false;
         }
     }
 
