@@ -15,6 +15,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
+@SuppressWarnings("unused")
+
 public class ShootingWhileMoving extends Command {
   private Drive swerve;
   private SuperStructure superStructure;
@@ -32,8 +34,9 @@ public class ShootingWhileMoving extends Command {
 
   @Override
   public void initialize() {
-/*     swerve.setHeadingOverride(true);
- */  }
+    /*
+     * swerve.setHeadingOverride(true);
+     */ }
 
   @Override
   public void execute() {
@@ -47,13 +50,15 @@ public class ShootingWhileMoving extends Command {
 
     SuperStructure.updateShootingParameters(parameters);
 
-/*     swerve.setTargetHeading(parameters.robotAngle());
- */  }
+    /*
+     * swerve.setTargetHeading(parameters.robotAngle());
+     */ }
 
   @Override
   public void end(boolean interrupted) {
-/*     swerve.setHeadingOverride(false);
- */  }
+    /*
+     * swerve.setHeadingOverride(false);
+     */ }
 
   @Override
   public boolean isFinished() {

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+@SuppressWarnings("unused")
 public class LEDSubsystem extends SubsystemBase {
   private static LEDSubsystem instance;
 
@@ -122,7 +123,7 @@ public class LEDSubsystem extends SubsystemBase {
     if (DriverStation.isDisabled()) {
       sinelon(); // Default to off
     }
-    
+
     if (estopped) {
       solidRed();
     }
@@ -175,7 +176,7 @@ public class LEDSubsystem extends SubsystemBase {
     leds.set(-0.31);
   }
 
-  private void sinelon(){
+  private void sinelon() {
     leds.set(-0.75);
   }
 

@@ -55,7 +55,6 @@ import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeed
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.subsystems.vision.VisionIO;
 import com.team6647.subsystems.vision.VisionIOLimelight;
-import com.team6647.subsystems.vision.VisionIOPhotonVision;
 import com.team6647.subsystems.vision.VisionIOSim;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
