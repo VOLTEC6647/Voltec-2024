@@ -28,6 +28,8 @@ public class HeadingController {
     @AutoLogOutput
     public Rotation2d targetHeading = new Rotation2d();
 
+    private Rotation2d currentHeading = new Rotation2d();
+
     public HeadingController() {
         headingController = new ProfiledPIDController(kp.get(), ki.get(), kd.get(),
                 new TrapezoidProfile.Constraints(maxSpeed.get(), maxAcceleration.get()));
@@ -36,6 +38,8 @@ public class HeadingController {
     }
 
     public double update(Rotation2d currentHeading) {
+        this.currentHeading = currentHeading;
+
         LoggedTunableNumber.ifChanged(hashCode(), pid -> {
             headingController.setP(pid[0]);
             headingController.setI(pid[1]);
@@ -47,6 +51,6 @@ public class HeadingController {
     }
 
     public boolean inTolerance() {
-        return headingController.atGoal();
+        return Math.abs(currentHeading.getDegrees() - targetHeading.getDegrees()) < headingTolerance.get();
     }
 }

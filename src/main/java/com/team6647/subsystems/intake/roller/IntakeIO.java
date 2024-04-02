@@ -15,6 +15,7 @@ public interface IntakeIO {
         public double intakeMotorAppliedVoltage = 0.0;
         public double intakeMotorCurrent = 0.0;
         public boolean intakeBeamBrake = false;
+        public double intakeMXPRange = 0.0;
     }
 
     public default void updateInputs(IntakeIOInputs inputs) {

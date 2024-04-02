@@ -7,6 +7,7 @@
 package com.team6647.subsystems.flywheel;
 
 import com.andromedalib.motorControllers.SuperTalonFX;
+
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;

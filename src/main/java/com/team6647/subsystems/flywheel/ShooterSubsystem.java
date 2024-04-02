@@ -146,7 +146,8 @@ public class ShooterSubsystem extends SubsystemBase {
         topShooterKp, topShooterKi, topShooterKd, topShooterKs, topShooterKv, topShooterKa, shooterVelocity);
 
     rollerBeamBrakeAlert.set(!getBeamBrake());
-    
+  
+
     if (!getBeamBrake()) {
       LEDSubsystem.getInstance().shooterHasNote = true;
     } else {

@@ -126,6 +126,8 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
                 inputs.shooterPivotRightMotorTemperatureCelsius = shooterPivotRightMotorTemperature.getValueAsDouble();
 
+                inputs.inTolerance = Math.abs(cancoderAbsolutePosition.getValueAsDouble() - setpoint) < ShooterConstants.positionTolerance;
+
                 /* Sets pivot position based on setpoint */
 
                 inputs.setpoint = setpoint * 360;

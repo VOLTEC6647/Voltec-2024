@@ -67,7 +67,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.SIM;
+                public static final Mode currentMode = Mode.REAL;
 
                 public static final boolean tuningMode = true;
 
@@ -241,7 +241,16 @@ public class Constants {
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {
-
+                        shooterPivotMap.put(1.10053, -45.0);
+                        shooterPivotMap.put(1.5215, -43.0);
+                        shooterPivotMap.put(2.11578, -37.0);
+                        shooterPivotMap.put(2.64562, -34.0);
+                        shooterPivotMap.put(2.92418, -31.0);
+                        shooterPivotMap.put(3.18782, -31.0);
+                        shooterPivotMap.put(3.36144, -26.0);
+                        shooterPivotMap.put(3.84594, -23.5);
+                        shooterPivotMap.put(4.28348, -23.0);
+                        shooterPivotMap.put(5.32926, -21.5);
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterTimeMap = new InterpolatingDoubleTreeMap();
@@ -480,7 +489,7 @@ public class Constants {
                 public static final int gyroID = 13;
 
                 /* Auto constants */
-                public static final double translationP = 7;
+                public static final double translationP = 1.5;
                 public static final double translationI = 0.00;
                 public static final double translationD = 0.195;
                 public static final double rotationP = 1;

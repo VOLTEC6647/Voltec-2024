@@ -76,9 +76,6 @@ public class AllianceFlipUtil {
     }
 
     public static boolean shouldFlip() {
-        if (RobotConstants.getMode() == Mode.SIM) {
-            return DriverStationSim.getAllianceStationId().toString().startsWith("R");
-        }
         return DriverStation.getAlliance().isPresent()
                 && DriverStation.getAlliance().get() == Alliance.Red;
     }

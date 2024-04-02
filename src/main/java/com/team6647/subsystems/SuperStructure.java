@@ -94,7 +94,7 @@ public class SuperStructure {
             case INTAKING:
                 return intakingCommand();
             case AUTO_INTAKING:
-                return autoIntakingCommand();
+                return autoIntakingCommand(); // TODO CHANGE OVER TO BEAM BRAKE
             case AUTO_AMP:
                 return autoScoreAmp();
             case SHOOTING_SPEAKER:
@@ -144,6 +144,16 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5)))
+                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
+    }
+
+    private static Command autoIntakingCommandMXP() {
+        return Commands.deadline(
+                Commands.sequence(
+                        IntakeCommands.getIntakeCommand(),
+                        Commands.waitSeconds(0.8)),
+                ShooterCommands.getShooterIntakingCommand(),
+                setGoalCommand(SuperStructureState.AUTO_INTAKING))
                 .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
     }
 
@@ -254,7 +264,6 @@ public class SuperStructure {
                         new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING),
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
-
     }
 
     private static Command autoScoreAmp() {
@@ -284,7 +293,7 @@ public class SuperStructure {
     private static Command scoreAmp() {
         return Commands.sequence(
                 prepareScoreAmp(),
-                Commands.waitSeconds(0.1),
+                Commands.waitSeconds(0.5),
                 setGoalCommand(SuperStructureState.SCORING_AMP),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
@@ -294,6 +303,19 @@ public class SuperStructure {
     public static void updateShootingParameters(ShootingParameters newParameters) {
         ShooterSubsystem.updateShootingParameters(newParameters);
         ShooterPivotSubsystem.updateShootingParameters(newParameters);
+    }
+
+    public static Command autoBottomCommand() {
+        return Commands.sequence(
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -25, 5000);
+
+                    updateShootingParameters(ampParams);
+                }),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
     public static Command autoMiddleCommand() {
@@ -312,7 +334,7 @@ public class SuperStructure {
     public static Command autoTopCommand() {
         return Commands.sequence(
                 new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 5000);
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -25, 5000);
 
                     updateShootingParameters(ampParams);
                 }),

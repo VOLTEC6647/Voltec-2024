@@ -6,9 +6,6 @@
 
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
-import static edu.wpi.first.units.Units.Degrees;
-import static edu.wpi.first.units.Units.DegreesPerSecond;
-
 import java.util.Queue;
 
 import com.andromedalib.andromedaSwerve.utils.PhoenixOdometryThread;

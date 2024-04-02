@@ -51,7 +51,7 @@ public class Drive extends AndromedaSwerve {
         AutoBuilder.configureHolonomic(
                 this::getPose,
                 this::resetPose,
-                this::getFieldRelativeChassisSpeeds,
+                this::getRobotRelativeChassisSpeeds,
                 this::drive,
                 DriveConstants.holonomicPathConfig,
                 () -> {
@@ -98,7 +98,9 @@ public class Drive extends AndromedaSwerve {
                 break;
         }
 
-        drive(desiredChassisSpeeds);
+        if (!DriverStation.isAutonomous()) {
+            drive(desiredChassisSpeeds);
+        }
     }
 
     public enum DriveMode {
@@ -154,7 +156,10 @@ public class Drive extends AndromedaSwerve {
                         targetPose,
                         constraints,
                         0.0,
-                        0.0));
+                        0.0))
+                .andThen(new InstantCommand(() -> {
+                    mDriveMode = DriveMode.PATH_FOLLOWING;
+                }));
     }
 
     /**

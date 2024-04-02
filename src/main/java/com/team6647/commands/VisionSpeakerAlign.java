@@ -5,6 +5,8 @@
  */
 package com.team6647.commands;
 
+import static edu.wpi.first.units.Units.Rotation;
+
 import org.littletonrobotics.junction.Logger;
 
 import com.team6647.subsystems.SuperStructure;
@@ -18,7 +20,10 @@ import com.team6647.util.AllianceFlipUtil;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class VisionSpeakerAlign extends Command {
@@ -37,21 +42,23 @@ public class VisionSpeakerAlign extends Command {
     this.visionSubsystem = visionSubsystem;
 
     addRequirements(visionSubsystem);
-    speakerPose = AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d());
-    stageID = AllianceFlipUtil.shouldFlip() ? VisionConstants.speakerRedCenterTagID
-        : VisionConstants.speakerBlueCenterTagID;
-    Logger.recordOutput("VisionSpeakerAlign/SpeakerPose", speakerPose);
   }
 
   @Override
   public void initialize() {
     visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
+    speakerPose = AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d());
+    stageID = AllianceFlipUtil.shouldFlip() ? VisionConstants.speakerRedCenterTagID
+        : VisionConstants.speakerBlueCenterTagID;
+    Logger.recordOutput("VisionSpeakerAlign/SpeakerPose", speakerPose);
+
   }
 
   @Override
   public void execute() {
     this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
         speakerPose);
+
     SuperStructure.updateShootingParameters(parameters);
 
     if (visionSubsystem.hasTargetID(stageID)) {
@@ -84,4 +91,6 @@ public class VisionSpeakerAlign extends Command {
   public boolean isFinished() {
     return swerve.headingInTolerance();
   }
+
+ 
 }

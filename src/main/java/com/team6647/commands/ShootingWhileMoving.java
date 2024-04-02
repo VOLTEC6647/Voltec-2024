@@ -43,7 +43,7 @@ public class ShootingWhileMoving extends Command {
     Pose2d robotPose = swerve.getPose();
 
     Translation2d speakerLoc = ShootingCalculatorUtil.calculateShootingWhileDriving(robotPose,
-        swerve.getFieldRelativeChassisSpeeds());
+        swerve.getRobotRelativeChassisSpeeds());
 
     ShootingParameters parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
         speakerLoc);

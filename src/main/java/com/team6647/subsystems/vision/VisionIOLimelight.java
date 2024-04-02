@@ -5,13 +5,17 @@
 package com.team6647.subsystems.vision;
 
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonUtils;
+import org.photonvision.proto.Photon;
 
 import com.andromedalib.vision.LimelightHelpers;
 import com.team6647.util.Constants.VisionConstants;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class VisionIOLimelight implements VisionIO {
@@ -20,9 +24,13 @@ public class VisionIOLimelight implements VisionIO {
     private double limelightMountAngleDegrees = -30;
 
     // distance from the center of the Limelight lens to the floor
-    private double limelightLensHeightMeters = 0.17;
+    private double limelightLensHeightMeters = 0.43;
 
     AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+
+    public VisionIOLimelight() {
+        layout.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+    }
 
     @Override
     public synchronized void updateInputs(VisionIOInputs inputs) {
@@ -39,7 +47,7 @@ public class VisionIOLimelight implements VisionIO {
 
             inputs.timestampLatency = Logger.getRealTimestamp()
                     - (result.latency_capture + result.latency_pipeline / 1000.0);
-            inputs.targetDistance = computeTagDistance();
+            inputs.targetDistance = computeTagDistance(inputs.observedPose2d);
 
             try {
                 inputs.targetID = (int) LimelightHelpers.getFiducialID(VisionConstants.aprilLimeNTName);
@@ -56,16 +64,17 @@ public class VisionIOLimelight implements VisionIO {
         }
     }
 
-    public double computeTagDistance() {
+    public double computeTagDistance(Pose2d pose) {
         double id = LimelightHelpers.getFiducialID(VisionConstants.aprilLimeNTName);
 
-        double targetOffsetVertical = LimelightHelpers.getTY(VisionConstants.aprilLimeNTName);
+        if (layout.getTagPose((int) id).isPresent()) {
+            return PhotonUtils.getDistanceToPose(LimelightHelpers.getBotPose2d_wpiBlue(VisionConstants.aprilLimeNTName),
+                    layout.getTagPose((int) id).get().toPose2d());
 
-        double angleToGoalDegrees = limelightMountAngleDegrees + targetOffsetVertical;
-        double angleToGoalRadians = angleToGoalDegrees * (3.14159 / 180.0);
+        }
 
-        return (layout.getTagPose((int) id).get().getY() - limelightLensHeightMeters)
-                / Math.tan(angleToGoalRadians);
+        return 0.0;
+
     }
 
     public static boolean isRed() {

@@ -99,7 +99,7 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                 BaseStatusSignal.setUpdateFrequencyForAll(
                                 250.0, drivePosition, turnPosition);
                 BaseStatusSignal.setUpdateFrequencyForAll(
-                                100.0,
+                                50.0,
                                 driveVelocity,
                                 driveAppliedVolts,
                                 turnAbsolutePosition,
@@ -166,6 +166,9 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 * (andromedaModuleConfig.wheelDiameter / 2);
                 inputs.driveVelocity = Units
                                 .rotationsToRadians(driveMotor.getVelocity().getValueAsDouble())
+                                * (andromedaModuleConfig.wheelDiameter / 2);
+                inputs.driveAcceleration = Units
+                                .rotationsToRadians(driveMotor.getAcceleration().getValueAsDouble())
                                 * (andromedaModuleConfig.wheelDiameter / 2);
 
                 inputs.driveApplied = driveAppliedVolts.getValueAsDouble();

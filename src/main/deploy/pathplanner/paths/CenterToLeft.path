@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.426549104168107,
-        "y": 5.5040931765173085
+        "x": 2.533352567635195,
+        "y": 5.464227387718169
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0357998967437663,
-        "y": 5.739492851020362
+        "x": 2.1426033602108543,
+        "y": 5.699627062221222
       },
       "isLocked": false,
       "linkedName": "MiddlePiece"
     },
     {
       "anchor": {
-        "x": 2.64,
-        "y": 6.63
+        "x": 2.7014671458658395,
+        "y": 6.679055924146075
       },
       "prevControl": {
-        "x": 2.149722575000706,
-        "y": 6.469305873056191
+        "x": 2.211189720866545,
+        "y": 6.5183617972022665
       },
       "nextControl": null,
       "isLocked": false,
@@ -39,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 26.2,
+    "rotation": 33.54026866303908,
     "rotateFast": false
   },
   "reversed": false,

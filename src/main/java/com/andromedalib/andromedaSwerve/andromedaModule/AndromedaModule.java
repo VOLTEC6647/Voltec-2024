@@ -4,8 +4,6 @@
 
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
-import static edu.wpi.first.units.Units.Rotations;
-
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
@@ -15,10 +13,7 @@ import com.andromedalib.util.Alert.AlertType;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import lombok.Getter;
 

@@ -64,11 +64,11 @@ public class AndromedaSwerve extends SubsystemBase {
 
   public static final Lock odometryLock = new ReentrantLock();
 
-  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.03, 0.03,
+  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.04, 0.04,
       edu.wpi.first.math.util.Units.degreesToRadians(1));
 
-  private final Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5,
-      edu.wpi.first.math.util.Units.degreesToRadians(50));
+  private final Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(0.2, 0.2,
+      edu.wpi.first.math.util.Units.degreesToRadians(100));
 
   /* Characterization */
   private final MutableMeasure<Voltage> m_appliedVoltage = MutableMeasure.zero(Volts);
@@ -144,7 +144,7 @@ public class AndromedaSwerve extends SubsystemBase {
 
     Logger.recordOutput("Swerve/SwerveStates/Measured", getModuleStates());
 
-    Logger.recordOutput("Swerve/ChassisSpeeds", getFieldRelativeChassisSpeeds());
+    Logger.recordOutput("Swerve/ChassisSpeeds", getRobotRelativeChassisSpeeds());
 
     // Update odometry
     double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
@@ -247,7 +247,7 @@ public class AndromedaSwerve extends SubsystemBase {
    * 
    * @return {@link ChassisSpeeds} of the robot
    */
-  public ChassisSpeeds getRobotRelativeChassisSpeeds() {
+  public ChassisSpeeds getFieldRelativeChassisSpeeds() {
     return ChassisSpeeds.fromFieldRelativeSpeeds(andromedaProfile.swerveKinematics.toChassisSpeeds(getModuleStates()),
         getSwerveAngle());
   }
@@ -257,7 +257,7 @@ public class AndromedaSwerve extends SubsystemBase {
    * 
    * @return {@link ChassisSpeeds} of the robot
    */
-  public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+  public ChassisSpeeds getRobotRelativeChassisSpeeds() {
     return andromedaProfile.swerveKinematics.toChassisSpeeds(getModuleStates());
   }
 
@@ -321,7 +321,7 @@ public class AndromedaSwerve extends SubsystemBase {
    * @param timestampLatency   The latency of the vision system
    * @param standardDeviations The standard deviations of the vision measurements
    */
-  public static void addVisionMeasurement(Pose2d observedPose, double timestampLatency, Vector<N3> standardDeviations) {
+  public static void addVisionMeasurements(Pose2d observedPose, double timestampLatency, Vector<N3> standardDeviations) {
     poseEstimator.addVisionMeasurement(observedPose, timestampLatency, standardDeviations);
   }
 
