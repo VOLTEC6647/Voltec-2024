@@ -302,7 +302,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.RESET_GYRO
                                 .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
-                                                
+
                 /* Driver 2 */
 
                 OperatorConstants.FORCE_IDLE
