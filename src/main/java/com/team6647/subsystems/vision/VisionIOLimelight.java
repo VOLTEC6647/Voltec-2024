@@ -6,7 +6,6 @@ package com.team6647.subsystems.vision;
 
 import org.littletonrobotics.junction.Logger;
 import org.photonvision.PhotonUtils;
-import org.photonvision.proto.Photon;
 
 import com.andromedalib.vision.LimelightHelpers;
 import com.team6647.util.Constants.VisionConstants;
@@ -15,16 +14,9 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class VisionIOLimelight implements VisionIO {
-
-    // how many degrees back is your limelight rotated from perfectly vertical?
-    private double limelightMountAngleDegrees = -30;
-
-    // distance from the center of the Limelight lens to the floor
-    private double limelightLensHeightMeters = 0.43;
 
     AprilTagFieldLayout layout = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 

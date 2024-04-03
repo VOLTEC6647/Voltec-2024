@@ -16,7 +16,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
 @SuppressWarnings("unused")
-
 public class ShootingWhileMoving extends Command {
   private Drive swerve;
   private SuperStructure superStructure;

@@ -13,7 +13,6 @@ import com.team6647.util.Constants.DriveConstants;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-@Deprecated
 @SuppressWarnings("unused")
 
 public class VisionIntakeAlign extends Command {
