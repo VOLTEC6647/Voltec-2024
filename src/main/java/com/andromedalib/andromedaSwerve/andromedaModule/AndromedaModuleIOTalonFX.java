@@ -105,6 +105,8 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 turnAbsolutePosition,
                                 turnVelocity,
                                 turnAppliedVolts,
+                                driveAcceleration,
+                                driveCurrent,
                                 turnCurrent);
                 driveMotor.optimizeBusUtilization();
                 steeringMotor.optimizeBusUtilization();

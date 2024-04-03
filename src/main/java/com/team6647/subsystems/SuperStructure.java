@@ -94,7 +94,7 @@ public class SuperStructure {
             case INTAKING:
                 return intakingCommand();
             case AUTO_INTAKING:
-                return autoIntakingCommand(); // TODO CHANGE OVER TO BEAM BRAKE
+                return autoIntakingCommand();
             case AUTO_AMP:
                 return autoScoreAmp();
             case SHOOTING_SPEAKER:
