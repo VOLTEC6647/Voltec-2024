@@ -8,9 +8,6 @@
     }
   },
   "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
     "transitory": {
       "AdvantageKit": {
         "RealOutputs": {
@@ -21,19 +18,41 @@
             "open": true
           },
           "open": true
-        },
-        "open": true
+        }
       },
       "AndromedaSwerveTable": {
         "SwerveModule": {
           "open": true
         },
         "open": true
+      },
+      "FMSInfo": {
+        "open": true
+      },
+      "SmartDashboard": {
+        "TunableNumbers": {
+          "Shooter": {
+            "Flywheel": {
+              "open": true
+            },
+            "Pivot": {
+              "open": true
+            },
+            "open": true
+          },
+          "open": true
+        }
       }
     }
   },
   "NetworkTables Info": {
+    "Clients": {
+      "open": true
+    },
     "Connections": {
+      "open": true
+    },
+    "Server": {
       "open": true
     },
     "visible": true

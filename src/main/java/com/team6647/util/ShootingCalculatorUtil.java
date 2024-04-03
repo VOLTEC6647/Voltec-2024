@@ -6,7 +6,6 @@
 
 package com.team6647.util;
 
-import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.util.Constants.FieldConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
@@ -85,7 +84,7 @@ public class ShootingCalculatorUtil {
 
                 double distance = targetlocation.getDistance(robotPose.getTranslation());
 
-                Rotation2d angle = robotToTarget.getAngle().rotateBy(Rotation2d.fromDegrees(180));
+                Rotation2d angle = robotToTarget.getAngle();
 
                 return new ShootingParameters(angle, ShooterConstants.shooterPivotMap.get(distance),
                                 ShooterConstants.shootingRPM);

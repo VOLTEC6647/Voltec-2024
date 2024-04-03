@@ -5,8 +5,8 @@
  */
 package com.team6647.commands;
 
-import com.team6647.subsystems.shooter.ShooterPivotSubsystem;
-import com.team6647.subsystems.shooter.ShooterPivotSubsystem.ShooterPivotState;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem.ShooterPivotState;
 
 import edu.wpi.first.wpilibj2.command.Command;
 

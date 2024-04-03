@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 8.276729437718135,
-        "y": 0.7451551754955364
+        "x": 7.820620952811846,
+        "y": 7.420500345092953
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.606873653562122,
-        "y": 0.9282965973339353
+        "x": 6.764340279982644,
+        "y": 7.311901308140413
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "5Piece"
     },
     {
       "anchor": {
-        "x": 3.1878983640779786,
-        "y": 2.9947096456692917
+        "x": 4.545727816344026,
+        "y": 6.546612211527995
       },
       "prevControl": {
-        "x": 4.016043207867666,
-        "y": 2.154188726346203
+        "x": 5.389329365898316,
+        "y": 7.079656090115752
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,18 +30,7 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "ShootStay",
-      "waypointRelativePos": 0,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": []
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -50,7 +39,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -36.10268139158996,
+    "rotation": 14.4912353182267,
     "rotateFast": false
   },
   "reversed": false,

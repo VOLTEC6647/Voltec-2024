@@ -5,7 +5,8 @@
  */
 package com.team6647.commands;
 
-import com.team6647.subsystems.intake.IntakePivotSubsystem;
+import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
+import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -23,7 +24,7 @@ public class InitIntake extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakePivotSubsystem.setPushingPercentage(-0.5);
+    intakePivotSubsystem.setPushingPercentage(-0.4);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -36,6 +37,7 @@ public class InitIntake extends Command {
   public void end(boolean interrupted) {
     intakePivotSubsystem.setPushingPercentage(0);
     intakePivotSubsystem.setPushingPosition(0);
+    intakePivotSubsystem.setPushingReference(IntakeConstants.pushingHomedPosition);
   }
 
   // Returns true when the command should end.

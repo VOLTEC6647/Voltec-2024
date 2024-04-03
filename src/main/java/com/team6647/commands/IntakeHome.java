@@ -5,8 +5,9 @@ package com.team6647.commands;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.team6647.subsystems.intake.IntakePivotSubsystem;
-import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
+import com.andromedalib.math.Functions;
+import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
+import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -31,7 +32,7 @@ public class IntakeHome extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intakePivotSubsystem.changeIntakePivotState(IntakePivotState.HOMED);
+    intakePivotSubsystem.setMState(IntakePivotState.HOMED);
     intakePivotSubsystem.setPushingReference(IntakeConstants.pushingHomedPosition);
   }
 
@@ -55,7 +56,8 @@ public class IntakeHome extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return mController.atSetpoint() || intakePivotSubsystem.emergencyDisabled()
-        || intakePivotSubsystem.getIntakeLimitSwitchPressed();
+    return Functions.isAround(
+        intakePivotSubsystem.intakePosition(), IntakeConstants.intakeHomedPosition, IntakeConstants.homedTolerance)
+        || mController.atSetpoint();
   }
 }

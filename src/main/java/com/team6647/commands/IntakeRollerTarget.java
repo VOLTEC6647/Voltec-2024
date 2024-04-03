@@ -6,16 +6,16 @@
 
 package com.team6647.commands;
 
-import com.team6647.subsystems.intake.IntakeSubsystem;
-import com.team6647.util.Constants.RobotConstants.RollerState;
+import com.team6647.subsystems.intake.roller.IntakeSubsystem;
+import com.team6647.subsystems.intake.roller.IntakeSubsystem.IntakeRollerState;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class IntakeRollerTarget extends InstantCommand {
   private IntakeSubsystem intakeSubsystem;
-  private RollerState rollerState;
+  private IntakeRollerState rollerState;
 
-  public IntakeRollerTarget(IntakeSubsystem intakeSubsystem, RollerState rollerState) {
+  public IntakeRollerTarget(IntakeSubsystem intakeSubsystem, IntakeRollerState rollerState) {
     this.intakeSubsystem = intakeSubsystem;
     this.rollerState = rollerState;
 
@@ -24,6 +24,6 @@ public class IntakeRollerTarget extends InstantCommand {
 
   @Override
   public void initialize() {
-    intakeSubsystem.changeRollerState(rollerState);
+    intakeSubsystem.setMState(rollerState);
   }
 }

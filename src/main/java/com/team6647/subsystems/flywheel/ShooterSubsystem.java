@@ -12,6 +12,9 @@ import static edu.wpi.first.units.Units.Volts;
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
+import com.andromedalib.util.Alert;
+import com.andromedalib.util.Alert.AlertType;
+import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
@@ -23,13 +26,14 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import lombok.RequiredArgsConstructor;
 
 public class ShooterSubsystem extends SubsystemBase {
 
   private static ShooterSubsystem instance;
 
   @AutoLogOutput(key = "Shooter/Flywheel/State")
-  private FlywheelState mFlywheelState = FlywheelState.STOPPED;
+  public FlywheelState mFlywheelState = FlywheelState.STOPPED;
 
   private ShooterIO io;
   private ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
@@ -65,7 +69,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   private LoggedTunableNumber shooterVelocity = new LoggedTunableNumber("Shooter/Flywheel/velocity", 0.0);
 
-  private static ShootingParameters currentParameters = new ShootingParameters(new Rotation2d(), 0, 5000);
+  private static ShootingParameters currentParameters = new ShootingParameters(new Rotation2d(), 0, 0);
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(),
@@ -85,6 +89,8 @@ public class ShooterSubsystem extends SubsystemBase {
           },
           this));
 
+  private Alert rollerBeamBrakeAlert = new Alert("Shooter Roller Beam Brake note detected", AlertType.INFO);
+
   private ShooterSubsystem(ShooterIO io) {
     this.io = io;
   }
@@ -96,11 +102,32 @@ public class ShooterSubsystem extends SubsystemBase {
     return instance;
   }
 
+  @RequiredArgsConstructor
   public enum FlywheelState {
-    STOPPED,
-    EXHAUSTING,
-    SHOOTING,
-    IDLE
+    STOPPED(ShooterConstants.shooterStoppedSpeed),
+    EXHAUSTING(ShooterConstants.shooterExhaustSpeed),
+    SHOOTING(-1),
+    IDLE(ShooterConstants.shooterIdleSpeed);
+
+    public final double velocity;
+  }
+
+  public void setFlywheelState(FlywheelState state) {
+    mFlywheelState = state;
+    switch (state) {
+      case STOPPED:
+        setShooterSpeed(ShooterConstants.shooterStoppedSpeed);
+        break;
+      case EXHAUSTING:
+        setShooterSpeed(ShooterConstants.shooterExhaustSpeed);
+        break;
+      case SHOOTING:
+        setShooterSpeed(currentParameters.flywheelRPM());
+        break;
+      case IDLE:
+        setShooterSpeed(ShooterConstants.shooterIdleSpeed);
+        break;
+    }
   }
 
   @Override
@@ -117,31 +144,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }, bottomShooterKp, bottomShooterKi, bottomShooterKd, bottomShooterKs, bottomShooterKv, bottomShooterKa,
         topShooterKp, topShooterKi, topShooterKd, topShooterKs, topShooterKv, topShooterKa, shooterVelocity);
-  }
 
-  /**
-   * Public method to command shooter state
-   * 
-   * @param rollerState Shooter RollerState
-   */
-  public void changeFlywheelState(FlywheelState rollerState) {
-    switch (rollerState) {
-      case STOPPED:
-        mFlywheelState = FlywheelState.STOPPED;
-        setShooterSpeed(ShooterConstants.shooterStoppedSpeed);
-        break;
-      case EXHAUSTING:
-        mFlywheelState = FlywheelState.EXHAUSTING;
-        setShooterSpeed(ShooterConstants.shooterExhaustSpeed);
-        break;
-      case SHOOTING:
-        mFlywheelState = FlywheelState.SHOOTING;
-        setShooterSpeed(currentParameters.flywheelRPM());
-        break;
-      case IDLE:
-        mFlywheelState = FlywheelState.IDLE;
-        setShooterSpeed(ShooterConstants.shooterIdleSpeed);
-        break;
+    rollerBeamBrakeAlert.set(!getBeamBrake());
+  
+
+    if (!getBeamBrake()) {
+      LEDSubsystem.getInstance().shooterHasNote = true;
+    } else {
+      LEDSubsystem.getInstance().shooterHasNote = false;
     }
   }
 
@@ -166,7 +176,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
   @AutoLogOutput(key = "Shooter/Flywheel/bottomInTolerance")
   public boolean bottomInTolerance() {
-    return Math.abs(inputs.topMotorVelocity - mVelocitySetpoint) < ShooterConstants.shooterTolerance;
+    return Math.abs(inputs.bottomMotorVelocity - mVelocitySetpoint) < ShooterConstants.shooterTolerance;
   }
 
   public boolean getBeamBrake() {

@@ -10,7 +10,6 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
-import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
 import com.andromedalib.robot.SuperRobot;
 import com.team6647.util.Constants.RobotConstants;
 
@@ -61,13 +60,8 @@ public class Robot extends SuperRobot {
             "_sim")));
         break;
     }
-
     AutoLogOutputManager.addPackage("com.andromedalib");
-
-    // Default to blue alliance in sim
-    if (RobotConstants.getMode() == Mode.SIM) {
-      DriverStationSim.setAllianceStationId(AllianceStationID.Blue1);
-    }
+    DriverStationSim.setAllianceStationId(AllianceStationID.Red2);
 
     // Start AdvantageKit Logger, no more fields can be added
     Logger.start();

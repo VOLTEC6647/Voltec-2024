@@ -10,6 +10,9 @@ import org.littletonrobotics.junction.Logger;
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.team6647.util.Constants.VisionConstants;
 
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.Vector;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -23,7 +26,7 @@ public class VisionSubsystem extends SubsystemBase {
   /** Creates a new VisionSubsystem. */
   private VisionSubsystem(VisionIO io) {
     this.io = io;
-    
+
     changePipeline(VisionConstants.odometryPipelineNumber);
   }
 
@@ -45,8 +48,19 @@ public class VisionSubsystem extends SubsystemBase {
 
   public void computeVisionMeasurements() {
     if (inputs.hasTarget) {
-      if (inputs.targetDistance < 1.5) {
-        AndromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency);
+      if (inputs.targetDistance < 5) {
+
+        double xyStdDev = 0.005
+            * Math.pow(inputs.targetDistance, 2.0)
+            * 1.0;
+
+        Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(xyStdDev, xyStdDev,
+            edu.wpi.first.math.util.Units.degreesToRadians(50));
+
+        Logger.recordOutput("Vision/StandarDev", xyStdDev);
+
+        AndromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency,
+            visionmeasurementStandardDeviations);
       }
     }
   }

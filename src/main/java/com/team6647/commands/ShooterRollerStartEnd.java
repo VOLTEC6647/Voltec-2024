@@ -5,18 +5,18 @@
  */
 package com.team6647.commands;
 
-import com.team6647.subsystems.shooter.ShooterRollerSubsystem;
-import com.team6647.util.Constants.RobotConstants.RollerState;
+import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
+import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class ShooterRollerStartEnd extends Command {
   private ShooterRollerSubsystem shooterRollerSubsystem;
-  private RollerState initialRollerState;
-  private RollerState finalRollerState;
+  private ShooterFeederState initialRollerState;
+  private ShooterFeederState finalRollerState;
 
-  public ShooterRollerStartEnd(ShooterRollerSubsystem shooterRollerSubsystem, RollerState initialRollerState,
-      RollerState finalRollerState) {
+  public ShooterRollerStartEnd(ShooterRollerSubsystem shooterRollerSubsystem, ShooterFeederState initialRollerState,
+      ShooterFeederState finalRollerState) {
     this.shooterRollerSubsystem = shooterRollerSubsystem;
     this.initialRollerState = initialRollerState;
     this.finalRollerState = finalRollerState;
@@ -26,7 +26,7 @@ public class ShooterRollerStartEnd extends Command {
 
   @Override
   public void initialize() {
-    shooterRollerSubsystem.changeRollerState(initialRollerState);
+    shooterRollerSubsystem.setMRollerState(initialRollerState);
   }
 
   @Override
@@ -35,7 +35,7 @@ public class ShooterRollerStartEnd extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    shooterRollerSubsystem.changeRollerState(finalRollerState);
+    shooterRollerSubsystem.setMRollerState(finalRollerState);
   }
 
   @Override

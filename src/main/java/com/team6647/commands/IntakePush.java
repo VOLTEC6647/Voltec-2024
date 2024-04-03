@@ -5,8 +5,8 @@
  */
 package com.team6647.commands;
 
-import com.team6647.subsystems.intake.IntakePivotSubsystem;
-import com.team6647.subsystems.intake.IntakePivotSubsystem.IntakePivotState;
+import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
+import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem.IntakePivotState;
 import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -23,7 +23,7 @@ public class IntakePush extends Command {
 
   @Override
   public void initialize() {
-    intakePivotSubsystem.changeIntakePivotState(IntakePivotState.EXTENDED);
+    intakePivotSubsystem.setMState(IntakePivotState.EXTENDED);
     intakePivotSubsystem.setPushingReference(IntakeConstants.pushingAcutatingPosition);
   }
 
@@ -34,11 +34,12 @@ public class IntakePush extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
+    intakePivotSubsystem.setPushingReference(IntakeConstants.pushingHomedPosition);
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return intakePivotSubsystem.pushingInTolerance();
   }
 }

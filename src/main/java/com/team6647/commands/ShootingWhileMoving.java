@@ -5,23 +5,24 @@ package com.team6647.commands;
 
 import static edu.wpi.first.units.Units.Meters;
 
-import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
-import com.andromedalib.util.AllianceFlipUtil;
 import com.team6647.subsystems.SuperStructure;
+import com.team6647.subsystems.drive.Drive;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
+import com.team6647.util.AllianceFlipUtil;
 import com.team6647.util.ShootingCalculatorUtil;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
+@SuppressWarnings("unused")
 public class ShootingWhileMoving extends Command {
-  private AndromedaSwerve swerve;
+  private Drive swerve;
   private SuperStructure superStructure;
   private Translation2d targetLocation;
 
   /** Creates a new ShootingWhileMoving. */
-  public ShootingWhileMoving(AndromedaSwerve swerve, SuperStructure superStructure) {
+  public ShootingWhileMoving(Drive swerve, SuperStructure superStructure) {
     this.swerve = swerve;
     this.superStructure = superStructure;
 
@@ -32,28 +33,31 @@ public class ShootingWhileMoving extends Command {
 
   @Override
   public void initialize() {
-    swerve.setHeadingOverride(true);
-  }
+    /*
+     * swerve.setHeadingOverride(true);
+     */ }
 
   @Override
   public void execute() {
     Pose2d robotPose = swerve.getPose();
 
     Translation2d speakerLoc = ShootingCalculatorUtil.calculateShootingWhileDriving(robotPose,
-        swerve.getFieldRelativeChassisSpeeds());
+        swerve.getRobotRelativeChassisSpeeds());
 
     ShootingParameters parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
         speakerLoc);
 
     SuperStructure.updateShootingParameters(parameters);
 
-    swerve.setTargetHeading(parameters.robotAngle());
-  }
+    /*
+     * swerve.setTargetHeading(parameters.robotAngle());
+     */ }
 
   @Override
   public void end(boolean interrupted) {
-    swerve.setHeadingOverride(false);
-  }
+    /*
+     * swerve.setHeadingOverride(false);
+     */ }
 
   @Override
   public boolean isFinished() {

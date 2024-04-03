@@ -6,7 +6,7 @@
 package com.team6647.commands;
 
 import com.team6647.RobotContainer;
-import com.team6647.subsystems.intake.IntakePivotSubsystem;
+import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -18,8 +18,8 @@ public class IntakeExtend extends SequentialCommandGroup {
   /** Creates a new IntakeExtend. */
   public IntakeExtend() {
     addCommands(
-        new IntakePush(intakePivotSubsystem).withTimeout(0.5),
-        new StartEndCommand(() -> intakePivotSubsystem.setIntakeVoltage(0.8),
-            () -> intakePivotSubsystem.setIntakeVoltage(0), intakePivotSubsystem).withTimeout(0.5));
+        new IntakePush(intakePivotSubsystem),
+        new StartEndCommand(() -> intakePivotSubsystem.setIntakeVoltage(1.2),
+            () -> intakePivotSubsystem.setIntakeVoltage(0), intakePivotSubsystem).withTimeout(0.3));
   }
 }

@@ -3,21 +3,24 @@
  * 
  * 20 02 2024
  */
+
+/* NOT USED */
 package com.team6647.commands;
 
-import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
+import com.team6647.subsystems.drive.Drive;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
 import com.team6647.util.Constants.DriveConstants;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+
+@SuppressWarnings("unused")
 
 public class VisionIntakeAlign extends Command {
   private NeuralVisionSubsystem neuralVisionSubsystem;
-  private AndromedaSwerve andromedaSwerve;
+  private Drive andromedaSwerve;
 
   /** Creates a new IntakeAlign. */
-  public VisionIntakeAlign(NeuralVisionSubsystem neuralVisionSubsystem, AndromedaSwerve andromedaSwerve) {
+  public VisionIntakeAlign(NeuralVisionSubsystem neuralVisionSubsystem, Drive andromedaSwerve) {
     this.neuralVisionSubsystem = neuralVisionSubsystem;
     this.andromedaSwerve = andromedaSwerve;
 
@@ -40,8 +43,10 @@ public class VisionIntakeAlign extends Command {
     targetingXVel *= -1;
     targetingYVel *= -1;
 
-    andromedaSwerve.drive(new Translation2d(targetingYVel, 0), targetingXVel, false);
-  }
+    /*
+     * andromedaSwerve.drive(new Translation2d(targetingYVel, 0), targetingXVel,
+     * false);
+     */ }
 
   // Called once the command ends or is interrupted.
   @Override

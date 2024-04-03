@@ -20,7 +20,8 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
  * Geometry utilities for working with translations, rotations, transforms, and
  * poses.
  * 
- * Copied over from https://github.com/Mechanical-Advantage/RobotCode2024/blob/main/src/main/java/frc/robot/util/GeomUtil.java#L20
+ * Copied over from
+ * https://github.com/Mechanical-Advantage/RobotCode2024/blob/main/src/main/java/frc/robot/util/GeomUtil.java#L20
  */
 public class GeomUtil {
     /**
@@ -31,6 +32,17 @@ public class GeomUtil {
      */
     public static Transform2d toTransform2d(Translation2d translation) {
         return new Transform2d(translation, new Rotation2d());
+    }
+
+    /**
+     * Creates a pure translating transform
+     *
+     * @param x The x coordinate of the translation
+     * @param y The y coordinate of the translation
+     * @return The resulting transform
+     */
+    public static Transform2d toTransform2d(double x, double y) {
+        return new Transform2d(x, y, new Rotation2d());
     }
 
     /**
@@ -51,6 +63,10 @@ public class GeomUtil {
      */
     public static Transform2d toTransform2d(Pose2d pose) {
         return new Transform2d(pose.getTranslation(), pose.getRotation());
+    }
+
+    public static Transform2d toTransform2d(Transform3d transform) {
+        return new Transform2d(transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d());
     }
 
     public static Pose2d inverse(Pose2d pose) {
@@ -134,5 +150,27 @@ public class GeomUtil {
     public static Twist2d toTwist2d(ChassisSpeeds speeds) {
         return new Twist2d(
                 speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, speeds.omegaRadiansPerSecond);
+    }
+
+    /**
+     * Creates a new pose from an existing one using a different translation value.
+     *
+     * @param pose        The original pose
+     * @param translation The new translation to use
+     * @return The new pose with the new translation and original rotation
+     */
+    public static Pose2d withTranslation(Pose2d pose, Translation2d translation) {
+        return new Pose2d(translation, pose.getRotation());
+    }
+
+    /**
+     * Creates a new pose from an existing one using a different rotation value.
+     *
+     * @param pose     The original pose
+     * @param rotation The new rotation to use
+     * @return The new pose with the original translation and new rotation
+     */
+    public static Pose2d withRotation(Pose2d pose, Rotation2d rotation) {
+        return new Pose2d(pose.getTranslation(), rotation);
     }
 }

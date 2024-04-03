@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.4122852182936875,
+      "y": 7.178742802564065
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "InitIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopToAmp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AmpScore"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}
