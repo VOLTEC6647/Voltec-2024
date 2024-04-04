@@ -60,6 +60,7 @@ import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -245,8 +246,14 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 controllerRumbleCommandFactory.apply(0.2)));
         }
 
+        SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+
         @Override
         public void configureBindings() {
+                xLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAcceleration);
+                yLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAcceleration);
+                turningLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAngularAcceleration);
+
                 andromedaSwerve.setDefaultCommand(
                                 andromedaSwerve.run(
                                                 () -> {
@@ -281,13 +288,20 @@ public class RobotContainer extends SuperRobotContainer {
                                                          * () -> true);
                                                          */
 
+                                                        double ySpeed = yLimiter
+                                                                        .calculate(-OperatorConstants.driverController1
+                                                                                        .getLeftY());
+                                                        double xSpeed = xLimiter
+                                                                        .calculate(-OperatorConstants.driverController1
+                                                                                        .getLeftX());
+                                                        double rotationSpeed = turningLimiter
+                                                                        .calculate(-OperatorConstants.driverController1
+                                                                                        .getRightX());
+
                                                         andromedaSwerve.acceptTeleopInputs(
-                                                                        () -> -OperatorConstants.driverController1
-                                                                                        .getLeftX(),
-                                                                        () -> -OperatorConstants.driverController1
-                                                                                        .getLeftY(),
-                                                                        () -> -OperatorConstants.driverController1
-                                                                                        .getRightX(),
+                                                                        () -> xSpeed,
+                                                                        () -> ySpeed,
+                                                                        () -> rotationSpeed,
                                                                         () -> !OperatorConstants.driverController1
                                                                                         .leftStick()
                                                                                         .getAsBoolean());
