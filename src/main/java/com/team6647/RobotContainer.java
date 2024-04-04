@@ -60,11 +60,6 @@ import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -256,44 +251,47 @@ public class RobotContainer extends SuperRobotContainer {
                                 andromedaSwerve.run(
                                                 () -> {
 
-                                                        double linearMagnitude = MathUtil.applyDeadband(
-                                                                        Math.hypot(-OperatorConstants.driverController1
-                                                                                        .getLeftX(),
-                                                                                        -OperatorConstants.driverController1
-                                                                                                        .getLeftY()),
-                                                                        0.1);
-                                                        Rotation2d linearDirection = new Rotation2d(
-                                                                        -OperatorConstants.driverController1
-                                                                                        .getLeftX(),
-                                                                        -OperatorConstants.driverController1
-                                                                                        .getLeftY());
-
-                                                        // Calcaulate new linear velocity
-                                                        Translation2d linearVelocity = new Pose2d(new Translation2d(),
-                                                                        linearDirection)
-                                                                        .transformBy(new Transform2d(linearMagnitude,
-                                                                                        0.0, new Rotation2d()))
-                                                                        .getTranslation();
+                                                        /*
+                                                         * double linearMagnitude = MathUtil.applyDeadband(
+                                                         * Math.hypot(-OperatorConstants.driverController1
+                                                         * .getLeftX(),
+                                                         * -OperatorConstants.driverController1
+                                                         * .getLeftY()),
+                                                         * 0.1);
+                                                         * Rotation2d linearDirection = new Rotation2d(
+                                                         * -OperatorConstants.driverController1
+                                                         * .getLeftX(),
+                                                         * -OperatorConstants.driverController1
+                                                         * .getLeftY());
+                                                         * 
+                                                         * // Calcaulate new linear velocity
+                                                         * Translation2d linearVelocity = new Pose2d(new
+                                                         * Translation2d(),
+                                                         * linearDirection)
+                                                         * .transformBy(new Transform2d(linearMagnitude,
+                                                         * 0.0, new Rotation2d()))
+                                                         * .getTranslation();
+                                                         * 
+                                                         * andromedaSwerve.acceptTeleopInputs(
+                                                         * linearVelocity,
+                                                         * () -> MathUtil.applyDeadband(
+                                                         * -OperatorConstants.driverController1
+                                                         * .getRightX(),
+                                                         * 0.1),
+                                                         * () -> true);
+                                                         */
 
                                                         andromedaSwerve.acceptTeleopInputs(
-                                                                        linearVelocity,
-                                                                        () -> MathUtil.applyDeadband(
-                                                                                        -OperatorConstants.driverController1
-                                                                                                        .getRightX(),
-                                                                                        0.1),
-                                                                        () -> true);
-                                                        /*
-                                                         * andromedaSwerve.acceptTeleopInputs(
-                                                         * () -> -OperatorConstants.driverController1
-                                                         * .getLeftX(),
-                                                         * () -> -OperatorConstants.driverController1
-                                                         * .getLeftY(),
-                                                         * () -> -OperatorConstants.driverController1
-                                                         * .getRightX(),
-                                                         * () -> !OperatorConstants.driverController1
-                                                         * .leftStick()
-                                                         * .getAsBoolean());
-                                                         */
+                                                                        () -> -OperatorConstants.driverController1
+                                                                                        .getLeftX(),
+                                                                        () -> -OperatorConstants.driverController1
+                                                                                        .getLeftY(),
+                                                                        () -> -OperatorConstants.driverController1
+                                                                                        .getRightX(),
+                                                                        () -> !OperatorConstants.driverController1
+                                                                                        .leftStick()
+                                                                                        .getAsBoolean());
+
                                                 }));
 
                 /* Driver 1 */
@@ -302,7 +300,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.RESET_GYRO
                                 .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
-                                                
+
                 /* Driver 2 */
 
                 OperatorConstants.FORCE_IDLE

@@ -65,6 +65,14 @@ public class VisionSubsystem extends SubsystemBase {
     }
   }
 
+  public void setLimelightMode(int mode) {
+    if (mode == 2) {
+      io.setForceBlink();
+    } else if (mode == 1) {
+      io.setForceOff();
+    }
+  }
+
   public boolean hasTarget() {
     return inputs.hasTarget;
   }

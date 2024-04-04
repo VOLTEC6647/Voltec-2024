@@ -14,6 +14,7 @@ import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerTarget;
+import com.team6647.commands.LimelightBlinkEffect;
 import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.VisionIntakeAlign;
@@ -134,7 +135,8 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5)))
-                .andThen(SuperStructure.update(SuperStructureState.IDLE));
+                .andThen(SuperStructure.update(SuperStructureState.IDLE)
+                        .alongWith(new LimelightBlinkEffect(visionSubsystem)));
     }
 
     private static Command autoIntakingCommand() {
@@ -144,7 +146,8 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5)))
-                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
+                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE)
+                        .alongWith(new LimelightBlinkEffect(visionSubsystem)));
     }
 
     private static Command idleCommand() {
@@ -294,7 +297,7 @@ public class SuperStructure {
     private static Command scoreAmp() {
         return Commands.sequence(
                 prepareScoreAmp(),
-                Commands.waitSeconds(0.5),
+                Commands.waitSeconds(1),
                 setGoalCommand(SuperStructureState.SCORING_AMP),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }

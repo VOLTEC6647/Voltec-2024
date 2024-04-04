@@ -31,4 +31,13 @@ public interface VisionIO {
     public default void changePipeline(int pipelineNumber) {
 
     }
+
+    public default void setForceBlink() {
+
+    }
+
+    public default void setForceOff(){
+        
+    }
+
 }

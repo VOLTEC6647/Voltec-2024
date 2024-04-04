@@ -220,7 +220,7 @@ public class Constants {
                 public static final double pivotMaxPosition = 90;
                 public static final double pivotHomedPosition = -85;
                 public static final double pivotIndexingPosition = -43;
-                public static final double pivotAmpPosition = 20;
+                public static final double pivotAmpPosition = 30;
                 public static final double pivotClimbPosition = 5;
 
                 public static final double flywheelAmpRPM = 1000;
