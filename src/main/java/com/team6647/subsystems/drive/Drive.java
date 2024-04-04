@@ -158,7 +158,7 @@ public class Drive extends AndromedaSwerve {
                         0.0,
                         0.0))
                 .andThen(new InstantCommand(() -> {
-                    mDriveMode = DriveMode.PATH_FOLLOWING;
+                    mDriveMode = DriveMode.TELEOP;
                 }));
     }
 

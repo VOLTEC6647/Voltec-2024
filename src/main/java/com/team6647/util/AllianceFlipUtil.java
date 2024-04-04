@@ -63,6 +63,50 @@ public class AllianceFlipUtil {
         }
     }
 
+    /**
+     * Forcefully flips a pose to the red side of the field regardless of the
+     * current alliance color.
+     * 
+     * @param pose The pose to flip.
+     * @return The flipped pose.
+     */
+    public static Pose2d forceApply(Pose2d pose) {
+        return new Pose2d(forceApply(pose.getTranslation()), apply(pose.getRotation()));
+    }
+
+    /**
+     * Forcefully flips a translation to the red side of the field regardless of the
+     * current alliance color.
+     * 
+     * @param translation The translation to flip.
+     * @return The flipped translation.
+     */
+    public static Translation2d forceApply(Translation2d translation) {
+        return new Translation2d(forceApply(translation.getX()), translation.getY());
+    }
+
+    /**
+     * Forcefully flips a rotation to the red side of the field regardless of the
+     * current alliance color.
+     * 
+     * @param rotation The rotation to flip.
+     * @return The flipped rotation.
+     */
+    public static Rotation2d forceApply(Rotation2d rotation) {
+        return new Rotation2d(-rotation.getCos(), rotation.getSin());
+    }
+
+    /**
+     * Forcefully flips an x coordinate to the red side of the field regardless of
+     * the current alliance color.
+     * 
+     * @param xCoordinate The x coordinate to flip.
+     * @return The flipped x coordinate.
+     */
+    public static double forceApply(double xCoordinate) {
+        return FieldConstants.fieldLength - xCoordinate;
+    }
+
     public static Translation3d apply(Translation3d translation3d) {
         if (shouldFlip()) {
             return new Translation3d(
