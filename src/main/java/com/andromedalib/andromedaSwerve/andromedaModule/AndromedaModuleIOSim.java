@@ -56,7 +56,7 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
         inputs.driveApplied = driveAppliedVolts;
 
         inputs.encoderAbsolutePosition = new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition);
-        inputs.steerAngle = Rotation2d.fromRotations(turnSim.getAngularPositionRad());
+        inputs.steerAngle = Rotation2d.fromRadians(turnSim.getAngularPositionRad());
         inputs.turnAppliedVolts = turnAppliedVolts;
 
         inputs.odometryTimestamps = new double[] { Timer.getFPGATimestamp() };
@@ -66,7 +66,6 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
 
     @Override
     public void setDriveVelocity(double velocity) {
-
         double velocityRadPerSec = velocity / wheelRadius;
 
         double volts = driveFeedforward.calculate(velocityRadPerSec)

@@ -105,6 +105,8 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 turnAbsolutePosition,
                                 turnVelocity,
                                 turnAppliedVolts,
+                                driveAcceleration,
+                                driveCurrent,
                                 turnCurrent);
                 driveMotor.optimizeBusUtilization();
                 steeringMotor.optimizeBusUtilization();
@@ -125,42 +127,6 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                 inputs.angleMotorConnected = BaseStatusSignal.refreshAll(
                                 turnPosition, turnVelocity, turnAppliedVolts, turnCurrent)
                                 .isOK();
-
-                /*
-                 * * inputs.drivePosition =
-                 * Units.rotationsToRadians(drivePosition.getValueAsDouble())
-                 * (andromedaModuleConfig.wheelDiameter / 2);
-                 * inputs.driveVelocity = Units
-                 * .rotationsToRadians(driveMotor.getVelocity().getValueAsDouble())
-                 * (andromedaModuleConfig.wheelDiameter / 2);
-                 * 
-                 * inputs.driveAcceleration = Units
-                 * .rotationsToRadians(driveMotor.getAcceleration().getValueAsDouble())
-                 * (andromedaModuleConfig.wheelDiameter / 2);
-                 * 
-                 * inputs.driveApplied = driveAppliedVolts.getValueAsDouble();
-                 * 
-                 * inputs.encoderAbsolutePosition =
-                 * Rotation2d.fromRotations(turnAbsolutePosition.getValue());
-                 * 
-                 * inputs.steerAngle =
-                 * Rotation2d.fromRotations(turnPosition.getValueAsDouble());
-                 * 
-                 * inputs.turnVelocity =
-                 * Units.rotationsToRadians(turnVelocity.getValueAsDouble());
-                 * 
-                 * inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
-                 * 
-                 * inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double
-                 * value) -> value).toArray();
-                 * inputs.odometryDrivePositions = drivePositionQueue.stream()
-                 * .mapToDouble((Double value) -> Units.rotationsToRadians(value)
-                 * (andromedaModuleConfig.wheelDiameter / 2))
-                 * .toArray();
-                 * inputs.odometryTurnPositions = turnPositionQueue.stream()
-                 * .map(value -> new Rotation2d(value))
-                 * .toArray(Rotation2d[]::new);
-                 */
 
                 inputs.drivePosition = Units.rotationsToRadians(drivePosition.getValueAsDouble())
                                 * (andromedaModuleConfig.wheelDiameter / 2);

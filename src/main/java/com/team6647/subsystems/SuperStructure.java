@@ -94,7 +94,7 @@ public class SuperStructure {
             case INTAKING:
                 return intakingCommand();
             case AUTO_INTAKING:
-                return autoIntakingCommand(); // TODO CHANGE OVER TO BEAM BRAKE
+                return autoIntakingCommand();
             case AUTO_AMP:
                 return autoScoreAmp();
             case SHOOTING_SPEAKER:
@@ -144,16 +144,6 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5)))
-                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
-    }
-
-    private static Command autoIntakingCommandMXP() {
-        return Commands.deadline(
-                Commands.sequence(
-                        IntakeCommands.getIntakeCommand(),
-                        Commands.waitSeconds(0.8)),
-                ShooterCommands.getShooterIntakingCommand(),
-                setGoalCommand(SuperStructureState.AUTO_INTAKING))
                 .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
     }
 
@@ -255,9 +245,20 @@ public class SuperStructure {
 
     /* Pathfinding */
 
-    public static Command goToAmp() {
+    public static Command goToAmpBlue() {
         return Commands.sequence(
-                andromedaSwerve.getPathFindPath(AllianceFlipUtil.apply(FieldConstants.amp),
+                andromedaSwerve.getPathFindPath(FieldConstants.amp,
+                        DriveConstants.pathFindingConstraints),
+                prepareScoreAmp(),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
+    }
+
+    public static Command goToAmpRed() {
+        return Commands.sequence(
+                andromedaSwerve.getPathFindPath(AllianceFlipUtil.forceApply(FieldConstants.amp),
                         DriveConstants.pathFindingConstraints),
                 prepareScoreAmp(),
                 Commands.parallel(
