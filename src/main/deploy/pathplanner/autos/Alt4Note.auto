@@ -1,0 +1,61 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.3140196323188638,
+      "y": 5.4806715034257465
+    },
+    "rotation": 0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "GrabPiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleToRight"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "RightToMiddle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleToCenter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterToMiddle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleToTop"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "TopToMiddle"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

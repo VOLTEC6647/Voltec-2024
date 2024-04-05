@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.5846709517493112,
-      "y": 4.108923884514436
+      "x": 0.5049725484071635,
+      "y": 3.7395713252983147
     },
     "rotation": 0
   },
@@ -12,21 +12,27 @@
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "WallToSide"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "Idle"
+            "name": "ShootSubwoofer"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "BottomUndisturbed"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootStay"
+            "pathName": "LeaveFromSide"
           }
         }
       ]
