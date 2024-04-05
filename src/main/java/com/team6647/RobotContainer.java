@@ -245,7 +245,9 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 controllerRumbleCommandFactory.apply(0.2),
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
-                new Trigger(() -> !shooterSubsystem.getBeamBrake()).whileTrue(new LimelightBlinkEffect(visionSubsytem));
+                new Trigger(() -> !shooterSubsystem.getBeamBrake())
+                                .whileTrue(new InstantCommand(() -> visionSubsytem.setLimelightMode(2)).withTimeout(3)
+                                                .andThen(new InstantCommand(() -> visionSubsytem.setLimelightMode(1))));
         }
 
         SlewRateLimiter xLimiter, yLimiter, turningLimiter;
