@@ -22,7 +22,6 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
-import com.team6647.commands.LimelightBlinkEffect;
 import com.team6647.commands.ShooterRollerStartEnd;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
@@ -67,6 +66,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -245,7 +245,10 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 controllerRumbleCommandFactory.apply(0.2),
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
-                new Trigger(() -> !shooterSubsystem.getBeamBrake()).whileTrue(new LimelightBlinkEffect(visionSubsytem));
+                new Trigger(() -> !shooterSubsystem.getBeamBrake())
+                                .whileTrue(new StartEndCommand(() -> visionSubsytem.setLimelightMode(2),
+                                                () -> visionSubsytem.setLimelightMode(1), visionSubsytem)
+                                                .withTimeout(3));
         }
 
         SlewRateLimiter xLimiter, yLimiter, turningLimiter;
