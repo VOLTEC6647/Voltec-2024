@@ -22,6 +22,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
+import com.team6647.commands.LimelightBlinkEffect;
 import com.team6647.commands.ShooterRollerStartEnd;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
@@ -244,6 +245,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 controllerRumbleCommandFactory.apply(0.2),
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
+                new Trigger(() -> !shooterSubsystem.getBeamBrake()).whileTrue(new LimelightBlinkEffect(visionSubsytem));
         }
 
         SlewRateLimiter xLimiter, yLimiter, turningLimiter;

@@ -14,7 +14,6 @@ import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerTarget;
-import com.team6647.commands.LimelightBlinkEffect;
 import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.VisionIntakeAlign;
@@ -135,8 +134,7 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5)))
-                .andThen(SuperStructure.update(SuperStructureState.IDLE)
-                        .alongWith(new LimelightBlinkEffect(visionSubsystem)));
+                .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }
 
     private static Command autoIntakingCommand() {
@@ -146,8 +144,7 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
                         Commands.waitSeconds(0.5)))
-                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE)
-                        .alongWith(new LimelightBlinkEffect(visionSubsystem)));
+                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
     }
 
     private static Command idleCommand() {
