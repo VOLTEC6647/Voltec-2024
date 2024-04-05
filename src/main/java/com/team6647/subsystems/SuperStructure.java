@@ -44,7 +44,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 
 public class SuperStructure {
 
@@ -134,8 +133,6 @@ public class SuperStructure {
                 setGoalCommand(SuperStructureState.INTAKING),
                 Commands.sequence(
                         IntakeCommands.getIntakeCommand(),
-                        new StartEndCommand(() -> intakePivotSubsystem.setIntakeVoltage(-0.2),
-                                () -> intakePivotSubsystem.setIntakeVoltage(0), intakePivotSubsystem),
                         Commands.waitSeconds(0.5)))
                 .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }
