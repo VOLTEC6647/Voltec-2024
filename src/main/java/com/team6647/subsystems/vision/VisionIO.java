@@ -22,6 +22,7 @@ public interface VisionIO {
         public boolean hasTarget = false;
         public double targetDistance = 0.0;
         public int targetID = 0;
+        public double idCount = 0;
     }
 
     /** Updates the set of loggable inputs. */

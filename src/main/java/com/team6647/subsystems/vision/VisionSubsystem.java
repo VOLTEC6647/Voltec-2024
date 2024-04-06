@@ -50,9 +50,9 @@ public class VisionSubsystem extends SubsystemBase {
     if (inputs.hasTarget) {
       if (inputs.targetDistance < 5) {
 
-        double xyStdDev = 0.005
+        double xyStdDev = 0.125
             * Math.pow(inputs.targetDistance, 2.0)
-            * 1.0;
+            / inputs.idCount == 0 ? 1 : inputs.idCount;
 
         Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(xyStdDev, xyStdDev,
             edu.wpi.first.math.util.Units.degreesToRadians(50));
