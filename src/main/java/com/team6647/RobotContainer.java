@@ -344,10 +344,10 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
-                // Shooting with feeder detection
+                // Shooting notes to wing
 
-                OperatorConstants.INTELLIGENT_SHOOTING
-                                .whileTrue(SuperStructure.update(SuperStructureState.INTELLIGENT_SHOOTING_SPEAKER))
+                OperatorConstants.SEND_NOTES
+                                .whileTrue(SuperStructure.update(SuperStructureState.SEND_NOTES))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Amp Commands --------

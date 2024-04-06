@@ -77,6 +77,7 @@ public class SuperStructure {
         SHOOTING_SPEAKER,
         SHOOTING_SUBWOOFER,
         INTELLIGENT_SHOOTING_SPEAKER,
+        SEND_NOTES,
         SCORING_AMP,
         PREPARING_AMP,
         SHOOTING_TRAP,
@@ -116,6 +117,8 @@ public class SuperStructure {
                         andromedaSwerve);
             case INTELLIGENT_SHOOTING_SPEAKER:
                 return intelligentShooting();
+            case SEND_NOTES:
+                return sendNotes();
             default:
                 break;
         }
@@ -232,6 +235,20 @@ public class SuperStructure {
     private static Command shootingSubwoofer() {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 3000);
+
+                    updateShootingParameters(ampParams);
+                }),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+    }
+
+    private static Command sendNotes() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.SEND_NOTES),
                 new InstantCommand(() -> {
                     ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 3000);
 
