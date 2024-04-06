@@ -30,12 +30,6 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "MiddleToRight"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -46,22 +40,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "RightToMiddle"
-                      }
-                    }
-                  ]
+                  "pathName": "MiddleToRight"
                 }
               }
             ]
@@ -70,7 +51,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "MiddleToCenter"
+            "pathName": "RightToMiddle"
           }
         },
         {
@@ -80,6 +61,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -90,31 +77,12 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "MiddleToCenter"
-                      }
-                    }
-                  ]
+                  "pathName": "MiddleToCenter"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "CenterToMiddle"
           }
         },
         {
@@ -124,6 +92,12 @@
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -134,22 +108,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "MiddleToTop"
-                      }
-                    }
-                  ]
+                  "pathName": "CenterToLeft"
                 }
               }
             ]
@@ -162,15 +123,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "ShootSubwoofer"
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Idle"
+            "name": "ShootSubwoofer"
           }
         }
       ]

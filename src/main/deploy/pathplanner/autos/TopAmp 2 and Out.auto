@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.4122852182936875,
-      "y": 7.178742802564065
+      "x": 0.4357068913852507,
+      "y": 7.319272841113443
     },
     "rotation": 0
   },
@@ -80,9 +80,35 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "Idle"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Idle"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "AmpOut"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         }
       ]
