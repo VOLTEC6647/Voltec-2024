@@ -46,7 +46,7 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
     public IntakePivotIOSparkMaxKraken() {
         pushingController = pushingPivotMotor.getPIDController();
 
-        pushingController.setP(0.3);
+        pushingController.setP(0.8);
 
         pushingPivotMotor.setSmartCurrentLimit(10);
         pivotEncoder = pushingPivotMotor.getAbsoluteEncoder(Type.kDutyCycle);

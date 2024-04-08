@@ -81,4 +81,14 @@ public class VisionIOLimelight implements VisionIO {
     public void changePipeline(int pipelineNumber) {
         LimelightHelpers.setPipelineIndex(VisionConstants.aprilLimeNTName, pipelineNumber);
     }
+
+    @Override
+    public void setForceBlink() {
+        LimelightHelpers.setLEDMode_ForceBlink(VisionConstants.aprilLimeNTName);
+    }
+
+    @Override
+    public void setForceOff() {
+        LimelightHelpers.setLEDMode_ForceOff(VisionConstants.aprilLimeNTName);
+    }
 }

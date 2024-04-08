@@ -12,21 +12,15 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "InitIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "TopToAmp"
+            "pathName": "TopShoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
+            "name": "ShootSubwoofer"
           }
         },
         {

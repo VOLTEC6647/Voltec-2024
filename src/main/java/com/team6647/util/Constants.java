@@ -59,15 +59,14 @@ public class Constants {
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = driverController2.b(),
                                 SHOOT_SUBWOOFER = driverController2.a(),
-                                INTELLIGENT_SHOOTING = driverController2.y(),
-                                CLIMB_TOP = driverController2.povUp(),
-                                INTAKE_FEEDER = driverController2.rightTrigger(),
+                                SEND_NOTES = driverController2.y(),
+                                CLIMB_TOP = driverController2.povUp(), INTAKE_FEEDER = driverController2.rightTrigger(),
                                 EXHAUST_FEEDER = driverController2.leftTrigger(),
                                 FORCE_IDLE = driverController2.povLeft();
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.REAL;
+                public static final Mode currentMode = Mode.SIM;
 
                 public static final boolean tuningMode = true;
 
@@ -220,7 +219,7 @@ public class Constants {
                 public static final double pivotMaxPosition = 90;
                 public static final double pivotHomedPosition = -85;
                 public static final double pivotIndexingPosition = -43;
-                public static final double pivotAmpPosition = 20;
+                public static final double pivotAmpPosition = 30;
                 public static final double pivotClimbPosition = 5;
 
                 public static final double flywheelAmpRPM = 1000;
@@ -332,7 +331,7 @@ public class Constants {
                 public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = -0.1;
 
-                public static final double pushingAcutatingPosition = 20;
+                public static final double pushingAcutatingPosition = 21;
                 public static final double pushingHomedPosition = 2;
 
                 public static final int pushingLimitSwitch = 9;

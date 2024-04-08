@@ -60,16 +60,13 @@ import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -248,52 +245,72 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 controllerRumbleCommandFactory.apply(0.2),
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
+                new Trigger(() -> !shooterSubsystem.getBeamBrake())
+                                .whileTrue(new StartEndCommand(() -> visionSubsytem.setLimelightMode(2),
+                                                () -> visionSubsytem.setLimelightMode(1), visionSubsytem)
+                                                .withTimeout(3));
         }
+
+        SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
         @Override
         public void configureBindings() {
+                xLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAcceleration);
+                yLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAcceleration);
+                turningLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAngularAcceleration);
+
                 andromedaSwerve.setDefaultCommand(
                                 andromedaSwerve.run(
                                                 () -> {
 
-                                                        double linearMagnitude = MathUtil.applyDeadband(
-                                                                        Math.hypot(-OperatorConstants.driverController1
-                                                                                        .getLeftX(),
-                                                                                        -OperatorConstants.driverController1
-                                                                                                        .getLeftY()),
-                                                                        0.1);
-                                                        Rotation2d linearDirection = new Rotation2d(
-                                                                        -OperatorConstants.driverController1
-                                                                                        .getLeftX(),
-                                                                        -OperatorConstants.driverController1
-                                                                                        .getLeftY());
+                                                        /*
+                                                         * double linearMagnitude = MathUtil.applyDeadband(
+                                                         * Math.hypot(-OperatorConstants.driverController1
+                                                         * .getLeftX(),
+                                                         * -OperatorConstants.driverController1
+                                                         * .getLeftY()),
+                                                         * 0.1);
+                                                         * Rotation2d linearDirection = new Rotation2d(
+                                                         * -OperatorConstants.driverController1
+                                                         * .getLeftX(),
+                                                         * -OperatorConstants.driverController1
+                                                         * .getLeftY());
+                                                         * 
+                                                         * // Calcaulate new linear velocity
+                                                         * Translation2d linearVelocity = new Pose2d(new
+                                                         * Translation2d(),
+                                                         * linearDirection)
+                                                         * .transformBy(new Transform2d(linearMagnitude,
+                                                         * 0.0, new Rotation2d()))
+                                                         * .getTranslation();
+                                                         * 
+                                                         * andromedaSwerve.acceptTeleopInputs(
+                                                         * linearVelocity,
+                                                         * () -> MathUtil.applyDeadband(
+                                                         * -OperatorConstants.driverController1
+                                                         * .getRightX(),
+                                                         * 0.1),
+                                                         * () -> true);
+                                                         */
 
-                                                        // Calcaulate new linear velocity
-                                                        Translation2d linearVelocity = new Pose2d(new Translation2d(),
-                                                                        linearDirection)
-                                                                        .transformBy(new Transform2d(linearMagnitude,
-                                                                                        0.0, new Rotation2d()))
-                                                                        .getTranslation();
+                                                        double ySpeed = yLimiter
+                                                                        .calculate(-OperatorConstants.driverController1
+                                                                                        .getLeftY());
+                                                        double xSpeed = xLimiter
+                                                                        .calculate(-OperatorConstants.driverController1
+                                                                                        .getLeftX());
+                                                        double rotationSpeed = turningLimiter
+                                                                        .calculate(-OperatorConstants.driverController1
+                                                                                        .getRightX());
 
                                                         andromedaSwerve.acceptTeleopInputs(
-                                                                        linearVelocity,
-                                                                        () -> MathUtil.applyDeadband(
-                                                                                        -OperatorConstants.driverController1
-                                                                                                        .getRightX(),
-                                                                                        0.1),
-                                                                        () -> true);
-                                                        /*
-                                                         * andromedaSwerve.acceptTeleopInputs(
-                                                         * () -> -OperatorConstants.driverController1
-                                                         * .getLeftX(),
-                                                         * () -> -OperatorConstants.driverController1
-                                                         * .getLeftY(),
-                                                         * () -> -OperatorConstants.driverController1
-                                                         * .getRightX(),
-                                                         * () -> !OperatorConstants.driverController1
-                                                         * .leftStick()
-                                                         * .getAsBoolean());
-                                                         */
+                                                                        () -> xSpeed,
+                                                                        () -> ySpeed,
+                                                                        () -> rotationSpeed,
+                                                                        () -> !OperatorConstants.driverController1
+                                                                                        .leftStick()
+                                                                                        .getAsBoolean());
+
                                                 }));
 
                 /* Driver 1 */
@@ -302,7 +319,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.RESET_GYRO
                                 .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
-                                                
+
                 /* Driver 2 */
 
                 OperatorConstants.FORCE_IDLE
@@ -327,10 +344,10 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
-                // Shooting with feeder detection
+                // Shooting notes to wing
 
-                OperatorConstants.INTELLIGENT_SHOOTING
-                                .whileTrue(SuperStructure.update(SuperStructureState.INTELLIGENT_SHOOTING_SPEAKER))
+                OperatorConstants.SEND_NOTES
+                                .whileTrue(SuperStructure.update(SuperStructureState.SEND_NOTES))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Amp Commands --------

@@ -50,9 +50,9 @@ public class VisionSubsystem extends SubsystemBase {
     if (inputs.hasTarget) {
       if (inputs.targetDistance < 5) {
 
-        double xyStdDev = 0.005
+        double xyStdDev = 0.035
             * Math.pow(inputs.targetDistance, 2.0)
-            * 1.0;
+            * 1;
 
         Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(xyStdDev, xyStdDev,
             edu.wpi.first.math.util.Units.degreesToRadians(50));
@@ -62,6 +62,14 @@ public class VisionSubsystem extends SubsystemBase {
         AndromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency,
             visionmeasurementStandardDeviations);
       }
+    }
+  }
+
+  public void setLimelightMode(int mode) {
+    if (mode == 2) {
+      io.setForceBlink();
+    } else if (mode == 1) {
+      io.setForceOff();
     }
   }
 
