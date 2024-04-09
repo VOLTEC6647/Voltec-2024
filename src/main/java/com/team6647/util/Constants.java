@@ -199,9 +199,9 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 35.0;
-                public static final double pivotKi = 5.75;
-                public static final double pivotKd = 0.0;
+                public static final double pivotKp = 31.0;
+                public static final double pivotKi = 5.95;
+                public static final double pivotKd = 0.009;
                 public static final double pivotKf = 0.37;
 
                 public static final double pidPositionTolerance = 0.05;
@@ -342,7 +342,7 @@ public class Constants {
         }
 
         public static class VisionConstants {
-                public static final String aprilLimeNTName = "limelight";
+                public static final String aprilLimeNTName = "limelight-backcam";
                 public static final String neuralLimeNTName = "limelight-intake";
 
                 public static final int speakerBlueCenterTagID = 7;
