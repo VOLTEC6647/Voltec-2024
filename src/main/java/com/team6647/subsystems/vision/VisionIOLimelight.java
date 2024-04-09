@@ -32,9 +32,9 @@ public class VisionIOLimelight implements VisionIO {
         }
 
         boolean doRejectUpdate = false;
-        LimelightHelpers.SetRobotOrientation("limelight",
+        LimelightHelpers.SetRobotOrientation(VisionConstants.aprilLimeNTName,
                 robotHeading.getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(VisionConstants.aprilLimeNTName);
         if (Math.abs(headingVelocity) > 720) {
             doRejectUpdate = true;
         }
