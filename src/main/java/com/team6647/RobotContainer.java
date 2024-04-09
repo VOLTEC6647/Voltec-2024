@@ -202,7 +202,7 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("VisionAlign",
                                 SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
                 NamedCommands.registerCommand("IntakeDown",
-                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(1));
+                                SuperStructure.update(SuperStructureState.INTAKING_COMPLETE).withTimeout(1));
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
@@ -329,7 +329,18 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Intake Commands --------
 
+                // Complete intaking sequence
                 OperatorConstants.TOGGLE_INTAKE
+                                .whileTrue(SuperStructure.update(SuperStructureState.INTAKING_COMPLETE))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                // Pass intake from intake to shooter
+                OperatorConstants.INDEXING
+                                .whileTrue(SuperStructure.update(SuperStructureState.INDEXING))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                // Intake only, no shooter
+                OperatorConstants.INTAKING_ONLY
                                 .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 

@@ -56,6 +56,8 @@ public class Constants {
                 /* Driver 2 */
 
                 public static final Trigger TOGGLE_INTAKE = driverController2.povRight(),
+                                INDEXING = driverController2.povUp(),
+                                INTAKING_ONLY = driverController2.povDown(),
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = driverController2.b(),
                                 SHOOT_SUBWOOFER = driverController2.a(),
