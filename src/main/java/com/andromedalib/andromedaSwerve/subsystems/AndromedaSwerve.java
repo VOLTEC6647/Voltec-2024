@@ -212,6 +212,15 @@ public class AndromedaSwerve extends SubsystemBase {
   }
 
   /**
+   * Gets the heading velocity of the robot in degrees
+   * 
+   * @return Heading velocity
+   */
+  public double getHeadingVelocity() {
+    return gyroInputs.yawVelocityDegrees;
+  }
+
+  /**
    * Sets the modules states
    * 
    * @param desiredStates Desired SwerveModuleState array
@@ -321,7 +330,8 @@ public class AndromedaSwerve extends SubsystemBase {
    * @param timestampLatency   The latency of the vision system
    * @param standardDeviations The standard deviations of the vision measurements
    */
-  public static void addVisionMeasurements(Pose2d observedPose, double timestampLatency, Vector<N3> standardDeviations) {
+  public static void addVisionMeasurements(Pose2d observedPose, double timestampLatency,
+      Vector<N3> standardDeviations) {
     poseEstimator.addVisionMeasurement(observedPose, timestampLatency, standardDeviations);
   }
 

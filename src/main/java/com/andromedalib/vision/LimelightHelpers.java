@@ -883,6 +883,17 @@ public class LimelightHelpers {
         setLimelightNTDoubleArray(limelightName, "crop", entries);
     }
 
+    /**
+     * Sets the robot orientation
+     * 
+     * @param limelightName
+     * @param yaw Yaw in degrees
+     * @param yawRate
+     * @param pitch
+     * @param pitchRate
+     * @param roll
+     * @param rollRate
+     */
     public static void SetRobotOrientation(String limelightName, double yaw, double yawRate,
             double pitch, double pitchRate,
             double roll, double rollRate) {
