@@ -36,7 +36,7 @@ public class IntakeCommands {
                                                 intakeSubsystem,
                                                 IntakeRollerState.STOPPED),
                                 new IntakeHome(intakePivotSubsystem),
-                                new IntakeRollerTarget(
+                                 new IntakeRollerTarget(
                                                 intakeSubsystem,
                                                 IntakeRollerState.INTAKING));
         }

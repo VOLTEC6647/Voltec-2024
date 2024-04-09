@@ -81,6 +81,7 @@ public class RobotContainer extends SuperRobotContainer {
         public static ShooterRollerSubsystem shooterRollerSubsystem;
         public static VisionSubsystem visionSubsytem;
         public static NeuralVisionSubsystem neuralVisionSubsystem;
+        public static RobotState robotState;
 
         private static final LEDSubsystem leds = LEDSubsystem.getInstance();
 
@@ -180,6 +181,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 break;
                 }
                 superStructure = SuperStructure.getInstance();
+                robotState = RobotState.getInstance();
 
                 // -------- Auto Declaration --------
 

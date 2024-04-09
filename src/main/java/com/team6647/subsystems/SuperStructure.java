@@ -10,6 +10,7 @@ package com.team6647.subsystems;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.team6647.RobotContainer;
+import com.team6647.RobotState;
 import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeHome;
@@ -216,7 +217,7 @@ public class SuperStructure {
                 setGoalCommand(SuperStructureState.SHOOTING_SPEAKER),
                 new InstantCommand(() -> {
                     ShootingParameters ampParams = ShootingCalculatorUtil.getShootingParameters(
-                            andromedaSwerve.getPose(),
+                            RobotState.getPose(),
                             AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
 
                     updateShootingParameters(ampParams);

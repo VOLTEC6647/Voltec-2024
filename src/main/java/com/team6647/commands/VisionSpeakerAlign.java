@@ -7,6 +7,7 @@ package com.team6647.commands;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.team6647.RobotState;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.drive.Drive;
 import com.team6647.subsystems.drive.Drive.DriveMode;
@@ -51,7 +52,7 @@ public class VisionSpeakerAlign extends Command {
 
   @Override
   public void execute() {
-    this.parameters = ShootingCalculatorUtil.getShootingParameters(swerve.getPose(),
+    this.parameters = ShootingCalculatorUtil.getShootingParameters(RobotState.getPose(),
         speakerPose);
 
     SuperStructure.updateShootingParameters(parameters);

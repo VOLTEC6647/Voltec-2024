@@ -22,8 +22,6 @@ public class Robot extends SuperRobot {
 
   @Override
   public void robotInit() {
-    // Pathfinding.setPathfinder(new LocalADStarAK());
-
     System.out.println("[Init] Starting AdvantageKit");
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);

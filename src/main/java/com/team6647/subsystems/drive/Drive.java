@@ -19,6 +19,7 @@ import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.team6647.RobotState;
 import com.team6647.subsystems.drive.controllers.HeadingController;
 import com.team6647.subsystems.drive.controllers.TeleopController;
 import com.team6647.util.Constants.DriveConstants;
@@ -46,11 +47,12 @@ public class Drive extends AndromedaSwerve {
     private TeleopController teleopController = new TeleopController();
     private HeadingController headingController = new HeadingController();
 
+
     private Drive(GyroIO gyroIO, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig andromedaProfile) {
-        super(gyroIO, modulesIO, andromedaProfile);
+        super(gyroIO, modulesIO, andromedaProfile, RobotState.getInstance());
         AutoBuilder.configureHolonomic(
-                this::getPose,
-                this::resetPose,
+                RobotState::getPose,
+                RobotState::resetPose,
                 this::getRobotRelativeChassisSpeeds,
                 this::drive,
                 DriveConstants.holonomicPathConfig,

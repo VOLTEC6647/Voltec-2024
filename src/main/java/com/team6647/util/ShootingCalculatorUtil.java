@@ -22,62 +22,6 @@ public class ShootingCalculatorUtil {
                         double flywheelRPM) {
         }
 
-        /*
-         * public static ShootingParameters calculateShootingParameters(Pose2d
-         * robotPositionField,
-         * ChassisSpeeds currentRobotSpeed,
-         * Rotation2d robotAngle) {
-         * 
-         * Rotation2d speakerToRobotAngle = robotPositionField.getTranslation()
-         * .minus(AllianceFlipUtil
-         * .apply(FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()))
-         * .getAngle();
-         * 
-         * Pose2d futurePose = new Pose2d(
-         * robotPositionField.getTranslation().plus(
-         * new Translation2d(currentRobotSpeed.vxMetersPerSecond * 0.5,
-         * currentRobotSpeed.vyMetersPerSecond * 0.5)),
-         * robotPositionField.getRotation().plus(robotAngle));
-         * 
-         * // Calculate the robot to speaker distance
-         * double robotToSpeakerDistance = futurePose.getTranslation()
-         * .getDistance(AllianceFlipUtil
-         * .apply(FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()));
-         * 
-         * double flywheelRPM =
-         * ShooterConstants.shooterRPMMap.get(robotToSpeakerDistance);
-         * double pivotAngle =
-         * ShooterConstants.shooterPivotMap.get(robotToSpeakerDistance);
-         * 
-         * return new ShootingParameters(currentRobotSpeed, speakerToRobotAngle,
-         * pivotAngle,
-         * flywheelRPM);
-         * }
-         */
-
-        /*
-         * public static ShootingParameters getShootingParameters(Pose2d robotPose2d,
-         * ChassisSpeeds currentRobotSpeed) {
-         * Translation2d robotTranslation = calculateShootingWhileDriving(robotPose2d,
-         * currentRobotSpeed);
-         * 
-         * Rotation2d speakerToRobotAngle = robotPose2d.getTranslation()
-         * .minus(AllianceFlipUtil
-         * .apply(FieldConstants.Speaker.centerSpeakerOpening.toTranslation2d()))
-         * .getAngle();
-         * 
-         * Translation2d speakerPosition =
-         * AllianceFlipUtil.apply(FieldConstants.Speaker.centerSpeakerOpening
-         * .toTranslation2d());
-         * 
-         * return new ShootingParameters(robotTranslation, speakerToRobotAngle,
-         * ShooterConstants.shooterPivotMap.get(speakerPosition.getDistance(
-         * robotTranslation)),
-         * ShooterConstants.shooterRPMMap.get(speakerPosition.getDistance(
-         * robotTranslation)));
-         * }
-         */
-
         public static ShootingParameters getShootingParameters(Pose2d robotPose, Translation2d targetlocation) {
 
                 Translation2d robotToTarget = targetlocation.minus(robotPose.getTranslation());

@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.team6647.RobotContainer;
+import com.team6647.RobotState;
 import com.team6647.util.Constants.VisionConstants;
 
 import edu.wpi.first.math.VecBuilder;
@@ -50,16 +51,7 @@ public class VisionSubsystem extends SubsystemBase {
     if (inputs.hasTarget) {
       if (inputs.targetDistance < 5) {
 
-        double xyStdDev = 0.035
-            * Math.pow(inputs.targetDistance, 2.0)
-            * 1;
-/* 
-        Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(xyStdDev, xyStdDev,
-            edu.wpi.first.math.util.Units.degreesToRadians(50));
- */
-        Logger.recordOutput("Vision/StandarDev", xyStdDev);
-
-        AndromedaSwerve.addVisionMeasurements(inputs.estimatedPose2d, inputs.timestampLatency,
+        RobotState.addVisionMeasurements(inputs.estimatedPose2d, inputs.timestampLatency,
             VecBuilder.fill(.6, .6, 9999999));
       }
     }
