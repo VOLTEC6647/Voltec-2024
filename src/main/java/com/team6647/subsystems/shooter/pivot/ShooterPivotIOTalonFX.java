@@ -140,7 +140,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 inputs.arbitraryFeedforward = cosineScalar * maxGravityFF;
 
                 shooterPivotRightMotor.setControl(
-                                motionMagicVoltage.withPosition(setpoint));
+                                motionMagicVoltage.withPosition(setpoint).withEnableFOC(true));
         }
 
         @Override
