@@ -27,6 +27,7 @@ public class VisionIOLimelight implements VisionIO {
 
     @Override
     public synchronized void updateInputs(VisionIOInputs inputs, Rotation2d robotHeading, double headingVelocity) {
+        inputs.currentPipelineNumber = (int) LimelightHelpers.getCurrentPipelineIndex(VisionConstants.aprilLimeNTName);
         if (AllianceFlipUtil.shouldFlip()) {
             robotHeading.rotateBy(Rotation2d.fromDegrees(180));
         }
@@ -34,7 +35,8 @@ public class VisionIOLimelight implements VisionIO {
         boolean doRejectUpdate = false;
         LimelightHelpers.SetRobotOrientation(VisionConstants.aprilLimeNTName,
                 robotHeading.getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(VisionConstants.aprilLimeNTName);
+        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers
+                .getBotPoseEstimate_wpiBlue_MegaTag2(VisionConstants.aprilLimeNTName);
         if (Math.abs(headingVelocity) > 720) {
             doRejectUpdate = true;
         }
@@ -51,6 +53,10 @@ public class VisionIOLimelight implements VisionIO {
         if (!(result.botpose[0] == 0 && result.botpose[1] == 0) &&
                 LimelightHelpers.getTA(VisionConstants.aprilLimeNTName) > 0.1) {
             inputs.hasTarget = true;
+
+            inputs.TX = LimelightHelpers.getTX(VisionConstants.aprilLimeNTName);
+            inputs.TY = LimelightHelpers.getTY(VisionConstants.aprilLimeNTName);
+            inputs.targetDistance = computeTagDistance(inputs.estimatedPose2d);
 
             try {
                 inputs.targetID = (int) LimelightHelpers.getFiducialID(VisionConstants.aprilLimeNTName);

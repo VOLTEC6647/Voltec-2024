@@ -52,7 +52,7 @@ public class VisionSubsystem extends SubsystemBase {
       if (inputs.targetDistance < 5) {
 
         RobotState.addVisionMeasurements(inputs.estimatedPose2d, inputs.timestampLatency,
-            VecBuilder.fill(.6, .6, 9999999));
+            VecBuilder.fill(.3, .3, 9999999));
       }
     }
   }

@@ -23,6 +23,8 @@ public interface ShooterPivotIO {
 
         public double shooterPivotLeftMotorAppliedVolts = 0.0;
         public double shooterPivotRightMotorAppliedVolts = 0.0;
+        public double shooterPivotLeftMotorCurrent = 0.0;
+        public double shooterPivotRightMotorCurrent = 0.0;
 
         public double shooterPivotLeftMotorTemperatureCelsius = 0.0;
         public double shooterPivotRightMotorTemperatureCelsius = 0.0;

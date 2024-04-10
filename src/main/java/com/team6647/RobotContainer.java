@@ -23,9 +23,11 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
+import com.team6647.commands.VisionAmpAlign;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.drive.Drive;
+import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
@@ -88,6 +90,8 @@ public class RobotContainer extends SuperRobotContainer {
         public static SuperStructure superStructure;
 
         private static LoggedDashboardChooser<Command> autoDashboardChooser;
+
+        SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
         private RobotContainer() {
         }
@@ -253,8 +257,6 @@ public class RobotContainer extends SuperRobotContainer {
                                                 .withTimeout(3));
         }
 
-        SlewRateLimiter xLimiter, yLimiter, turningLimiter;
-
         @Override
         public void configureBindings() {
                 xLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAcceleration);
@@ -264,37 +266,6 @@ public class RobotContainer extends SuperRobotContainer {
                 andromedaSwerve.setDefaultCommand(
                                 andromedaSwerve.run(
                                                 () -> {
-
-                                                        /*
-                                                         * double linearMagnitude = MathUtil.applyDeadband(
-                                                         * Math.hypot(-OperatorConstants.driverController1
-                                                         * .getLeftX(),
-                                                         * -OperatorConstants.driverController1
-                                                         * .getLeftY()),
-                                                         * 0.1);
-                                                         * Rotation2d linearDirection = new Rotation2d(
-                                                         * -OperatorConstants.driverController1
-                                                         * .getLeftX(),
-                                                         * -OperatorConstants.driverController1
-                                                         * .getLeftY());
-                                                         * 
-                                                         * // Calcaulate new linear velocity
-                                                         * Translation2d linearVelocity = new Pose2d(new
-                                                         * Translation2d(),
-                                                         * linearDirection)
-                                                         * .transformBy(new Transform2d(linearMagnitude,
-                                                         * 0.0, new Rotation2d()))
-                                                         * .getTranslation();
-                                                         * 
-                                                         * andromedaSwerve.acceptTeleopInputs(
-                                                         * linearVelocity,
-                                                         * () -> MathUtil.applyDeadband(
-                                                         * -OperatorConstants.driverController1
-                                                         * .getRightX(),
-                                                         * 0.1),
-                                                         * () -> true);
-                                                         */
-
                                                         double ySpeed = yLimiter
                                                                         .calculate(-OperatorConstants.driverController1
                                                                                         .getLeftY());
@@ -319,9 +290,11 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Gyro Commands --------
 
+                OperatorConstants.RESET_GYRO.whileTrue(SuperStructure.goToAmpBlue()).onFalse(new InstantCommand(()-> andromedaSwerve.setMDriveMode(DriveMode.TELEOP)));
+/* 
                 OperatorConstants.RESET_GYRO
                                 .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
-
+ */
                 /* Driver 2 */
 
                 OperatorConstants.FORCE_IDLE

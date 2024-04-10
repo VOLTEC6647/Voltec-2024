@@ -41,6 +41,8 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
         private final StatusSignal<Double> cancoderAbsoluteVelocity;
         private final StatusSignal<Double> shooterPivotLeftMotorTemperature;
         private final StatusSignal<Double> shooterPivotRightMotorTemperature;
+        private final StatusSignal<Double> shooterPivotRightMotorCurrent;
+        private final StatusSignal<Double> shooterPivotLeftMotorCurrent;
 
         private double setpoint;
         private double horizontalPosition = -0.1552734375;
@@ -64,6 +66,8 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 cancoderAbsoluteVelocity = shooterPivotEncoder.getVelocity();
                 shooterPivotLeftMotorTemperature = shooterPivotLeftMotor.getDeviceTemp();
                 shooterPivotRightMotorTemperature = shooterPivotRightMotor.getDeviceTemp();
+                shooterPivotLeftMotorCurrent = shooterPivotLeftMotor.getSupplyCurrent();
+                shooterPivotRightMotorCurrent = shooterPivotRightMotor.getSupplyCurrent();
 
                 TalonFXConfiguration talonConfig = new TalonFXConfiguration();
                 shooterPivotRightMotor.getConfigurator().apply(new TalonFXConfiguration());
@@ -87,7 +91,9 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                                 cancoderAbsolutePosition,
                                 cancoderAbsoluteVelocity,
                                 shooterPivotLeftMotorTemperature,
-                                shooterPivotRightMotorTemperature);
+                                shooterPivotRightMotorTemperature,
+                                shooterPivotLeftMotorCurrent,
+                                shooterPivotRightMotorCurrent);
 
                 shooterPivotLeftMotor.setControl(new Follower(ShooterConstants.shooterPivotRightMotorID, true));
 
@@ -104,7 +110,11 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                                 shooterPivotLeftMotorAppliedVolts,
                                 shooterPivotRightMotorAppliedVolts,
                                 cancoderAbsolutePosition,
-                                cancoderAbsoluteVelocity);
+                                cancoderAbsoluteVelocity,
+                                shooterPivotLeftMotorTemperature,
+                                shooterPivotRightMotorTemperature,
+                                shooterPivotLeftMotorCurrent,
+                                shooterPivotRightMotorCurrent);
 
                 inputs.cancoderAbsolutePosition = cancoderAbsolutePosition.getValueAsDouble() * 360;
 
@@ -126,18 +136,23 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
                 inputs.shooterPivotRightMotorTemperatureCelsius = shooterPivotRightMotorTemperature.getValueAsDouble();
 
-                inputs.inTolerance = Math.abs(cancoderAbsolutePosition.getValueAsDouble() - setpoint) < ShooterConstants.positionTolerance;
+                inputs.shooterPivotLeftMotorCurrent = shooterPivotLeftMotorCurrent.getValueAsDouble();
+                
+                inputs.shooterPivotRightMotorCurrent = shooterPivotRightMotorCurrent.getValueAsDouble();
+
+                inputs.inTolerance = Math.abs(cancoderAbsolutePosition.getValueAsDouble()
+                                - setpoint) < ShooterConstants.positionTolerance;
 
                 /* Sets pivot position based on setpoint */
 
                 inputs.setpoint = setpoint * 360;
 
-                double rotations = (cancoderAbsolutePosition.getValueAsDouble() -
+/*                 double rotations = (cancoderAbsolutePosition.getValueAsDouble() -
                                 horizontalPosition);
                 double radians = Units.rotationsToRadians(rotations);
                 double cosineScalar = Math.cos(radians);
 
-                inputs.arbitraryFeedforward = cosineScalar * maxGravityFF;
+                inputs.arbitraryFeedforward = cosineScalar * maxGravityFF; */
 
                 shooterPivotRightMotor.setControl(
                                 motionMagicVoltage.withPosition(setpoint).withEnableFOC(true));
@@ -171,8 +186,8 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 talonConfig.Slot0.kI = i;
                 talonConfig.Slot0.kD = d;
 
-                talonConfig.MotionMagic.MotionMagicCruiseVelocity = 20; // Target cruise velocity of 80 rps
-                talonConfig.MotionMagic.MotionMagicAcceleration = 40; // Target acceleration of 160 rps/s (0.5 seconds)
+                talonConfig.MotionMagic.MotionMagicCruiseVelocity = 2; // Target cruise velocity of 80 rps
+                talonConfig.MotionMagic.MotionMagicAcceleration = 10; // Target acceleration of 160 rps/s (0.5 seconds)
 
                 maxGravityFF = f;
 

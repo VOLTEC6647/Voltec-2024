@@ -110,7 +110,9 @@ public class Constants {
                 public static double podiumX = Units.inchesToMeters(126.75);
                 public static double startingLineX = Units.inchesToMeters(74.111);
 
-                public static Pose2d amp = new Pose2d(new Translation2d(1.80, 7.62), Rotation2d.fromDegrees(-90));
+                //public static Pose2d amp = new Pose2d(new Translation2d(1.87, 7.52), Rotation2d.fromDegrees(-90));
+
+                public static Pose2d amp = new Pose2d(new Translation2d(1.826, 7), Rotation2d.fromDegrees(-90));
 
                 /** Staging locations for each note */
                 public static final class StagingLocations {

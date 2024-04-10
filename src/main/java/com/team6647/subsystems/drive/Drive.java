@@ -18,6 +18,7 @@ import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.team6647.RobotState;
 import com.team6647.subsystems.drive.controllers.HeadingController;
@@ -46,7 +47,6 @@ public class Drive extends AndromedaSwerve {
 
     private TeleopController teleopController = new TeleopController();
     private HeadingController headingController = new HeadingController();
-
 
     private Drive(GyroIO gyroIO, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig andromedaProfile) {
         super(gyroIO, modulesIO, andromedaProfile, RobotState.getInstance());
@@ -100,7 +100,7 @@ public class Drive extends AndromedaSwerve {
                 break;
         }
 
-        if (!DriverStation.isAutonomous()) {
+        if (!DriverStation.isAutonomous() && mDriveMode != DriveMode.PATH_FOLLOWING) {
             drive(desiredChassisSpeeds);
         }
     }
@@ -149,7 +149,6 @@ public class Drive extends AndromedaSwerve {
      * @return Command to drive to target pose
      */
     public Command getPathFindPath(Pose2d targetPose, PathConstraints constraints) {
-
         return Commands.sequence(
                 new InstantCommand(() -> {
                     mDriveMode = DriveMode.PATH_FOLLOWING;
@@ -158,10 +157,15 @@ public class Drive extends AndromedaSwerve {
                         targetPose,
                         constraints,
                         0.0,
-                        0.0))
-                .andThen(new InstantCommand(() -> {
-                    mDriveMode = DriveMode.TELEOP;
-                }));
+                        0.0));
+    }
+
+    public Command getPathFindThenFollowPath(String pathName, PathConstraints constraints) {
+        return Commands.sequence(
+                new InstantCommand(() -> {
+                    mDriveMode = DriveMode.PATH_FOLLOWING;
+                }),
+                AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile(pathName), constraints));
     }
 
     /**

@@ -7,6 +7,7 @@ package com.team6647.commands;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.andromedalib.vision.LimelightHelpers;
 import com.team6647.subsystems.drive.Drive;
 import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.subsystems.vision.VisionSubsystem;
@@ -27,16 +28,12 @@ public class VisionAmpAlign extends Command {
   private Translation2d ampPose;
 
   private double targetigVel = 0.0;
+  private double rangeVelocity = 0.0;
 
   /** Creates a new VisionAmpAlign. */
   public VisionAmpAlign(Drive swerve, VisionSubsystem visionSubsystem) {
     this.swerve = swerve;
     this.visionSubsystem = visionSubsystem;
-
-    ampPose = AllianceFlipUtil.apply(FieldConstants.amp).getTranslation();
-    ampID = AllianceFlipUtil.shouldFlip() ? VisionConstants.ampRedTagID
-        : VisionConstants.ampBlueTagID;
-    Logger.recordOutput("VisionAmpAlign/AmpPose", ampPose);
 
     addRequirements(visionSubsystem);
   }
@@ -44,6 +41,13 @@ public class VisionAmpAlign extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    ampPose = AllianceFlipUtil.apply(FieldConstants.amp).getTranslation();
+    ampID = AllianceFlipUtil.shouldFlip() ? VisionConstants.ampRedTagID
+        : VisionConstants.ampBlueTagID;
+    Logger.recordOutput("VisionAmpAlign/AmpPose", ampPose);
+
+    Logger.recordOutput("VisionAmpAlign/AmpID", ampID);
+
     visionSubsystem.changePipeline(VisionConstants.ampPipelineNumber);
   }
 
@@ -51,15 +55,24 @@ public class VisionAmpAlign extends Command {
   @Override
   public void execute() {
     if (visionSubsystem.hasTargetID(ampID)) {
-      double kP = .005;
+      double kP = .00075;
       targetigVel = visionSubsystem.getTX() * kP;
 
       targetigVel *= DriveConstants.maxAngularVelocity;
 
       targetigVel *= -1.0;
 
-      swerve.acceptTeleopInputs(() -> 0, () -> 0, () -> targetigVel, () -> false);
       swerve.setMDriveMode(DriveMode.TELEOP);
+
+      double rangeKp = .0025;
+      rangeVelocity = visionSubsystem.getTY() * rangeKp;
+      rangeVelocity *= DriveConstants.maxSpeed;
+      rangeVelocity *= -1.0;
+
+      Logger.recordOutput("VisionAmpAlign/Aiming", targetigVel);
+      Logger.recordOutput("VisionAmpAlign/Range", rangeVelocity);
+
+      swerve.acceptTeleopInputs(() -> rangeVelocity, () -> 0, () -> targetigVel, () -> false);
     }
   }
 
@@ -74,6 +87,6 @@ public class VisionAmpAlign extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return visionSubsystem.getTY() < -12;
+    return false;
   }
 }
