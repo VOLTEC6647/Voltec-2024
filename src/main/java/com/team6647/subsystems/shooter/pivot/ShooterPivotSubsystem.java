@@ -43,7 +43,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private LoggedTunableNumber pivotKp = new LoggedTunableNumber("Shooter/Pivot/kp", ShooterConstants.pivotKp);
   private LoggedTunableNumber pivotKi = new LoggedTunableNumber("Shooter/Pivot/ki", ShooterConstants.pivotKi);
   private LoggedTunableNumber pivotKd = new LoggedTunableNumber("Shooter/Pivot/kd", ShooterConstants.pivotKd);
-  private LoggedTunableNumber pivotKf = new LoggedTunableNumber("Shooter/Pivot/kf", ShooterConstants.pivotKf);
+  private LoggedTunableNumber pivotMaxVel = new LoggedTunableNumber("Shooter/Pivot/maxVel", 2);
+  private LoggedTunableNumber pivotMaxAccel = new LoggedTunableNumber("Shooter/Pivot/maxAccel", 10);
 
   private LoggedTunableNumber pivotSetpoint = new LoggedTunableNumber("Shooter/Pivot/Setpoint",
       ShooterConstants.pivotHomedPosition);
@@ -56,7 +57,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
   private double setpoint = ShooterConstants.pivotHomedPosition;
 
-  private Alert pivotEncoderAlert = new Alert("Shooter Pivot Encoder disconnected", AlertType.WARNING);
+  private Alert pivotEncoderAlert = new Alert("Shooter Pivot Encoder out of range", AlertType.WARNING);
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(1).per(Seconds.of(1)), Volts.of(2), Seconds.of(10)),
@@ -104,10 +105,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
-      io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
+      io.setPIDVel(pid[0], pid[1], pid[2], pid[3], pid[4]);
 
-      changeSetpoint(pid[4]);
-    }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
+      changeSetpoint(pid[5]);
+    }, pivotKp, pivotKi, pivotKd, pivotMaxVel, pivotMaxAccel, pivotSetpoint);
 
     if (mState != ShooterPivotState.HOMED) {
       LEDSubsystem.getInstance().pivotHomed = false;

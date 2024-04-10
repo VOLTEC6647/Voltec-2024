@@ -5,8 +5,6 @@
  */
 package com.team6647;
 
-import static edu.wpi.first.units.Units.Rotations;
-
 import java.util.function.Function;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -23,7 +21,6 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
-import com.team6647.commands.VisionAmpAlign;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.drive.Drive;

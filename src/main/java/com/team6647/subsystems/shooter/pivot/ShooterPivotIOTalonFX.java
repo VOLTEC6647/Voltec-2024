@@ -16,8 +16,6 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.team6647.util.Constants.ShooterConstants;
 
-import edu.wpi.first.math.util.Units;
-
 public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
         private static SuperTalonFX shooterPivotLeftMotor = new SuperTalonFX(
@@ -45,8 +43,6 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
         private final StatusSignal<Double> shooterPivotLeftMotorCurrent;
 
         private double setpoint;
-        private double horizontalPosition = -0.1552734375;
-        private double maxGravityFF = ShooterConstants.pivotKf;
 
         public ShooterPivotIOTalonFX() {
                 CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
@@ -97,7 +93,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
                 shooterPivotLeftMotor.setControl(new Follower(ShooterConstants.shooterPivotRightMotorID, true));
 
-                setPIDF(ShooterConstants.pivotKp, ShooterConstants.pivotKi, ShooterConstants.pivotKd, 0.0);
+                setPIDVel(ShooterConstants.pivotKp, ShooterConstants.pivotKi, ShooterConstants.pivotKd, 2, 10);
         }
 
         @Override
@@ -147,13 +143,6 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
                 inputs.setpoint = setpoint * 360;
 
-/*                 double rotations = (cancoderAbsolutePosition.getValueAsDouble() -
-                                horizontalPosition);
-                double radians = Units.rotationsToRadians(rotations);
-                double cosineScalar = Math.cos(radians);
-
-                inputs.arbitraryFeedforward = cosineScalar * maxGravityFF; */
-
                 shooterPivotRightMotor.setControl(
                                 motionMagicVoltage.withPosition(setpoint).withEnableFOC(true));
         }
@@ -172,7 +161,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
         }
 
         @Override
-        public void setPIDF(double p, double i, double d, double f) {
+        public void setPIDVel(double p, double i, double d, double maxVel, double maxAccel) {
                 TalonFXConfiguration talonConfig = new TalonFXConfiguration();
                 shooterPivotRightMotor.getConfigurator().apply(new TalonFXConfiguration());
                 talonConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
@@ -186,10 +175,8 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 talonConfig.Slot0.kI = i;
                 talonConfig.Slot0.kD = d;
 
-                talonConfig.MotionMagic.MotionMagicCruiseVelocity = 2; // Target cruise velocity of 80 rps
-                talonConfig.MotionMagic.MotionMagicAcceleration = 10; // Target acceleration of 160 rps/s (0.5 seconds)
-
-                maxGravityFF = f;
+                talonConfig.MotionMagic.MotionMagicCruiseVelocity = maxVel;
+                talonConfig.MotionMagic.MotionMagicAcceleration = maxAccel;
 
                 shooterPivotRightMotor.getConfigurator().apply(talonConfig);
         }

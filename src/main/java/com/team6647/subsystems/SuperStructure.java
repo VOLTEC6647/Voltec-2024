@@ -17,7 +17,6 @@ import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerTarget;
 import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
-import com.team6647.commands.VisionAmpAlign;
 import com.team6647.commands.VisionIntakeAlign;
 import com.team6647.commands.VisionSpeakerAlign;
 import com.team6647.subsystems.drive.Drive;

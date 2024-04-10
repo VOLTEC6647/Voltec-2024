@@ -29,9 +29,6 @@ public interface ShooterPivotIO {
         public double shooterPivotLeftMotorTemperatureCelsius = 0.0;
         public double shooterPivotRightMotorTemperatureCelsius = 0.0;
 
-        public double arbitraryFeedforward = 0.0;
-        public double pidValue = 0.0;
-        public double output = 0.0;
         public boolean inTolerance = false;
         public double setpoint;
 
@@ -44,7 +41,7 @@ public interface ShooterPivotIO {
     public default void setShooterReference(double setpoint) {
     }
 
-    public default void setPIDF(double p, double i, double d, double f) {
+    public default void setPIDVel(double p, double i, double d, double maxVel, double maxAccel) {
     }
 
     public default void disablePivot() {

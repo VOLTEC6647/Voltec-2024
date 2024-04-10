@@ -19,8 +19,6 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     private DigitalInput intakeBeamBrake = new DigitalInput(IntakeConstants.intakeBeamBrakeChannel);
 
-/*     private static Rev2mDistanceSensor distMXP;
- */
     public IntakeIOTalonFX() {
         int angleContinuousCurrentLimit = 5;
         int anglePeakCurrentLimit = 10;
@@ -39,9 +37,6 @@ public class IntakeIOTalonFX implements IntakeIO {
 
         config.OpenLoopRamps.DutyCycleOpenLoopRampPeriod = openLoopRamp;
         config.ClosedLoopRamps.DutyCycleClosedLoopRampPeriod = closedLoopRamp;
-
-        /* distMXP = new Rev2mDistanceSensor(Port.kMXP);
-        distMXP.setAutomaticMode(true); */
     }
 
     @Override
@@ -51,18 +46,6 @@ public class IntakeIOTalonFX implements IntakeIO {
         inputs.intakeMotorCurrent = intakeMotor.getStatorCurrent().getValueAsDouble();
 
         inputs.intakeBeamBrake = intakeBeamBrake.get();
-        inputs.intakeMXPRange = 0.0;
-        // ONLY UNCOMMENT WHEN USING TOF SENSOR
-        /*
-         * if (distMXP.isRangeValid()) {
-         * inputs.intakeMXPRange = distMXP.getRange();
-         * inputs.intakeBeamBrake = !(distMXP.getRange() < 5);
-         * } else {
-         * inputs.intakeBeamBrake = false;
-         * inputs.intakeMXPRange = 0.0;
-         * 
-         * }
-         */
     }
 
     @Override
