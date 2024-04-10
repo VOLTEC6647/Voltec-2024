@@ -12,6 +12,7 @@ public interface AndromedaModuleIO {
     public static class AndromedaModuleIOInputs {
         public boolean angleMotorConnected = true;
         public boolean driveMotorConnected = true;
+        public boolean cancoderConnected = true;
 
         public double driveVelocity = 0.0;
         public double drivePosition = 0.0;

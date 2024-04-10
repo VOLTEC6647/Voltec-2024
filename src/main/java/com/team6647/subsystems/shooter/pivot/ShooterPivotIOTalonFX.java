@@ -98,19 +98,22 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
         @Override
         public void updateInputs(ShooterPivotIOInputs inputs) {
-                BaseStatusSignal.refreshAll(
+                inputs.cancoderConnected = BaseStatusSignal.refreshAll(
+                                cancoderAbsolutePosition, cancoderAbsoluteVelocity).isOK();
+
+                inputs.shooterPivotLeftMotorConnected = BaseStatusSignal.refreshAll(
                                 shooterPivotLeftMotorPosition,
-                                shooterPivotRightMotorPosition,
                                 shooterPivotLeftMotorVelocity,
-                                shooterPivotRightMotorVelocity,
                                 shooterPivotLeftMotorAppliedVolts,
-                                shooterPivotRightMotorAppliedVolts,
-                                cancoderAbsolutePosition,
-                                cancoderAbsoluteVelocity,
                                 shooterPivotLeftMotorTemperature,
+                                shooterPivotLeftMotorCurrent).isOK();
+
+                inputs.shooterPivotRightMotorConnected = BaseStatusSignal.refreshAll(
+                                shooterPivotRightMotorPosition,
+                                shooterPivotRightMotorVelocity,
+                                shooterPivotRightMotorAppliedVolts,
                                 shooterPivotRightMotorTemperature,
-                                shooterPivotLeftMotorCurrent,
-                                shooterPivotRightMotorCurrent);
+                                shooterPivotRightMotorCurrent).isOK();
 
                 inputs.cancoderAbsolutePosition = cancoderAbsolutePosition.getValueAsDouble() * 360;
 
@@ -133,7 +136,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 inputs.shooterPivotRightMotorTemperatureCelsius = shooterPivotRightMotorTemperature.getValueAsDouble();
 
                 inputs.shooterPivotLeftMotorCurrent = shooterPivotLeftMotorCurrent.getValueAsDouble();
-                
+
                 inputs.shooterPivotRightMotorCurrent = shooterPivotRightMotorCurrent.getValueAsDouble();
 
                 inputs.inTolerance = Math.abs(cancoderAbsolutePosition.getValueAsDouble()

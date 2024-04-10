@@ -13,6 +13,10 @@ public interface ShooterPivotIO {
     @AutoLog
     public static class ShooterPivotIOInputs {
 
+        public boolean cancoderConnected = true;
+        public boolean shooterPivotLeftMotorConnected = true;
+        public boolean shooterPivotRightMotorConnected = true;
+
         public double cancoderAbsolutePosition = 0.0;
         public double cancoderAbsoluteVelocity = 0.0;
 

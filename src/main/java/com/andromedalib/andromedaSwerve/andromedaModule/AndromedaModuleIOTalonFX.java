@@ -89,6 +89,7 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 driveMotor.getPosition());
 
                 turnAbsolutePosition = steeringEncoder.getAbsolutePosition();
+                
                 turnPosition = steeringMotor.getPosition();
                 turnVelocity = steeringMotor.getVelocity();
                 turnAppliedVolts = steeringMotor.getMotorVoltage();
@@ -114,8 +115,9 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
 
         @Override
         public void updateInputs(AndromedaModuleIOInputs inputs) {
-                BaseStatusSignal.refreshAll(
-                                turnAbsolutePosition);
+
+                inputs.cancoderConnected = BaseStatusSignal.refreshAll(
+                                turnAbsolutePosition).isOK();
 
                 inputs.driveMotorConnected = BaseStatusSignal.refreshAll(
                                 drivePosition,
