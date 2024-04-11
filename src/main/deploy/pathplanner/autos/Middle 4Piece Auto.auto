@@ -53,68 +53,6 @@
           "data": {
             "name": "ShootBottom"
           }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "GrabPiece"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "RightToCenter"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootMiddle"
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "GrabPiece"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterToLeft"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootTop"
-          }
         }
       ]
     }
