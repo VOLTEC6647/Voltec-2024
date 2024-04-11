@@ -54,7 +54,7 @@ public class LEDSubsystem extends SubsystemBase {
   private boolean estopped = false;
 
   // LED IO
-  private final Spark leds = new Spark(1);
+  private final Spark leds = new Spark(0);
   private final Notifier loadingNotifier;
 
   // Constants

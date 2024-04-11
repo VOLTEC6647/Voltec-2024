@@ -156,6 +156,7 @@ public class SuperStructure {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.INDEXING),
                 new IntakeHome(intakePivotSubsystem),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.INDEXING),
                 Commands.deadline(
                         ShooterCommands.getShooterIntakingCommand(),
                         new IntakeRollerTarget(
@@ -261,7 +262,15 @@ public class SuperStructure {
 
     public static Command goToAmpBlue() {
         return Commands.sequence(
-                andromedaSwerve.getPathFindThenFollowPath("TeleopAmp", DriveConstants.pathFindingConstraints)
+                andromedaSwerve.getPathFindThenFollowPath("TeleopAmp", DriveConstants.pathFindingConstraints),
+                prepareScoreAmp(),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem,
+                                FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem,
+                                ShooterPivotState.SHOOTING),
+                        new ShooterRollerTarget(rollerSubsystem,
+                                ShooterFeederState.INTAKING))
         /*
          * andromedaSwerve.getPathFindPath(FieldConstants.amp,
          * DriveConstants.pathFindingConstraints),

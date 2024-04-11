@@ -19,7 +19,7 @@ public class IntakeExtend extends SequentialCommandGroup {
   public IntakeExtend() {
     addCommands(
         new IntakePush(intakePivotSubsystem),
-        new StartEndCommand(() -> intakePivotSubsystem.setIntakeVoltage(1.2),
+        new StartEndCommand(() -> intakePivotSubsystem.setIntakeVoltage(1.5),
             () -> intakePivotSubsystem.setIntakeVoltage(0), intakePivotSubsystem).withTimeout(0.3));
   }
 }

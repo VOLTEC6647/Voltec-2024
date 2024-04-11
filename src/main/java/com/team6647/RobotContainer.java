@@ -248,7 +248,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 controllerRumbleCommandFactory.apply(0.2),
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
-                new Trigger(() -> !shooterSubsystem.getBeamBrake())
+                new Trigger(() -> DriverStation.isTeleopEnabled() && !shooterSubsystem.getBeamBrake())
                                 .whileTrue(new StartEndCommand(() -> visionSubsytem.setLimelightMode(2),
                                                 () -> visionSubsytem.setLimelightMode(1), visionSubsytem)
                                                 .withTimeout(3));
@@ -287,11 +287,14 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Gyro Commands --------
 
-                OperatorConstants.RESET_GYRO.whileTrue(SuperStructure.goToAmpBlue()).onFalse(new InstantCommand(()-> andromedaSwerve.setMDriveMode(DriveMode.TELEOP)));
-/* 
-                OperatorConstants.RESET_GYRO
-                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
- */
+                OperatorConstants.RESET_GYRO.whileTrue(SuperStructure.goToAmpBlue())
+                                .onFalse(new InstantCommand(() -> andromedaSwerve.setMDriveMode(DriveMode.TELEOP))
+                                                .andThen(SuperStructure.update(SuperStructureState.IDLE)));
+                /*
+                 * OperatorConstants.RESET_GYRO
+                 * .whileTrue(new InstantCommand(() ->
+                 * andromedaSwerve.setGyroAngle(Rotations.of(0))));
+                 */
                 /* Driver 2 */
 
                 OperatorConstants.FORCE_IDLE

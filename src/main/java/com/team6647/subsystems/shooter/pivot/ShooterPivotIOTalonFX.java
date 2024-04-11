@@ -43,6 +43,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
         private final StatusSignal<Double> shooterPivotLeftMotorCurrent;
 
         private double setpoint;
+        private boolean disabled;
 
         public ShooterPivotIOTalonFX() {
                 CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
@@ -91,9 +92,9 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                                 shooterPivotLeftMotorCurrent,
                                 shooterPivotRightMotorCurrent);
 
-                shooterPivotLeftMotor.setControl(new Follower(ShooterConstants.shooterPivotRightMotorID, true));
+                shooterPivotRightMotor.setControl(new Follower(ShooterConstants.shooterPivotLeftMotorID, true));
 
-                setPIDVel(ShooterConstants.pivotKp, ShooterConstants.pivotKi, ShooterConstants.pivotKd, 2, 10);
+                setPIDVel(ShooterConstants.pivotKp, ShooterConstants.pivotKi, ShooterConstants.pivotKd, ShooterConstants.pivotMaxVel, ShooterConstants.pivotMaxAccel);
         }
 
         @Override
@@ -119,9 +120,9 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
                 inputs.cancoderAbsoluteVelocity = cancoderAbsoluteVelocity.getValueAsDouble();
 
-                inputs.shooterPivotLeftMotorPosition = shooterPivotLeftMotorPosition.getValueAsDouble();
+                inputs.shooterPivotLeftMotorPosition = shooterPivotLeftMotorPosition.getValueAsDouble() * 360;
 
-                inputs.shooterPivotRightMotorPosition = shooterPivotRightMotorPosition.getValueAsDouble() * 360;
+                inputs.shooterPivotRightMotorPosition = shooterPivotRightMotorPosition.getValueAsDouble();
 
                 inputs.shooterPivotLeftMotorVelocity = shooterPivotLeftMotorVelocity.getValueAsDouble();
 
@@ -146,8 +147,12 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
                 inputs.setpoint = setpoint * 360;
 
-                shooterPivotRightMotor.setControl(
-                                motionMagicVoltage.withPosition(setpoint).withEnableFOC(true));
+                inputs.disabled = disabled;
+
+                if (!disabled) {
+                        shooterPivotLeftMotor.setControl(
+                                        motionMagicVoltage.withPosition(setpoint).withEnableFOC(true));
+                }
         }
 
         @Override
@@ -157,6 +162,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
         @Override
         public void disablePivot() {
+                disabled = true;
                 shooterPivotLeftMotor.disable();
                 shooterPivotRightMotor.disable();
                 shooterPivotLeftMotor.stopMotor();
@@ -164,10 +170,15 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
         }
 
         @Override
+        public void enablePivot(){
+                disabled = false;
+        }
+
+        @Override
         public void setPIDVel(double p, double i, double d, double maxVel, double maxAccel) {
                 TalonFXConfiguration talonConfig = new TalonFXConfiguration();
-                shooterPivotRightMotor.getConfigurator().apply(new TalonFXConfiguration());
-                talonConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+                shooterPivotLeftMotor.getConfigurator().apply(new TalonFXConfiguration());
+                talonConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
                 talonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
                 talonConfig.Audio.BeepOnConfig = true;
                 talonConfig.Feedback.FeedbackRemoteSensorID = shooterPivotEncoder.getDeviceID();
@@ -181,7 +192,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 talonConfig.MotionMagic.MotionMagicCruiseVelocity = maxVel;
                 talonConfig.MotionMagic.MotionMagicAcceleration = maxAccel;
 
-                shooterPivotRightMotor.getConfigurator().apply(talonConfig);
+                shooterPivotLeftMotor.getConfigurator().apply(talonConfig);
         }
 
         @Override

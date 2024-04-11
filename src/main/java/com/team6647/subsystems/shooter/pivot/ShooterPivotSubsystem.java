@@ -43,8 +43,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private LoggedTunableNumber pivotKp = new LoggedTunableNumber("Shooter/Pivot/kp", ShooterConstants.pivotKp);
   private LoggedTunableNumber pivotKi = new LoggedTunableNumber("Shooter/Pivot/ki", ShooterConstants.pivotKi);
   private LoggedTunableNumber pivotKd = new LoggedTunableNumber("Shooter/Pivot/kd", ShooterConstants.pivotKd);
-  private LoggedTunableNumber pivotMaxVel = new LoggedTunableNumber("Shooter/Pivot/maxVel", 2);
-  private LoggedTunableNumber pivotMaxAccel = new LoggedTunableNumber("Shooter/Pivot/maxAccel", 10);
+  private LoggedTunableNumber pivotMaxVel = new LoggedTunableNumber("Shooter/Pivot/maxVel", ShooterConstants.pivotMaxVel);
+  private LoggedTunableNumber pivotMaxAccel = new LoggedTunableNumber("Shooter/Pivot/maxAccel", ShooterConstants.pivotMaxAccel);
 
   private LoggedTunableNumber pivotSetpoint = new LoggedTunableNumber("Shooter/Pivot/Setpoint",
       ShooterConstants.pivotHomedPosition);
@@ -57,7 +57,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
   private double setpoint = ShooterConstants.pivotHomedPosition;
 
-  private Alert pivotEncoderAlert = new Alert("Shooter Pivot Encoder out of range", AlertType.WARNING);
+  private Alert pivotEncoderRangeAlert = new Alert("Shooter Pivot Encoder out of range", AlertType.WARNING);
+  private Alert pivotEncoderDisconnectedAlert = new Alert("Shooter Pivot Encoder disconnected", AlertType.WARNING);
+  private Alert pivotLeftMotorDiconnectedAlert = new Alert("Shooter Pivot Left Motor disconnected", AlertType.WARNING);
+  private Alert pivotRightMotorDisconnectedAlert = new Alert("Shooter Pivot Right Motor disconnected", AlertType.WARNING);
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(1).per(Seconds.of(1)), Volts.of(2), Seconds.of(10)),
@@ -90,11 +93,20 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
-    pivotEncoderAlert.set(inputs.cancoderAbsolutePosition < ShooterConstants.pivotMinPosition
+    pivotEncoderRangeAlert.set(inputs.cancoderAbsolutePosition < ShooterConstants.pivotMinPosition
         || inputs.cancoderAbsolutePosition > ShooterConstants.pivotMaxPosition);
+
+    pivotEncoderDisconnectedAlert.set(!inputs.cancoderConnected);
+    pivotLeftMotorDiconnectedAlert.set(!inputs.shooterPivotLeftMotorConnected);
+    pivotRightMotorDisconnectedAlert.set(!inputs.shooterPivotRightMotorConnected);
 
     if (inputs.cancoderAbsolutePosition < ShooterConstants.pivotMinPosition
         || inputs.cancoderAbsolutePosition > ShooterConstants.pivotMaxPosition) {
+      setShooterPivotState(ShooterPivotState.EMERGENCY_DISABLED);
+      io.disablePivot();
+    }
+
+    if (!inputs.cancoderConnected) {
       setShooterPivotState(ShooterPivotState.EMERGENCY_DISABLED);
       io.disablePivot();
     }

@@ -201,10 +201,11 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 31.0;
-                public static final double pivotKi = 5.95;
-                public static final double pivotKd = 0.009;
-                public static final double pivotKf = 0.37;
+                public static final double pivotKp = 45.0;
+                public static final double pivotKi = 5.0;
+                public static final double pivotKd = 0.0;
+                public static final double pivotMaxVel = 10.0;
+                public static final double pivotMaxAccel = 2.8;
 
                 public static final double pidPositionTolerance = 0.05;
                 public static final double positionTolerance = 1;
@@ -223,7 +224,7 @@ public class Constants {
                 public static final double pivotMaxPosition = 90;
                 public static final double pivotHomedPosition = -85;
                 public static final double pivotIndexingPosition = -43;
-                public static final double pivotAmpPosition = 30;
+                public static final double pivotAmpPosition = 25;
                 public static final double pivotClimbPosition = 5;
 
                 public static final double flywheelAmpRPM = 1000;
@@ -294,7 +295,7 @@ public class Constants {
         public static class IntakeConstants {
                 public static final int intakeMotorID = 17;
 
-                public static final double homedKp = 0.05;
+                public static final double homedKp = 0.045;
                 public static final double homedKi = 0.0;// 0.00004;
                 public static final double homedKd = 0.0;
 
@@ -311,10 +312,10 @@ public class Constants {
                 public static final double homedPIDMaxVelocity = 2500.0;
                 public static final double homedPIDMaxAcceleration = 1500.0;
 
-                public static final double minIntakePivotPosition = 137.400;
-                public static final double maxIntakePivotPosition = 197.040;
-                public static final double intakeHomedPosition = 140.00;
-                public static final double intakeExtendedPosition = 195.000;
+                public static final double minIntakePivotPosition = 100.400;
+                public static final double maxIntakePivotPosition = 170.040;
+                public static final double intakeHomedPosition = 109.00;
+                public static final double intakeExtendedPosition = 166.000;
 
                 public static final int intakePivotLeftMotorID = 14;
                 public static final int intakePivotRightMotorID = 15;

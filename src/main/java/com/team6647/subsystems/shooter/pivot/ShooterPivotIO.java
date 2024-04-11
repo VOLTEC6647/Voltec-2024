@@ -35,6 +35,7 @@ public interface ShooterPivotIO {
 
         public boolean inTolerance = false;
         public double setpoint;
+        public boolean disabled = false;
 
         public boolean limitSwitchPressed = false;
     }
@@ -49,6 +50,10 @@ public interface ShooterPivotIO {
     }
 
     public default void disablePivot() {
+    }
+
+    public default void enablePivot(){
+        
     }
 
     public default void runPivotCharacterization(double volts) {
