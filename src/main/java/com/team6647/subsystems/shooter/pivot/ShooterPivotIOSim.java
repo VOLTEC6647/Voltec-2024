@@ -32,9 +32,9 @@ public class ShooterPivotIOSim implements ShooterPivotIO {
         pivotMotorSim.setInputVoltage(turnFeedback.calculate(pivotMotorSim.getAngularVelocityRPM(), setpoint));
     }
 
-    @Override
+   /*  @Override
     public void setShooterReference(double setpoint) {
         this.setpoint = setpoint;
-    }
+    } */
 
 }

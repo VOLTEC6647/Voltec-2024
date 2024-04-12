@@ -201,11 +201,13 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 45.0;
-                public static final double pivotKi = 5.0;
+                public static final double pivotKp = 32.0;
+                public static final double pivotKi = 2.0;
                 public static final double pivotKd = 0.0;
-                public static final double pivotMaxVel = 10.0;
-                public static final double pivotMaxAccel = 2.8;
+                public static final double pivotMaxVel = 25.0;
+                public static final double pivotMaxAccel = 25.0;
+                public static final double pivotHomedMaxVel = 3.0;
+                public static final double pivotHomedMaxAccel = 2.0;
 
                 public static final double pidPositionTolerance = 0.05;
                 public static final double positionTolerance = 1;

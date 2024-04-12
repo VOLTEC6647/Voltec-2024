@@ -43,8 +43,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private LoggedTunableNumber pivotKp = new LoggedTunableNumber("Shooter/Pivot/kp", ShooterConstants.pivotKp);
   private LoggedTunableNumber pivotKi = new LoggedTunableNumber("Shooter/Pivot/ki", ShooterConstants.pivotKi);
   private LoggedTunableNumber pivotKd = new LoggedTunableNumber("Shooter/Pivot/kd", ShooterConstants.pivotKd);
-  private LoggedTunableNumber pivotMaxVel = new LoggedTunableNumber("Shooter/Pivot/maxVel", ShooterConstants.pivotMaxVel);
-  private LoggedTunableNumber pivotMaxAccel = new LoggedTunableNumber("Shooter/Pivot/maxAccel", ShooterConstants.pivotMaxAccel);
+  private LoggedTunableNumber pivotMaxVel = new LoggedTunableNumber("Shooter/Pivot/maxVel",
+      ShooterConstants.pivotMaxVel);
+  private LoggedTunableNumber pivotMaxAccel = new LoggedTunableNumber("Shooter/Pivot/maxAccel",
+      ShooterConstants.pivotMaxAccel);
 
   private LoggedTunableNumber pivotSetpoint = new LoggedTunableNumber("Shooter/Pivot/Setpoint",
       ShooterConstants.pivotHomedPosition);
@@ -60,7 +62,8 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private Alert pivotEncoderRangeAlert = new Alert("Shooter Pivot Encoder out of range", AlertType.WARNING);
   private Alert pivotEncoderDisconnectedAlert = new Alert("Shooter Pivot Encoder disconnected", AlertType.WARNING);
   private Alert pivotLeftMotorDiconnectedAlert = new Alert("Shooter Pivot Left Motor disconnected", AlertType.WARNING);
-  private Alert pivotRightMotorDisconnectedAlert = new Alert("Shooter Pivot Right Motor disconnected", AlertType.WARNING);
+  private Alert pivotRightMotorDisconnectedAlert = new Alert("Shooter Pivot Right Motor disconnected",
+      AlertType.WARNING);
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(Volts.of(1).per(Seconds.of(1)), Volts.of(2), Seconds.of(10)),
@@ -112,14 +115,14 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     if (mState == ShooterPivotState.EMERGENCY_DISABLED) {
-      io.setShooterReference(inputs.cancoderAbsolutePosition);
+      io.setShooterReference(inputs.cancoderAbsolutePosition, false);
       io.disablePivot();
     }
 
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
       io.setPIDVel(pid[0], pid[1], pid[2], pid[3], pid[4]);
 
-      changeSetpoint(pid[5]);
+      changeSetpoint(pid[5], false);
     }, pivotKp, pivotKi, pivotKd, pivotMaxVel, pivotMaxAccel, pivotSetpoint);
 
     if (mState != ShooterPivotState.HOMED) {
@@ -136,8 +139,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     AMP(ShooterConstants.pivotAmpPosition),
     INDEXING(ShooterConstants.pivotIndexingPosition),
     CLIMBING(ShooterConstants.pivotClimbPosition),
-    EMERGENCY_DISABLED(-1),
-    CUSTOM(-1);
+    EMERGENCY_DISABLED(-1);
 
     private final double setpoint;
   }
@@ -147,27 +149,25 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     switch (state) {
       case HOMED:
-        changeSetpoint(state.setpoint);
+        changeSetpoint(state.setpoint, true);
         break;
       case SHOOTING:
-        changeSetpoint(currentParameters.pivotAngle());
+        changeSetpoint(currentParameters.pivotAngle(), false);
         break;
       case AMP:
-        changeSetpoint(state.setpoint);
+        changeSetpoint(state.setpoint, false);
         break;
       case INDEXING:
-        changeSetpoint(state.setpoint);
+        changeSetpoint(state.setpoint, false);
         break;
       case CLIMBING:
-        changeSetpoint(state.setpoint);
+        changeSetpoint(state.setpoint, false);
         break;
       case EMERGENCY_DISABLED:
-        changeSetpoint(inputs.cancoderAbsolutePosition);
+        changeSetpoint(inputs.cancoderAbsolutePosition, false);
         io.disablePivot();
         break;
-      case CUSTOM:
-        changeSetpoint(setpoint);
-        break;
+
     }
   }
 
@@ -176,7 +176,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
    * 
    * @param newSetpoint The new setpoint
    */
-  public void changeSetpoint(double newSetpoint) {
+  public void changeSetpoint(double newSetpoint, boolean goingHome) {
     if (newSetpoint > ShooterConstants.pivotMaxPosition || newSetpoint < ShooterConstants.pivotMinPosition) {
       newSetpoint = Functions.clamp(newSetpoint, ShooterConstants.pivotMinPosition,
           ShooterConstants.pivotMaxPosition);
@@ -184,7 +184,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     setpoint = newSetpoint;
 
-    io.setShooterReference(newSetpoint);
+    io.setShooterReference(newSetpoint, goingHome);
   }
 
   public boolean inTolerance() {

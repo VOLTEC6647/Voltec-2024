@@ -43,7 +43,7 @@ public interface ShooterPivotIO {
     public default void updateInputs(ShooterPivotIOInputs inputs) {
     }
 
-    public default void setShooterReference(double setpoint) {
+    public default void setShooterReference(double setpoint, boolean homed) {
     }
 
     public default void setPIDVel(double p, double i, double d, double maxVel, double maxAccel) {
