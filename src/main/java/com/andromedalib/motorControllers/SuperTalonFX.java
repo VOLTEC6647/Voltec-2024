@@ -176,6 +176,12 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
         getConfigurator().apply(driveMotorConfiguration);
     }
 
+    public SuperTalonFX(int motorID, GlobalIdleMode brake, String canBus) {
+        super(motorID, canBus);
+        getConfigurator().apply(new TalonFXConfiguration());
+        setMode(brake);
+    }
+
     @Override
     public void outputTelemetry(String tabName) {
         Shuffleboard.getTab(tabName).add("TalonFX Motor " + getDeviceID() + "Voltage:", getSupplyVoltage());

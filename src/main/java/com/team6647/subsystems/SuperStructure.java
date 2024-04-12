@@ -79,6 +79,7 @@ public class SuperStructure {
         AUTO_AMP,
         SHOOTING_SPEAKER,
         SHOOTING_SUBWOOFER,
+        AUTO_SHOOTING_SUBWOOFER,
         SEND_NOTES,
         SCORING_AMP,
         PREPARING_AMP,
@@ -108,6 +109,8 @@ public class SuperStructure {
                 return shootingStationary();
             case SHOOTING_SUBWOOFER:
                 return shootingSubwoofer();
+            case AUTO_SHOOTING_SUBWOOFER:
+                return autoShootingSubwoofer();
             case SCORING_AMP:
                 return scoreAmp();
             case PREPARING_AMP:
@@ -128,6 +131,22 @@ public class SuperStructure {
         }
 
         return Commands.waitSeconds(0);
+    }
+
+    private static Command autoShootingSubwoofer() {
+        return Commands.deadline(
+                Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
+                Commands.sequence(
+                        setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
+                        new InstantCommand(() -> {
+                            ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 3000);
+
+                            updateShootingParameters(ampParams);
+                        }),
+                        Commands.parallel(
+                                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
     }
 
     private static Command setGoalCommand(SuperStructureState state) {

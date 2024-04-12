@@ -56,6 +56,6 @@ public interface ShooterPivotIO {
         
     }
 
-    public default void runPivotCharacterization(double volts) {
+    public default void runPivotVolts(double volts) {
     }
 }

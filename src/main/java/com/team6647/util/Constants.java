@@ -64,7 +64,8 @@ public class Constants {
                                 SEND_NOTES = driverController2.y(),
                                 CLIMB_TOP = driverController2.povUp(), INTAKE_FEEDER = driverController2.rightTrigger(),
                                 EXHAUST_FEEDER = driverController2.leftTrigger(),
-                                FORCE_IDLE = driverController2.povLeft();
+                                FORCE_IDLE = driverController2.povLeft(),
+                                RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick());
         }
 
         public static class RobotConstants {

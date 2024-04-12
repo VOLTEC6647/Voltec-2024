@@ -28,6 +28,7 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 public class ShooterPivotSubsystem extends SubsystemBase {
@@ -35,7 +36,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private static ShooterPivotSubsystem instance;
 
   @AutoLogOutput(key = "Shooter/Pivot/State")
-  public ShooterPivotState mState = ShooterPivotState.HOMED;
+  @Getter private ShooterPivotState mState = ShooterPivotState.HOMED;
 
   private ShooterPivotIO io;
   private ShooterPivotIOInputsAutoLogged inputs = new ShooterPivotIOInputsAutoLogged();
@@ -69,7 +70,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
       new SysIdRoutine.Config(Volts.of(1).per(Seconds.of(1)), Volts.of(2), Seconds.of(10)),
       new SysIdRoutine.Mechanism(
           (Measure<Voltage> volts) -> {
-            runPivotCharacterization(volts.in(Units.Volts));
+            runPivotVolts(volts.in(Units.Volts));
           },
           log -> {
             log.motor("pivot")
@@ -195,10 +196,14 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     currentParameters = newParameters;
   }
 
+  public void enablePivot() {
+    io.enablePivot();
+  }
+
   /* Characterization */
 
-  public void runPivotCharacterization(double volts) {
-    io.runPivotCharacterization(volts);
+  public void runPivotVolts(double volts) {
+    io.runPivotVolts(volts);
   }
 
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {

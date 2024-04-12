@@ -13,6 +13,7 @@ import com.revrobotics.SparkPIDController;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -30,11 +31,11 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
     private static SuperTalonFX leftIntakePivotMotor = new SuperTalonFX(
             IntakeConstants.intakePivotLeftMotorID,
             GlobalIdleMode.Brake,
-            IntakeConstants.intakePivotLeftMotorInverted);
+            IntakeConstants.intakePivotLeftMotorInverted, "6647_Mechanisms");
     private static SuperTalonFX rightIntakePivotMotor = new SuperTalonFX(
             IntakeConstants.intakePivotRightMotorID,
             GlobalIdleMode.Brake,
-            IntakeConstants.intakePivotRightMotorInverted);
+            IntakeConstants.intakePivotRightMotorInverted, "6647_Mechanisms");
 
     private static AbsoluteEncoder pivotEncoder;
 
@@ -77,8 +78,9 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
 
     @Override
     public void setIntakeVoltage(double volts) {
-        leftIntakePivotMotor.setVoltage(volts);
-        rightIntakePivotMotor.setVoltage(volts);
+        VoltageOut voltage = new VoltageOut(volts);
+        leftIntakePivotMotor.setControl(voltage.withEnableFOC(true));
+        rightIntakePivotMotor.setControl(voltage.withEnableFOC(true));
     }
 
     @Override

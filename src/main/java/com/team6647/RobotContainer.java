@@ -5,6 +5,8 @@
  */
 package com.team6647;
 
+import static edu.wpi.first.units.Units.Rotations;
+
 import java.util.function.Function;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -60,12 +62,12 @@ import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -189,7 +191,7 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("InitIntake",
                                 new InitIntake(intakePivotSubsystem));
                 NamedCommands.registerCommand("ShootSubwoofer",
-                                SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).withTimeout(7));
+                                SuperStructure.update(SuperStructureState.AUTO_SHOOTING_SUBWOOFER));
                 NamedCommands.registerCommand("ShootMiddle",
                                 SuperStructure.autoMiddleCommand().withTimeout(7));
                 NamedCommands.registerCommand("ShootTop",
@@ -200,6 +202,10 @@ public class RobotContainer extends SuperRobotContainer {
                                 SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
                 NamedCommands.registerCommand("GrabPiece",
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING));
+                NamedCommands.registerCommand("ExtendIntake",
+                                SuperStructure.update(SuperStructureState.INTAKING));
+                NamedCommands.registerCommand("IndexPiece",
+                                SuperStructure.update(SuperStructureState.INDEXING));
                 NamedCommands.registerCommand("Idle",
                                 SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
                 NamedCommands.registerCommand("VisionAlign",
@@ -234,9 +240,11 @@ public class RobotContainer extends SuperRobotContainer {
                 new Trigger(
                                 () -> DriverStation.isTeleopEnabled()
                                                 && DriverStation.getMatchTime() > 0
-                                                && DriverStation.getMatchTime() <= Math.round(30.0))
-                                .onTrue(controllerRumbleCommandFactory.apply(0.5));
-
+                                                && DriverStation.getMatchTime() <= Math.round(25.0))
+                                .onTrue(Commands.sequence(
+                                                controllerRumbleCommandFactory.apply(1.0),
+                                                Commands.waitSeconds(0.1),
+                                                controllerRumbleCommandFactory.apply(1.0)));
                 new Trigger(
                                 () -> DriverStation.isTeleopEnabled()
                                                 && DriverStation.getMatchTime() > 0
@@ -249,9 +257,12 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
                 new Trigger(() -> DriverStation.isTeleopEnabled() && !shooterSubsystem.getBeamBrake())
-                                .whileTrue(new StartEndCommand(() -> visionSubsytem.setLimelightMode(2),
-                                                () -> visionSubsytem.setLimelightMode(1), visionSubsytem)
-                                                .withTimeout(3));
+                                .onTrue(Commands.sequence(
+                                                controllerRumbleCommandFactory.apply(0.4),
+                                                Commands.waitSeconds(0.1),
+                                                controllerRumbleCommandFactory.apply(0.4)
+
+                                ));
         }
 
         @Override
@@ -287,18 +298,19 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Gyro Commands --------
 
-                OperatorConstants.RESET_GYRO.whileTrue(SuperStructure.goToAmpBlue())
+                OperatorConstants.RESET_GYRO
+                                .whileTrue(new InstantCommand(
+                                                () -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
+
+                OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmpBlue())
                                 .onFalse(new InstantCommand(() -> andromedaSwerve.setMDriveMode(DriveMode.TELEOP))
                                                 .andThen(SuperStructure.update(SuperStructureState.IDLE)));
-                /*
-                 * OperatorConstants.RESET_GYRO
-                 * .whileTrue(new InstantCommand(() ->
-                 * andromedaSwerve.setGyroAngle(Rotations.of(0))));
-                 */
+
                 /* Driver 2 */
 
                 OperatorConstants.FORCE_IDLE
-                                .whileTrue(SuperStructure.update(SuperStructureState.IDLE));
+                                .whileTrue(SuperStructure.update(SuperStructureState.IDLE))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Superstructure --------
 
@@ -359,6 +371,9 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 ShooterFeederState.STOPPED),
                                                 new IntakeRollerStartEnd(intakeSubsystem, IntakeRollerState.EXHAUSTING,
                                                                 IntakeRollerState.STOPPED)));
+
+                // -------- Re enabling pivot --------
+                
         }
 
         public void configSysIdBindings() {

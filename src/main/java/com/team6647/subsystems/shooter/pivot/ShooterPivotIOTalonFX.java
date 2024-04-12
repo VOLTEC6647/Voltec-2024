@@ -215,7 +215,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
         }
 
         @Override
-        public void runPivotCharacterization(double volts) {
+        public void runPivotVolts(double volts) {
                 shooterPivotLeftMotor.setVoltage(volts);
                 shooterPivotRightMotor.setVoltage(volts);
         }
