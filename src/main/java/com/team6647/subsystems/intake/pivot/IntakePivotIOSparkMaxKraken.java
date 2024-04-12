@@ -15,6 +15,7 @@ import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.team6647.util.Constants.IntakeConstants;
+import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
@@ -31,18 +32,17 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
     private static SuperTalonFX leftIntakePivotMotor = new SuperTalonFX(
             IntakeConstants.intakePivotLeftMotorID,
             GlobalIdleMode.Brake,
-            IntakeConstants.intakePivotLeftMotorInverted, "6647_Mechanisms");
+            IntakeConstants.intakePivotLeftMotorInverted,  RobotConstants.mechanismsCANnivore);
     private static SuperTalonFX rightIntakePivotMotor = new SuperTalonFX(
             IntakeConstants.intakePivotRightMotorID,
             GlobalIdleMode.Brake,
-            IntakeConstants.intakePivotRightMotorInverted, "6647_Mechanisms");
+            IntakeConstants.intakePivotRightMotorInverted,  RobotConstants.mechanismsCANnivore);
 
     private static AbsoluteEncoder pivotEncoder;
 
     private SparkPIDController pushingController;
 
     private DigitalInput pushingLimitSwitch = new DigitalInput(IntakeConstants.pushingLimitSwitch);
-    private DigitalInput intakeLimitSwitch = new DigitalInput(IntakeConstants.intakeLimitSwitch);
 
     public IntakePivotIOSparkMaxKraken() {
         pushingController = pushingPivotMotor.getPIDController();
@@ -72,7 +72,6 @@ public class IntakePivotIOSparkMaxKraken implements IntakePivotIO {
         inputs.intakePivotRightMotorPosition = rightIntakePivotMotor.getPosition().getValueAsDouble();
         inputs.intakePivtoRightMotorCurrent = rightIntakePivotMotor.getStatorCurrent().getValueAsDouble();
 
-        inputs.intakeLimitSwitchPressed = intakeLimitSwitch.get();
         inputs.pushingLimitSwitchPressed = pushingLimitSwitch.get();
     }
 

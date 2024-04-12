@@ -32,8 +32,6 @@ public interface IntakePivotIO {
         public double intakePivotAbsoluteEncoderPosition = 0.0;
 
         public boolean pushingLimitSwitchPressed = false;
-        public boolean intakeLimitSwitchPressed = false;
-
     }
 
     public default void updateInputs(IntakePivoIOInputs inputs) {

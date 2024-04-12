@@ -9,15 +9,20 @@ package com.team6647.subsystems.intake.roller;
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.team6647.util.Constants.IntakeConstants;
+import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class IntakeIOTalonFX implements IntakeIO {
 
-    private SuperTalonFX intakeMotor = new SuperTalonFX(IntakeConstants.intakeMotorID, GlobalIdleMode.Coast, false, "6647_Mechanisms");
+    private SuperTalonFX intakeMotor = new SuperTalonFX(IntakeConstants.intakeMotorID, GlobalIdleMode.Coast, false,
+            RobotConstants.mechanismsCANnivore);
 
     private DigitalInput intakeBeamBrake = new DigitalInput(IntakeConstants.intakeBeamBrakeChannel);
+
+    DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
     public IntakeIOTalonFX() {
         int angleContinuousCurrentLimit = 5;
@@ -50,6 +55,6 @@ public class IntakeIOTalonFX implements IntakeIO {
 
     @Override
     public void setIntakeVelocity(double velocity) {
-        intakeMotor.set(velocity);
+        intakeMotor.setControl(dutyCycleOut.withOutput(velocity).withEnableFOC(true));
     }
 }
