@@ -57,7 +57,7 @@ public class VisionAmpAlign extends Command {
       double kP = .00075;
       targetigVel = visionSubsystem.getTX() * kP;
 
-      targetigVel *= DriveConstants.maxAngularVelocity;
+      targetigVel *= DriveConstants.maxAngularVelocityRadsPerSec;
 
       targetigVel *= -1.0;
 
@@ -65,7 +65,7 @@ public class VisionAmpAlign extends Command {
 
       double rangeKp = .0025;
       rangeVelocity = visionSubsystem.getTY() * rangeKp;
-      rangeVelocity *= DriveConstants.maxSpeed;
+      rangeVelocity *= DriveConstants.maxSpeedMetersPerSecond;
       rangeVelocity *= -1.0;
 
       Logger.recordOutput("VisionAmpAlign/Aiming", targetigVel);

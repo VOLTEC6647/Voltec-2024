@@ -34,7 +34,7 @@ public interface ShooterPivotIO {
         public double shooterPivotRightMotorTemperatureCelsius = 0.0;
 
         public boolean inTolerance = false;
-        public double setpoint;
+        public double setpoint = 0.0;
         public boolean disabled = false;
 
         public boolean limitSwitchPressed = false;
@@ -52,8 +52,8 @@ public interface ShooterPivotIO {
     public default void disablePivot() {
     }
 
-    public default void enablePivot(){
-        
+    public default void enablePivot() {
+
     }
 
     public default void runPivotVolts(double volts) {

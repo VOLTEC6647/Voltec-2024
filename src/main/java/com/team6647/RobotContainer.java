@@ -62,7 +62,6 @@ import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -302,7 +301,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(new InstantCommand(
                                                 () -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
 
-                OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmpBlue())
+                OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp())
                                 .onFalse(new InstantCommand(() -> andromedaSwerve.setMDriveMode(DriveMode.TELEOP))
                                                 .andThen(SuperStructure.update(SuperStructureState.IDLE)));
 
@@ -344,8 +343,8 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // Shooting notes to wing
 
-                OperatorConstants.SEND_NOTES
-                                .whileTrue(SuperStructure.update(SuperStructureState.SEND_NOTES))
+                OperatorConstants.SHUTTLE
+                                .whileTrue(SuperStructure.update(SuperStructureState.SHUTTLE))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Amp Commands --------
@@ -373,7 +372,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 IntakeRollerState.STOPPED)));
 
                 // -------- Re enabling pivot --------
-                
+
         }
 
         public void configSysIdBindings() {

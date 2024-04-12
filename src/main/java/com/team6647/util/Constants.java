@@ -61,7 +61,7 @@ public class Constants {
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = driverController2.b(),
                                 SHOOT_SUBWOOFER = driverController2.a(),
-                                SEND_NOTES = driverController2.y(),
+                                SHUTTLE = driverController2.y(),
                                 CLIMB_TOP = driverController2.povUp(), INTAKE_FEEDER = driverController2.rightTrigger(),
                                 EXHAUST_FEEDER = driverController2.leftTrigger(),
                                 FORCE_IDLE = driverController2.povLeft(),
@@ -72,6 +72,8 @@ public class Constants {
                 public static final Mode currentMode = Mode.SIM;
 
                 public static final boolean tuningMode = true;
+
+                public static final String mechanismsCANnivore = "6647_Mechanisms";
 
                 public static Mode getMode() {
                         if ((currentMode == Mode.SIM || currentMode == Mode.REPLAY) && RobotBase.isReal()) {
@@ -343,7 +345,6 @@ public class Constants {
                 public static final double pushingHomedPosition = 2;
 
                 public static final int pushingLimitSwitch = 9;
-                public static final int intakeLimitSwitch = 8;
                 public static final int intakeBeamBrakeChannel = 1;
         }
 
@@ -481,17 +482,16 @@ public class Constants {
                 public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
                                 moduleTranslations);
 
-                public static final double maxSpeed = 4.641013629172587;
-                public static final double maxAcceleration = maxSpeed * 0.85; // 13.804786438404268;
-                /** Radians per Second */
-                public static final double maxAngularVelocity = 11.5; // 13.804786438404268;
-                public static final double maxAngularAcceleration = 3.5; // 0.09714;
+                public static final double maxSpeedMetersPerSecond = 4.7244;
+                public static final double maxAccelerationMetersPerSecondSquared = maxSpeedMetersPerSecond * 0.85;
+                public static final double maxAngularVelocityRadsPerSec = 11.5;
+                public static final double maxAngularAccelerationRadsPerSec = 3.5;
 
                 public static final AndromedaSwerveConfig andromedaSwerveConfig = new AndromedaSwerveConfig(0.1,
                                 trackWidth,
-                                wheelBase, swerveKinematics, moduleTranslations, maxSpeed, maxAcceleration,
-                                maxAngularVelocity,
-                                maxAngularAcceleration, wheelDiameter);
+                                wheelBase, swerveKinematics, moduleTranslations, maxSpeedMetersPerSecond, maxAccelerationMetersPerSecondSquared,
+                                maxAngularVelocityRadsPerSec,
+                                maxAngularAccelerationRadsPerSec, wheelDiameter);
 
                 public static final int gyroID = 13;
 
@@ -515,7 +515,7 @@ public class Constants {
                 public static final HolonomicPathFollowerConfig holonomicPathConfig = new HolonomicPathFollowerConfig(
                                 DriveConstants.translationConstants,
                                 DriveConstants.rotationConstants,
-                                maxSpeed,
+                                maxSpeedMetersPerSecond,
                                 Math.sqrt(Math.pow(trackWidth, 2) + Math.pow(trackWidth, 2)),
                                 new ReplanningConfig());
         }

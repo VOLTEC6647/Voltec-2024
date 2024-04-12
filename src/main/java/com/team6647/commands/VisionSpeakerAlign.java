@@ -61,7 +61,7 @@ public class VisionSpeakerAlign extends Command {
       double kP = .005;
       targetigVel = visionSubsystem.getTX() * kP;
 
-      targetigVel *= DriveConstants.maxAngularVelocity;
+      targetigVel *= DriveConstants.maxAngularVelocityRadsPerSec;
 
       targetigVel *= -1.0;
 

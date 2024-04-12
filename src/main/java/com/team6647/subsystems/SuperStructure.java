@@ -34,7 +34,6 @@ import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
 import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.util.Constants.DriveConstants;
-import com.team6647.util.Constants.FieldConstants;
 import com.team6647.util.Constants.FieldConstants.Speaker;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.AllianceFlipUtil;
@@ -80,7 +79,7 @@ public class SuperStructure {
         SHOOTING_SPEAKER,
         SHOOTING_SUBWOOFER,
         AUTO_SHOOTING_SUBWOOFER,
-        SEND_NOTES,
+        SHUTTLE,
         SCORING_AMP,
         PREPARING_AMP,
         SHOOTING_TRAP,
@@ -124,7 +123,7 @@ public class SuperStructure {
             case INTAKE_ALIGN:
                 return new VisionIntakeAlign(neuralVisionSubsystem,
                         andromedaSwerve);
-            case SEND_NOTES:
+            case SHUTTLE:
                 return sendNotes();
             default:
                 break;
@@ -265,7 +264,7 @@ public class SuperStructure {
 
     private static Command sendNotes() {
         return Commands.sequence(
-                setGoalCommand(SuperStructureState.SEND_NOTES),
+                setGoalCommand(SuperStructureState.SHUTTLE),
                 new InstantCommand(() -> {
                     ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 2500);
 
@@ -279,43 +278,13 @@ public class SuperStructure {
 
     /* Pathfinding */
 
-    public static Command goToAmpBlue() {
+    public static Command goToAmp() {
         return Commands.sequence(
                 andromedaSwerve.getPathFindThenFollowPath("TeleopAmp", DriveConstants.pathFindingConstraints),
                 prepareScoreAmp(),
-                Commands.parallel(
-                        new FlywheelTarget(shooterSubsystem,
-                                FlywheelState.SHOOTING),
-                        new ShooterPivotTarget(shooterPivotSubsystem,
-                                ShooterPivotState.SHOOTING),
-                        new ShooterRollerTarget(rollerSubsystem,
-                                ShooterFeederState.INTAKING))
-        /*
-         * andromedaSwerve.getPathFindPath(FieldConstants.amp,
-         * DriveConstants.pathFindingConstraints),
-         */
-        /*
-         * ,
-         * prepareScoreAmp(),
-         * Commands.parallel(
-         * new FlywheelTarget(shooterSubsystem,
-         * FlywheelState.SHOOTING),
-         * new ShooterPivotTarget(shooterPivotSubsystem,
-         * ShooterPivotState.SHOOTING),
-         * new ShooterRollerTarget(rollerSubsystem,
-         * ShooterFeederState.INTAKING))
-         */);
-    }
-
-    public static Command goToAmpRed() {
-        return Commands.sequence(
-                andromedaSwerve.getPathFindPath(AllianceFlipUtil.forceApply(FieldConstants.amp),
-                        DriveConstants.pathFindingConstraints),
-                prepareScoreAmp(),
-                Commands.parallel(
-                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
-                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING),
-                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
+                Commands.waitSeconds(1),
+                setGoalCommand(SuperStructureState.SCORING_AMP),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
     private static Command autoScoreAmp() {

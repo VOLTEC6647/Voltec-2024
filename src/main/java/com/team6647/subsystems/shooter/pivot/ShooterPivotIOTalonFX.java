@@ -16,17 +16,18 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import org.littletonrobotics.junction.AutoLogOutput;
 
 import com.andromedalib.motorControllers.SuperTalonFX;
+import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
 public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
         private static SuperTalonFX shooterPivotLeftMotor = new SuperTalonFX(
                         ShooterConstants.shooterPivotLeftMotorID,
-                        GlobalIdleMode.Brake, "6647_Mechanisms");
+                        GlobalIdleMode.Brake, RobotConstants.mechanismsCANnivore);
 
         private static SuperTalonFX shooterPivotRightMotor = new SuperTalonFX(
                         ShooterConstants.shooterPivotRightMotorID,
-                        GlobalIdleMode.Brake, "6647_Mechanisms");
+                        GlobalIdleMode.Brake, RobotConstants.mechanismsCANnivore);
 
         private static SuperCANCoder shooterPivotEncoder;
         // private static MotionMagicVoltage motionMagicVoltage = new
@@ -60,7 +61,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
                 cancoderConfig.MagnetSensor.MagnetOffset = ShooterConstants.shooterPivotEncoderOffset;
                 shooterPivotEncoder = new SuperCANCoder(ShooterConstants.shooterPivotCANCoderID, cancoderConfig,
-                                "6647_Mechanisms");
+                                RobotConstants.mechanismsCANnivore);
 
                 shooterPivotLeftMotorPosition = shooterPivotLeftMotor.getPosition();
                 shooterPivotRightMotorPosition = shooterPivotRightMotor.getPosition();
