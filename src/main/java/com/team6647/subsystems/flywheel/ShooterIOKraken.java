@@ -13,6 +13,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -22,12 +23,12 @@ public class ShooterIOKraken implements ShooterIO {
         private static SuperTalonFX topFlywheelMotor = new SuperTalonFX(
                         ShooterConstants.flywheelTopMotorID,
                         GlobalIdleMode.Coast,
-                        true, "6647_Mechanisms");
+                        true, RobotConstants.mechanismsCANnivore);
 
         private static SuperTalonFX botttomFlywheelMotor = new SuperTalonFX(
                         ShooterConstants.flywheelBottomMotorID,
                         GlobalIdleMode.Coast,
-                        true, "6647_Mechanisms");
+                        true, RobotConstants.mechanismsCANnivore);
 
         private static DigitalInput shooterBeamBrake = new DigitalInput(ShooterConstants.shooterBeamBrakeChannel);
 
