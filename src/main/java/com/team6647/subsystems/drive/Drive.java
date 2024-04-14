@@ -41,7 +41,7 @@ public class Drive extends AndromedaSwerve {
 
     @Setter
     @AutoLogOutput(key = "Swerve/mMode")
-    private DriveMode mDriveMode = DriveMode.TELEOP;
+    public static DriveMode mDriveMode = DriveMode.TELEOP;
 
     private ChassisSpeeds desiredChassisSpeeds;
 
@@ -54,7 +54,7 @@ public class Drive extends AndromedaSwerve {
                 RobotState::getPose,
                 RobotState::resetPose,
                 this::getRobotRelativeChassisSpeeds,
-                this::drive,
+                this::acceptInputs,
                 DriveConstants.holonomicPathConfig,
                 () -> {
                     var alliance = DriverStation.getAlliance();
@@ -100,9 +100,7 @@ public class Drive extends AndromedaSwerve {
                 break;
         }
 
-        if (!DriverStation.isAutonomous() && mDriveMode != DriveMode.PATH_FOLLOWING) {
-            drive(desiredChassisSpeeds);
-        }
+        drive(desiredChassisSpeeds);
     }
 
     public enum DriveMode {
@@ -135,6 +133,11 @@ public class Drive extends AndromedaSwerve {
             BooleanSupplier fieldOrientedControl) {
         teleopController.acceptControllerInput(translation.getY(), translation.getX(),
                 rotation.getAsDouble(), fieldOrientedControl.getAsBoolean());
+    }
+
+    private void acceptInputs(ChassisSpeeds speeds) {
+        setMDriveMode(DriveMode.PATH_FOLLOWING);
+        desiredChassisSpeeds = speeds;
     }
 
     public void setTargetHeading(Rotation2d heading) {

@@ -11,6 +11,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.andromedalib.robot.SuperRobot;
+import com.team6647.subsystems.drive.Drive;
+import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.hal.AllianceStationID;
@@ -43,7 +45,7 @@ public class Robot extends SuperRobot {
     // Set up data receivers & replay source
     switch (RobotConstants.getMode()) {
       case REAL:
-        //Logger.addDataReceiver(new WPILOGWriter());
+        // Logger.addDataReceiver(new WPILOGWriter());
         Logger.addDataReceiver(new NT4Publisher());
         break;
       case SIM:
@@ -68,5 +70,11 @@ public class Robot extends SuperRobot {
     container = RobotContainer.getInstance();
     super.setRobotContainer(container, false);
     super.robotInit();
+  }
+
+  @Override
+  public void teleopInit() {
+    super.teleopInit();
+    Drive.setMDriveMode(DriveMode.TELEOP);
   }
 }

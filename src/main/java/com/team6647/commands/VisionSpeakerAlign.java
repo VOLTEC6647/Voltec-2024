@@ -66,9 +66,9 @@ public class VisionSpeakerAlign extends Command {
       targetigVel *= -1.0;
 
       swerve.acceptTeleopInputs(() -> 0, () -> 0, () -> targetigVel, () -> false);
-      swerve.setMDriveMode(DriveMode.TELEOP);
+      Drive.setMDriveMode(DriveMode.TELEOP);
     } else {
-      swerve.setMDriveMode(DriveMode.HEADING_LOCK);
+      Drive.setMDriveMode(DriveMode.HEADING_LOCK);
 
       swerve.setTargetHeading(parameters.robotAngle());
     }
@@ -79,7 +79,7 @@ public class VisionSpeakerAlign extends Command {
   public void end(boolean interrupted) {
     visionSubsystem.changePipeline(VisionConstants.odometryPipelineNumber);
 
-    swerve.setMDriveMode(DriveMode.TELEOP);
+    Drive.setMDriveMode(DriveMode.TELEOP);
   }
 
   // Returns true when the command should end.

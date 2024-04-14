@@ -157,7 +157,7 @@ public class SuperStructure {
                 ShooterCommands.getShooterIntakingCommand(),
                 setGoalCommand(SuperStructureState.INTAKING_COMPLETE),
                 Commands.sequence(
-                        IntakeCommands.getIntakeCommand(),
+                        IntakeCommands.getFullIntakeCommand(),
                         Commands.waitSeconds(0.5)))
                 .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }
@@ -189,7 +189,7 @@ public class SuperStructure {
                 ShooterCommands.getShooterIntakingCommand(),
                 setGoalCommand(SuperStructureState.AUTO_INTAKING),
                 Commands.sequence(
-                        IntakeCommands.getIntakeCommand(),
+                        IntakeCommands.getFullIntakeCommand(),
                         Commands.waitSeconds(0.5)))
                 .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
     }

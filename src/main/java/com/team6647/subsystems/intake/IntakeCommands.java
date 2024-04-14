@@ -24,7 +24,7 @@ public class IntakeCommands {
         private static IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
         private static IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
 
-        public static final Command getIntakeCommand() {
+        public static final Command getFullIntakeCommand() {
 
                 Debouncer debounce = new Debouncer(0.1);
 
@@ -36,8 +36,21 @@ public class IntakeCommands {
                                                 intakeSubsystem,
                                                 IntakeRollerState.STOPPED),
                                 new IntakeHome(intakePivotSubsystem),
-                                 new IntakeRollerTarget(
+                                new IntakeRollerTarget(
                                                 intakeSubsystem,
                                                 IntakeRollerState.INTAKING));
+        }
+
+        public static final Command getIntakeCommand() {
+                Debouncer debounce = new Debouncer(0.1);
+
+                return Commands.sequence(
+                                new IntakeExtend().andThen(new InitIntake(intakePivotSubsystem)),
+                                new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.INTAKING),
+                                Commands.waitUntil(() -> debounce.calculate(!intakeSubsystem.getBeamBrake())),
+                                new IntakeRollerTarget(
+                                                intakeSubsystem,
+                                                IntakeRollerState.STOPPED),
+                                new IntakeHome(intakePivotSubsystem));
         }
 }
