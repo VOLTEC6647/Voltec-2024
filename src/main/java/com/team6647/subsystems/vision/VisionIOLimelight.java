@@ -28,8 +28,9 @@ public class VisionIOLimelight implements VisionIO {
     @Override
     public synchronized void updateInputs(VisionIOInputs inputs, Rotation2d robotHeading, double headingVelocity) {
         inputs.currentPipelineNumber = (int) LimelightHelpers.getCurrentPipelineIndex(VisionConstants.aprilLimeNTName);
+
         if (AllianceFlipUtil.shouldFlip()) {
-            robotHeading.rotateBy(Rotation2d.fromDegrees(180));
+            robotHeading = robotHeading.rotateBy(Rotation2d.fromDegrees(-180));
         }
 
         boolean doRejectUpdate = false;

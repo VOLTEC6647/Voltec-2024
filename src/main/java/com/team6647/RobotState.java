@@ -71,11 +71,11 @@ public class RobotState extends SuperRobotState {
         lastModulePositions = modulePositions;
         lastGyroAngle = gyroAngle;
 
-        poseEstimator.updateWithTime(currentTimeSencods, gyroAngle, modulePositions);
-    }
+        if (AllianceFlipUtil.shouldFlip()) {
+            gyroAngle = gyroAngle.rotateBy(Rotation2d.fromDegrees(-180));
+        }
 
-    public void addVisionObservations() {
-        // Add vision observations
+        poseEstimator.updateWithTime(currentTimeSencods, gyroAngle, modulePositions);
     }
 
     /**
