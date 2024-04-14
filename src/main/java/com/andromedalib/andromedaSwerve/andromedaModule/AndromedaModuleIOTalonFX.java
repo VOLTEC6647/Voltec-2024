@@ -63,15 +63,15 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                         true);
                 }
 
+                this.steeringEncoder = new SuperCANCoder(andromedaModuleConfig.moduleIDs.absCanCoderID,
+                                andromedaModuleConfig.cancoderConfiguration,
+                                andromedaModuleConfig.swerveCANBus);
+                                
                 this.driveMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.driveMotorID,
                                 andromedaModuleConfig.driveMotorConfiguration,
                                 andromedaModuleConfig.swerveCANBus);
                 this.steeringMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.steeringMotorID,
                                 andromedaModuleConfig.turningMotorConfiguration,
-                                andromedaModuleConfig.swerveCANBus);
-
-                this.steeringEncoder = new SuperCANCoder(andromedaModuleConfig.moduleIDs.absCanCoderID,
-                                andromedaModuleConfig.cancoderConfiguration,
                                 andromedaModuleConfig.swerveCANBus);
 
                 steeringMotor.setPosition(0);
@@ -89,7 +89,7 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 driveMotor.getPosition());
 
                 turnAbsolutePosition = steeringEncoder.getAbsolutePosition();
-                
+
                 turnPosition = steeringMotor.getPosition();
                 turnVelocity = steeringMotor.getVelocity();
                 turnAppliedVolts = steeringMotor.getMotorVoltage();
