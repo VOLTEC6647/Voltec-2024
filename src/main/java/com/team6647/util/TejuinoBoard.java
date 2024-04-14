@@ -61,6 +61,7 @@ package com.team6647.util;
 
 import edu.wpi.first.hal.CANAPIJNI;
 
+@SuppressWarnings("unused")
 public class TejuinoBoard {
 
 
