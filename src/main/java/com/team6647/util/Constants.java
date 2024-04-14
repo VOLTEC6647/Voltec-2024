@@ -113,7 +113,8 @@ public class Constants {
                 public static double podiumX = Units.inchesToMeters(126.75);
                 public static double startingLineX = Units.inchesToMeters(74.111);
 
-                //public static Pose2d amp = new Pose2d(new Translation2d(1.87, 7.52), Rotation2d.fromDegrees(-90));
+                // public static Pose2d amp = new Pose2d(new Translation2d(1.87, 7.52),
+                // Rotation2d.fromDegrees(-90));
 
                 public static Pose2d amp = new Pose2d(new Translation2d(1.826, 7), Rotation2d.fromDegrees(-90));
 
@@ -204,16 +205,14 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 32.0;
-                public static final double pivotKi = 2.0;
+                public static final double pivotKp = 45.0;
+                public static final double pivotKi = 1.0;
                 public static final double pivotKd = 0.0;
-                public static final double pivotMaxVel = 25.0;
-                public static final double pivotMaxAccel = 25.0;
-                public static final double pivotHomedMaxVel = 3.0;
-                public static final double pivotHomedMaxAccel = 2.0;
+                public static final double pivotMaxVel = 0.6;
+                public static final double pivotMaxAccel = 3.0;
 
                 public static final double pidPositionTolerance = 0.05;
-                public static final double positionTolerance = 1;
+                public static final double positionTolerance = 1.5;
 
                 public static final double pivotMaxVelocity = 1500.0;
                 public static final double pivotMaxAcceleration = 1500.0;
@@ -250,16 +249,27 @@ public class Constants {
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {
-                        shooterPivotMap.put(1.10053, -45.0);
-                        shooterPivotMap.put(1.5215, -43.0);
-                        shooterPivotMap.put(2.11578, -37.0);
-                        shooterPivotMap.put(2.64562, -34.0);
-                        shooterPivotMap.put(2.92418, -31.0);
-                        shooterPivotMap.put(3.18782, -31.0);
-                        shooterPivotMap.put(3.36144, -26.0);
-                        shooterPivotMap.put(3.84594, -23.5);
-                        shooterPivotMap.put(4.28348, -23.0);
-                        shooterPivotMap.put(5.32926, -21.5);
+                        shooterPivotMap.put(1.0936344809639507, -43.0);
+                        shooterPivotMap.put(1.3647448719759743, -40.0);
+                        shooterPivotMap.put(1.4662830296465148, -40.0);
+                        shooterPivotMap.put(1.6591138264389274, -38.0);
+                        shooterPivotMap.put(1.7600910482436123, -35.0);
+                        shooterPivotMap.put(1.913340356564228, -33.0);
+                        shooterPivotMap.put(2.1716554944487902, -30.0);
+                        shooterPivotMap.put(2.3032792648108207, -27.0);
+                        shooterPivotMap.put(2.481864300202367, -24.0);
+                        shooterPivotMap.put(2.8409444270649162, -22.0);
+                        shooterPivotMap.put(2.8409444270649162, -22.0);
+                        shooterPivotMap.put(3.0616964133256297, -20.0);
+                        shooterPivotMap.put(3.232448333251388, -20.0);
+                        shooterPivotMap.put(3.4114312033790997, -19.0);
+                        shooterPivotMap.put(3.5778698732172343, -18.0);
+                        shooterPivotMap.put(3.826650816147822, -19.0);
+                        shooterPivotMap.put(4.0869433490820315, -18.0);
+                        shooterPivotMap.put(4.182890957872784, -17.0);
+                        shooterPivotMap.put(4.360953069105574, -17.0);
+                        shooterPivotMap.put(4.809843985735209, -16.0);
+                        shooterPivotMap.put(5.0295966570759445, -15.0);
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterTimeMap = new InterpolatingDoubleTreeMap();
@@ -419,9 +429,10 @@ public class Constants {
 
                         driveMotorConfig.MotorOutput.Inverted = driveMotorInvert;
 
-                        driveMotorConfig.Feedback.SensorToMechanismRatio = driveGearRatio;
                         driveMotorConfig.Audio.BeepOnBoot = true;
                         driveMotorConfig.Audio.BeepOnConfig = true;
+
+                        driveMotorConfig.Feedback.SensorToMechanismRatio = driveGearRatio;
 
                         driveMotorConfig.CurrentLimits.SupplyCurrentLimit = driveContinuousCurrentLimit;
                         driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = driveEnableCurrentLimit;
@@ -443,7 +454,6 @@ public class Constants {
 
                         turningMotorConfig.MotorOutput.Inverted = angleMotorInvert;
 
-                        turningMotorConfig.Feedback.SensorToMechanismRatio = steeringGearRatio;
                         turningMotorConfig.Audio.BeepOnBoot = true;
                         turningMotorConfig.Audio.BeepOnConfig = true;
 
@@ -453,6 +463,7 @@ public class Constants {
                         turningMotorConfig.CurrentLimits.SupplyTimeThreshold = anglePeakCurrentDuration;
 
                         turningMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
+                        turningMotorConfig.Feedback.SensorToMechanismRatio = steeringGearRatio;
 
                         turningMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
@@ -489,7 +500,8 @@ public class Constants {
 
                 public static final AndromedaSwerveConfig andromedaSwerveConfig = new AndromedaSwerveConfig(0.1,
                                 trackWidth,
-                                wheelBase, swerveKinematics, moduleTranslations, maxSpeedMetersPerSecond, maxAccelerationMetersPerSecondSquared,
+                                wheelBase, swerveKinematics, moduleTranslations, maxSpeedMetersPerSecond,
+                                maxAccelerationMetersPerSecondSquared,
                                 maxAngularVelocityRadsPerSec,
                                 maxAngularAccelerationRadsPerSec, wheelDiameter);
 

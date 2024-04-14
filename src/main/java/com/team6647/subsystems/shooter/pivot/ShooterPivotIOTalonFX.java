@@ -1,15 +1,15 @@
 package com.team6647.subsystems.shooter.pivot;
 
-import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.andromedalib.sensors.SuperCANCoder;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
-import com.ctre.phoenix6.controls.DynamicMotionMagicVoltage;
 import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
@@ -21,19 +21,11 @@ import com.team6647.util.Constants.ShooterConstants;
 
 public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
-        private static SuperTalonFX shooterPivotLeftMotor = new SuperTalonFX(
-                        ShooterConstants.shooterPivotLeftMotorID,
-                        GlobalIdleMode.Brake, RobotConstants.mechanismsCANnivore);
-
-        private static SuperTalonFX shooterPivotRightMotor = new SuperTalonFX(
-                        ShooterConstants.shooterPivotRightMotorID,
-                        GlobalIdleMode.Brake, RobotConstants.mechanismsCANnivore);
+        private static SuperTalonFX shooterPivotLeftMotor;
+        private static SuperTalonFX shooterPivotRightMotor;
 
         private static SuperCANCoder shooterPivotEncoder;
-        // private static MotionMagicVoltage motionMagicVoltage = new
-        // MotionMagicVoltage(0.0).withSlot(0);
-        private static DynamicMotionMagicVoltage dynamicMotionMagicVoltage = new DynamicMotionMagicVoltage(0,
-                        ShooterConstants.pivotMaxVel, ShooterConstants.pivotMaxAccel, 0).withSlot(0);
+        private static MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
 
         private final StatusSignal<Double> shooterPivotLeftMotorPosition;
         private final StatusSignal<Double> shooterPivotRightMotorPosition;
@@ -58,10 +50,50 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
                 cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
                 cancoderConfig.MagnetSensor.SensorDirection = ShooterConstants.shooterPivotEncoderInverted;
-                cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
                 cancoderConfig.MagnetSensor.MagnetOffset = ShooterConstants.shooterPivotEncoderOffset;
                 shooterPivotEncoder = new SuperCANCoder(ShooterConstants.shooterPivotCANCoderID, cancoderConfig,
                                 RobotConstants.mechanismsCANnivore);
+
+                // Config left motor
+
+                TalonFXConfiguration leftConfig = new TalonFXConfiguration();
+                leftConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+                leftConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+                leftConfig.Audio.BeepOnConfig = true;
+                leftConfig.Feedback.FeedbackRemoteSensorID = shooterPivotEncoder.getDeviceID();
+                leftConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
+                leftConfig.Feedback.RotorToSensorRatio = 93.75;
+                leftConfig.Slot0.kP = ShooterConstants.pivotKp;
+                leftConfig.Slot0.kI = ShooterConstants.pivotKi;
+                leftConfig.Slot0.kD = ShooterConstants.pivotKd;
+                leftConfig.Slot0.kS = 0.25546;
+                leftConfig.Slot0.kA = 0.1;
+                leftConfig.Slot0.kV = 0.082361;
+                leftConfig.Slot0.kG = 0.18398;
+                leftConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
+
+                leftConfig.MotionMagic.MotionMagicAcceleration = ShooterConstants.pivotMaxAccel;
+                leftConfig.MotionMagic.MotionMagicCruiseVelocity = ShooterConstants.pivotMaxVel;
+
+                shooterPivotLeftMotor = new SuperTalonFX(
+                                ShooterConstants.shooterPivotLeftMotorID,
+                                leftConfig, RobotConstants.mechanismsCANnivore);
+
+                                
+                // Config right motor
+
+                TalonFXConfiguration rightConfig = new TalonFXConfiguration();
+                rightConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
+                rightConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
+                rightConfig.Audio.BeepOnConfig = true;
+
+                shooterPivotRightMotor = new SuperTalonFX(
+                                ShooterConstants.shooterPivotRightMotorID,
+                                rightConfig, RobotConstants.mechanismsCANnivore);
+
+                shooterPivotRightMotor.setControl(new Follower(ShooterConstants.shooterPivotLeftMotorID, true));
+
+                // Config status signals
 
                 shooterPivotLeftMotorPosition = shooterPivotLeftMotor.getPosition();
                 shooterPivotRightMotorPosition = shooterPivotRightMotor.getPosition();
@@ -75,18 +107,6 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 shooterPivotRightMotorTemperature = shooterPivotRightMotor.getDeviceTemp();
                 shooterPivotLeftMotorCurrent = shooterPivotLeftMotor.getSupplyCurrent();
                 shooterPivotRightMotorCurrent = shooterPivotRightMotor.getSupplyCurrent();
-
-                TalonFXConfiguration talonConfig = new TalonFXConfiguration();
-                shooterPivotRightMotor.getConfigurator().apply(new TalonFXConfiguration());
-                talonConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
-                talonConfig.MotorOutput.NeutralMode = NeutralModeValue.Brake;
-                talonConfig.Audio.BeepOnConfig = true;
-                talonConfig.Feedback.FeedbackRemoteSensorID = shooterPivotEncoder.getDeviceID();
-                talonConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-                talonConfig.Feedback.SensorToMechanismRatio = 1.0;
-                talonConfig.Feedback.RotorToSensorRatio = 90;
-
-                shooterPivotRightMotor.getConfigurator().apply(talonConfig);
 
                 BaseStatusSignal.setUpdateFrequencyForAll(50.0,
                                 shooterPivotLeftMotorPosition,
@@ -102,10 +122,6 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                                 shooterPivotLeftMotorCurrent,
                                 shooterPivotRightMotorCurrent);
 
-                shooterPivotRightMotor.setControl(new Follower(ShooterConstants.shooterPivotLeftMotorID, true));
-
-                setPIDVel(ShooterConstants.pivotKp, ShooterConstants.pivotKi, ShooterConstants.pivotKd,
-                                ShooterConstants.pivotMaxVel, ShooterConstants.pivotMaxAccel);
         }
 
         @Override
@@ -154,23 +170,15 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 inputs.inTolerance = Math.abs(cancoderAbsolutePosition.getValueAsDouble() * 360
                                 - setpoint * 360) < ShooterConstants.positionTolerance;
 
-                /* Sets pivot position based on setpoint */
+                // Sets pivot position based on setpoint
 
                 inputs.setpoint = setpoint * 360;
 
                 inputs.disabled = disabled;
 
                 if (!disabled) {
-                        if (homed) {
-                                dynamicMotionMagicVoltage.Acceleration = ShooterConstants.pivotHomedMaxAccel;
-                                dynamicMotionMagicVoltage.Velocity = ShooterConstants.pivotHomedMaxVel;
-                        } else {
-                                dynamicMotionMagicVoltage.Acceleration = ShooterConstants.pivotMaxAccel;
-                                dynamicMotionMagicVoltage.Velocity = ShooterConstants.pivotMaxVel;
-                        }
-
                         shooterPivotLeftMotor.setControl(
-                                        dynamicMotionMagicVoltage.withPosition(setpoint).withEnableFOC(true));
+                                        motionMagicVoltage.withPosition(setpoint).withEnableFOC(true));
                 }
         }
 
@@ -183,10 +191,12 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
         @Override
         public void disablePivot() {
                 disabled = true;
+
                 shooterPivotLeftMotor.disable();
                 shooterPivotRightMotor.disable();
                 shooterPivotLeftMotor.stopMotor();
                 shooterPivotRightMotor.stopMotor();
+
         }
 
         @Override
@@ -203,21 +213,26 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 talonConfig.Audio.BeepOnConfig = true;
                 talonConfig.Feedback.FeedbackRemoteSensorID = shooterPivotEncoder.getDeviceID();
                 talonConfig.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
-                talonConfig.Feedback.SensorToMechanismRatio = 1.0;
-                talonConfig.Feedback.RotorToSensorRatio = 90;
+                talonConfig.Feedback.RotorToSensorRatio = 93.75;
                 talonConfig.Slot0.kP = p;
                 talonConfig.Slot0.kI = i;
                 talonConfig.Slot0.kD = d;
+                talonConfig.Slot0.kS = 0.25546;
+                talonConfig.Slot0.kA = 0.1;
+                talonConfig.Slot0.kV = 0.082361;
+                talonConfig.Slot0.kG = 0.18398;
+                talonConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
-                dynamicMotionMagicVoltage.Acceleration = maxAccel;
-                dynamicMotionMagicVoltage.Velocity = maxVel;
+                talonConfig.MotionMagic.MotionMagicAcceleration = maxAccel;
+                talonConfig.MotionMagic.MotionMagicCruiseVelocity = maxVel;
 
                 shooterPivotLeftMotor.getConfigurator().apply(talonConfig);
         }
 
         @Override
         public void runPivotVolts(double volts) {
-                shooterPivotLeftMotor.setVoltage(volts);
-                shooterPivotRightMotor.setVoltage(volts);
+                // shooterPivotLeftMotor.setVoltage(volts);
+                // shooterPivotRightMotor.setVoltage(volts);
+
         }
 }
