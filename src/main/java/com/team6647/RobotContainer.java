@@ -5,8 +5,6 @@
  */
 package com.team6647;
 
-import static edu.wpi.first.units.Units.Rotations;
-
 import java.util.function.Function;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -26,7 +24,6 @@ import com.team6647.commands.ShooterRollerStartEnd;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.drive.Drive;
-import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
@@ -67,8 +64,8 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
@@ -262,6 +259,18 @@ public class RobotContainer extends SuperRobotContainer {
                                                 controllerRumbleCommandFactory.apply(0.4)
 
                                 ));
+
+                new Trigger(() -> !intakeSubsystem.getBeamBrake())
+                                .whileTrue(Commands.sequence(
+                                                new RunCommand(() -> leds.strobeYellow(0.2)).withTimeout(2),
+                                                new InstantCommand(() -> leds.solidYellow())).ignoringDisable(true));
+
+                new Trigger(() -> !shooterSubsystem.getBeamBrake())
+                                .whileTrue(Commands.sequence(
+                                                new RunCommand(() -> leds.strobeGreen(0.2)).withTimeout(2),
+                                                new InstantCommand(() -> leds.solidGreen())).ignoringDisable(true));
+
+                configSysIdBindings();
         }
 
         @Override
@@ -297,14 +306,17 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Gyro Commands --------
 
-                OperatorConstants.RESET_GYRO
-                                .whileTrue(new InstantCommand(
-                                                () -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
+                // configSysIdBindings();
 
-                OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp())
-                                .onFalse(new InstantCommand(() -> andromedaSwerve.setMDriveMode(DriveMode.TELEOP))
-                                                .andThen(SuperStructure.update(SuperStructureState.IDLE)));
-
+                /*
+                 * OperatorConstants.RESET_GYRO
+                 * .whileTrue(new InstantCommand(
+                 * () -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
+                 * 
+                 * OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp())
+                 * .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
+                 * .andThen(SuperStructure.update(SuperStructureState.IDLE)));
+                 */
                 /* Driver 2 */
 
                 OperatorConstants.FORCE_IDLE
@@ -376,15 +388,15 @@ public class RobotContainer extends SuperRobotContainer {
         }
 
         public void configSysIdBindings() {
-                OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kForward));
-                OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kReverse));
+                // OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
+                //                 .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kForward));
+                // OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
+                //                 .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kReverse));
 
-                OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kForward));
-                OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kReverse));
+                // OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
+                //                 .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kForward));
+                // OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
+                //                 .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kReverse));
         }
 
         public void configTuningBindings() {
