@@ -65,6 +65,8 @@ public class Constants {
                                 CLIMB_TOP = driverController2.povUp(), INTAKE_FEEDER = driverController2.rightTrigger(),
                                 EXHAUST_FEEDER = driverController2.leftTrigger(),
                                 FORCE_IDLE = driverController2.povLeft(),
+                                PREPARE_CLIMB = driverController2.leftBumper(),
+                                CLIMB = driverController2.rightBumper(),
                                 RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick());
         }
 
@@ -206,7 +208,7 @@ public class Constants {
                 public static final double shooterTolerance = 100.0;
 
                 public static final double pivotKp = 45.0;
-                public static final double pivotKi = 1.0;
+                public static final double pivotKi = 1.5;
                 public static final double pivotKd = 0.0;
                 public static final double pivotMaxVel = 0.6;
                 public static final double pivotMaxAccel = 3.0;

@@ -5,10 +5,14 @@
  */
 package com.team6647.subsystems.leds;
 
+import com.team6647.util.TejuinoBoard;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-public class LEDSubsystem {
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+public class LEDSubsystem extends SubsystemBase {
   private static LEDSubsystem instance;
 
   public static LEDSubsystem getInstance() {
@@ -34,23 +38,13 @@ public class LEDSubsystem {
 
   private boolean estopped = false;
 
-  //private static TejuinoBoard leds = new TejuinoBoard();
-  private final Notifier loadingNotifier;
+  private static TejuinoBoard leds = new TejuinoBoard();
 
   private static final int minLoopCycleCount = 10;
 
   private LEDSubsystem() {
     System.out.println("[Init] Creating LEDs");
-    //leds.init(1);
-
-    loadingNotifier = new Notifier(
-        () -> {
-          synchronized (this) {
-            periodic();
-          }
-        });
-    loadingNotifier.startPeriodic(0.02);
-
+    leds.init(1);
   }
 
   public synchronized void periodic() {
@@ -68,17 +62,6 @@ public class LEDSubsystem {
     if (estopped) {
       solidRed();
     }
-
-    if (endgameAlert) {
-      // strobeGreen();
-    }
-
-    /*
-     * if(intakeHasNote){
-     * strobeGreen(0.3);
-     * }
-     */
-    // Update LEDs
   }
 
   public void strobeGreen(double duration) {
@@ -99,24 +82,37 @@ public class LEDSubsystem {
     }
   }
 
+  public void strobRed(double duration) {
+    boolean c1On = ((Timer.getFPGATimestamp() % duration) / duration) > 0.5;
+    if (c1On) {
+      solidRed();
+    } else {
+      turnOffLeds();
+    }
+  }
+
   public void solidYellow() {
-    // leds.all_leds_yellow(1);
+    leds.all_leds_yellow(1);
   }
 
   public void solidRed() {
-    // leds.all_leds_red(1);
+    leds.all_leds_red(1);
   }
 
   public void solidBlue() {
-    // leds.all_leds_blue(1);
+    leds.all_leds_blue(1);
   }
 
   public void solidGreen() {
-    // leds.all_leds_green(1);
+    leds.all_leds_green(1);
   }
 
   public void turnOffLeds() {
-    // leds.turn_off_all_leds(1);
+    leds.turn_off_all_leds(1);
+  }
+
+  public void rainbow() {
+    leds.rainbow_effect(1);
   }
 
   public static boolean isRed() {

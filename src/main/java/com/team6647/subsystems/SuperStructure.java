@@ -73,10 +73,15 @@ public class SuperStructure {
         AUTO_IDLE,
         INTAKING_COMPLETE,
         INTAKING,
-        INDEXING,
         AUTO_INTAKING,
+        INDEXING,
+        AUTO_INDEXING,
+        SUPP_INDEXING,
+        AUTO_INTAKING_COMPLETE,
         AUTO_AMP,
         SHOOTING_SPEAKER,
+        AUTO_SHOOTING_SPEAKER,
+        SECONDARY_AUTO_SHOOTING_SPEAKER,
         SHOOTING_SUBWOOFER,
         AUTO_SHOOTING_SUBWOOFER,
         SHUTTLE,
@@ -85,7 +90,9 @@ public class SuperStructure {
         SHOOTING_TRAP,
         SHOOTING_MOVING,
         STOPPING_CLIMB,
-        INTAKE_ALIGN
+        INTAKE_ALIGN,
+        PREPARE_CLIMB,
+        CLIMBING,
     }
 
     public static Command update(SuperStructureState newState) {
@@ -98,14 +105,24 @@ public class SuperStructure {
                 return fullIntakingCommand();
             case INTAKING:
                 return intakingCommand();
-            case INDEXING:
-                return indexingCommand();
             case AUTO_INTAKING:
                 return autoIntakingCommand();
+            case INDEXING:
+                return indexingCommand();
+            case SUPP_INDEXING:
+                return suppIndexCommand();
+            case AUTO_INDEXING:
+                return autoIndexingCommand();
+            case AUTO_INTAKING_COMPLETE:
+                return autoFullIntakingCommand();
             case AUTO_AMP:
                 return autoScoreAmp();
             case SHOOTING_SPEAKER:
                 return shootingStationary();
+            case AUTO_SHOOTING_SPEAKER:
+                return autoShootingStationary();
+            case SECONDARY_AUTO_SHOOTING_SPEAKER:
+                return secondaryAutoShootingStationary();
             case SHOOTING_SUBWOOFER:
                 return shootingSubwoofer();
             case AUTO_SHOOTING_SUBWOOFER:
@@ -125,6 +142,10 @@ public class SuperStructure {
                         andromedaSwerve);
             case SHUTTLE:
                 return sendNotes();
+            case PREPARE_CLIMB:
+                return prepareClimb();
+            case CLIMBING:
+                return climb();
             default:
                 break;
         }
@@ -144,7 +165,7 @@ public class SuperStructure {
                         }),
                         Commands.parallel(
                                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
-                                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)).withTimeout(1),
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
     }
 
@@ -170,6 +191,14 @@ public class SuperStructure {
                 .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }
 
+    private static Command autoIntakingCommand() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.AUTO_INTAKING),
+                IntakeCommands.getIntakeCommand(),
+                Commands.waitSeconds(0.5))
+                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
+    }
+
     private static Command indexingCommand() {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.INDEXING),
@@ -180,14 +209,34 @@ public class SuperStructure {
                         new IntakeRollerTarget(
                                 intakeSubsystem,
                                 IntakeRollerState.INTAKING)),
+                new IntakeRollerTarget(
+                        intakeSubsystem,
+                        IntakeRollerState.STOPPED),
                 Commands.waitSeconds(0.5))
                 .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }
 
-    private static Command autoIntakingCommand() {
+    private static Command autoIndexingCommand() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.AUTO_INDEXING),
+                new IntakeHome(intakePivotSubsystem),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.INDEXING),
+                Commands.deadline(
+                        ShooterCommands.getShooterIntakingCommand(),
+                        new IntakeRollerTarget(
+                                intakeSubsystem,
+                                IntakeRollerState.INTAKING)),
+                new IntakeRollerTarget(
+                        intakeSubsystem,
+                        IntakeRollerState.STOPPED),
+                Commands.waitSeconds(0.5))
+                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
+    }
+
+    private static Command autoFullIntakingCommand() {
         return Commands.deadline(
                 ShooterCommands.getShooterIntakingCommand(),
-                setGoalCommand(SuperStructureState.AUTO_INTAKING),
+                setGoalCommand(SuperStructureState.AUTO_INTAKING_COMPLETE),
                 Commands.sequence(
                         IntakeCommands.getFullIntakeCommand(),
                         Commands.waitSeconds(0.5)))
@@ -248,6 +297,42 @@ public class SuperStructure {
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
+    private static Command autoShootingStationary() {
+        return Commands.deadline(
+                Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
+                Commands.sequence(
+                        setGoalCommand(SuperStructureState.AUTO_SHOOTING_SPEAKER),
+                        new InstantCommand(() -> {
+                            ShootingParameters ampParams = ShootingCalculatorUtil.getShootingParameters(
+                                    RobotState.getPose(),
+                                    AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+
+                            updateShootingParameters(ampParams);
+                        }),
+                        Commands.parallel(
+                                new VisionSpeakerAlign(andromedaSwerve, visionSubsystem),
+                                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
+    }
+
+    private static Command secondaryAutoShootingStationary() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.AUTO_SHOOTING_SPEAKER),
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = ShootingCalculatorUtil.getShootingParameters(
+                            RobotState.getPose(),
+                            AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+
+                    updateShootingParameters(ampParams);
+                }),
+                Commands.parallel(
+                        new VisionSpeakerAlign(andromedaSwerve, visionSubsystem),
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+    }
+
     private static Command shootingSubwoofer() {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
@@ -273,6 +358,12 @@ public class SuperStructure {
                 Commands.parallel(
                         new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+    }
+
+    private static Command suppIndexCommand() {
+        return Commands.deadline(
+                Commands.waitUntil(() -> !shooterSubsystem.getBeamBrake()),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
@@ -317,6 +408,18 @@ public class SuperStructure {
                 Commands.waitSeconds(1),
                 setGoalCommand(SuperStructureState.SCORING_AMP),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+    }
+
+    private static Command prepareClimb() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.PREPARE_CLIMB),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.CLIMBING));
+    }
+
+    private static Command climb() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.CLIMBING),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED));
     }
 
     /* Util */

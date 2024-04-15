@@ -57,21 +57,23 @@ public class VisionSpeakerAlign extends Command {
 
     SuperStructure.updateShootingParameters(parameters);
 
-    if (visionSubsystem.hasTargetID(stageID)) {
-      double kP = .005;
-      targetigVel = visionSubsystem.getTX() * kP;
+    /*
+     * if (visionSubsystem.hasTargetID(stageID)) {
+     * double kP = .005;
+     * targetigVel = visionSubsystem.getTX() * kP;
+     * 
+     * targetigVel *= DriveConstants.maxAngularVelocityRadsPerSec;
+     * 
+     * targetigVel *= -1.0;
+     * 
+     * swerve.acceptTeleopInputs(() -> 0, () -> 0, () -> targetigVel, () -> false);
+     * Drive.setMDriveMode(DriveMode.TELEOP);
+     * } else {
+     */
+    Drive.setMDriveMode(DriveMode.HEADING_LOCK);
 
-      targetigVel *= DriveConstants.maxAngularVelocityRadsPerSec;
-
-      targetigVel *= -1.0;
-
-      swerve.acceptTeleopInputs(() -> 0, () -> 0, () -> targetigVel, () -> false);
-      Drive.setMDriveMode(DriveMode.TELEOP);
-    } else {
-      Drive.setMDriveMode(DriveMode.HEADING_LOCK);
-
-      swerve.setTargetHeading(parameters.robotAngle());
-    }
+    swerve.setTargetHeading(parameters.robotAngle());
+    // }
   }
 
   // Called once the command ends or is interrupted.

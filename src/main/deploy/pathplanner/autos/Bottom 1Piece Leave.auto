@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.4149503993452434,
-      "y": 7.463963089963217
+      "x": 0.4631111299259638,
+      "y": 4.126501660410729
     },
     "rotation": 0
   },
@@ -20,7 +20,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopTo5"
+            "pathName": "WallToSide"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootStay"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "LeaveFromSide"
           }
         }
       ]

@@ -43,9 +43,6 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
         private double setpoint;
         private boolean disabled;
 
-        @AutoLogOutput(key = "Shooter/homed")
-        private boolean homed;
-
         public ShooterPivotIOTalonFX() {
                 CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
                 cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
@@ -183,8 +180,7 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
         }
 
         @Override
-        public void setShooterReference(double setpoint, boolean homed) {
-                this.homed = homed;
+        public void setShooterReference(double setpoint) {
                 this.setpoint = setpoint / 360;
         }
 

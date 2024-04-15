@@ -24,9 +24,9 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
+            "name": "Idle"
           }
         },
         {
@@ -55,21 +55,15 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "RightToMiddle"
+            "name": "SecondaryShootStay"
           }
         },
         {
           "type": "wait",
           "data": {
             "waitTime": 1.0
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootSubwoofer"
           }
         },
         {
@@ -85,35 +79,10 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "MiddleToCenter"
+                  "pathName": "RightToCenter"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "CenterToMiddle"
-                }
-              }
-            ]
-          }
-        },
-        {
-          "type": "sequential",
-          "data": {
-            "commands": []
           }
         },
         {
@@ -125,7 +94,13 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootSubwoofer"
+            "name": "SecondaryShootStay"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
@@ -141,16 +116,10 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "MiddleToLeft"
+                  "pathName": "CenterToLeft"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LeftToMiddle"
           }
         },
         {
@@ -162,7 +131,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootSubwoofer"
+            "name": "SecondaryShootStay"
           }
         }
       ]

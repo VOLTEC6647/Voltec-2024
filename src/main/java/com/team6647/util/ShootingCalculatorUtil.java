@@ -30,6 +30,10 @@ public class ShootingCalculatorUtil {
 
                 Rotation2d angle = robotToTarget.getAngle().rotateBy(Rotation2d.fromDegrees(180));
 
+                if(AllianceFlipUtil.shouldFlip()){
+                        angle = angle.rotateBy(Rotation2d.fromDegrees(180));
+                }
+
                 return new ShootingParameters(angle, ShooterConstants.shooterPivotMap.get(distance),
                                 ShooterConstants.shootingRPM);
 
