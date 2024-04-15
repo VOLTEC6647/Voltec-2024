@@ -12,7 +12,6 @@ import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.drive.Drive;
 import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.subsystems.vision.VisionSubsystem;
-import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.FieldConstants.Speaker;
 import com.team6647.util.Constants.VisionConstants;
 import com.team6647.util.AllianceFlipUtil;
@@ -26,12 +25,10 @@ public class VisionSpeakerAlign extends Command {
   private Drive swerve;
   private VisionSubsystem visionSubsystem;
 
-  private int stageID;
   private Translation2d speakerPose;
 
   private ShootingParameters parameters;
 
-  private double targetigVel = 0.0;
 
   public VisionSpeakerAlign(Drive swevre, VisionSubsystem visionSubsystem) {
     this.swerve = swevre;
@@ -44,8 +41,6 @@ public class VisionSpeakerAlign extends Command {
   public void initialize() {
     visionSubsystem.changePipeline(VisionConstants.speakerPipelineNumber);
     speakerPose = AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d());
-    stageID = AllianceFlipUtil.shouldFlip() ? VisionConstants.speakerRedCenterTagID
-        : VisionConstants.speakerBlueCenterTagID;
     Logger.recordOutput("VisionSpeakerAlign/SpeakerPose", speakerPose);
 
   }
@@ -57,23 +52,9 @@ public class VisionSpeakerAlign extends Command {
 
     SuperStructure.updateShootingParameters(parameters);
 
-    /*
-     * if (visionSubsystem.hasTargetID(stageID)) {
-     * double kP = .005;
-     * targetigVel = visionSubsystem.getTX() * kP;
-     * 
-     * targetigVel *= DriveConstants.maxAngularVelocityRadsPerSec;
-     * 
-     * targetigVel *= -1.0;
-     * 
-     * swerve.acceptTeleopInputs(() -> 0, () -> 0, () -> targetigVel, () -> false);
-     * Drive.setMDriveMode(DriveMode.TELEOP);
-     * } else {
-     */
     Drive.setMDriveMode(DriveMode.HEADING_LOCK);
 
     swerve.setTargetHeading(parameters.robotAngle());
-    // }
   }
 
   // Called once the command ends or is interrupted.
