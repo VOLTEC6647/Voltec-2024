@@ -23,7 +23,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N3;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class RobotState extends SuperRobotState {
 
@@ -117,11 +116,6 @@ public class RobotState extends SuperRobotState {
      */
     public static void addVisionMeasurements(Pose2d observedPose, double timestampLatency,
             Vector<N3> standardDeviations) {
-/* 
-        if (AllianceFlipUtil.shouldFlip()) {
-            observedPose = new Pose2d(observedPose.getX(), observedPose.getY(),
-                    observedPose.getRotation().rotateBy(Rotation2d.fromDegrees(180)));
-        } */
 
         poseEstimator.addVisionMeasurement(observedPose, timestampLatency, standardDeviations);
     }

@@ -8,7 +8,6 @@ package com.team6647.subsystems.leds;
 import com.team6647.util.TejuinoBoard;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 

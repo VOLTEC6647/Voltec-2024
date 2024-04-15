@@ -13,8 +13,6 @@ import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import org.littletonrobotics.junction.AutoLogOutput;
-
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.ShooterConstants;
