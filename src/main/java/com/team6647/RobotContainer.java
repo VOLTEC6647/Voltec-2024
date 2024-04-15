@@ -201,7 +201,7 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("ShootStay",
                                 SuperStructure.update(SuperStructureState.AUTO_SHOOTING_SPEAKER));
                 NamedCommands.registerCommand("SecondaryShootStay",
-                                SuperStructure.update(SuperStructureState.SECONDARY_AUTO_SHOOTING_SPEAKER).withTimeout(4));
+                                SuperStructure.update(SuperStructureState.SECONDARY_AUTO_SHOOTING_SPEAKER).withTimeout(6));
                 NamedCommands.registerCommand("GrabPiece",
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING_COMPLETE));
                 NamedCommands.registerCommand("ExtendIntake",

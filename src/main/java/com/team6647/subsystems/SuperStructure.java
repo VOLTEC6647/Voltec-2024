@@ -165,7 +165,8 @@ public class SuperStructure {
                         }),
                         Commands.parallel(
                                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
-                                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)).withTimeout(1),
+                                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING))
+                                .withTimeout(3),
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
     }
 
@@ -240,7 +241,10 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getFullIntakeCommand(),
                         Commands.waitSeconds(0.5)))
-                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
+                .andThen(Commands.parallel(
+                    new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
+                    new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED)
+                ));
     }
 
     private static Command idleCommand() {
