@@ -34,7 +34,7 @@ public class VisionSpeakerAlign extends Command {
     this.swerve = swevre;
     this.visionSubsystem = visionSubsystem;
 
-    addRequirements(visionSubsystem);
+    addRequirements(visionSubsystem, swerve);
   }
 
   @Override

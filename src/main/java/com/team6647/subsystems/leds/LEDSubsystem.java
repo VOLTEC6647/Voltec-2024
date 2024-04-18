@@ -114,7 +114,29 @@ public class LEDSubsystem extends SubsystemBase {
     leds.rainbow_effect(1);
   }
 
-  public static boolean isRed() {
+  public void goofy() {
+    System.out.println("bromita");
+    for (int j = 0; j < 60; j++) {
+
+      leds.single_led_control(1, 10, 0, 0, 255);
+    }
+
+  }
+
+  /*
+   * public int wave(byte wavePosition){
+   * wavePosition = 255 - wavePositionve;
+   * if (waPosition < 85) {
+   * 
+   * }
+   * if (wavePosition < 170) {
+   * 
+   * }
+   * wavePosition -= 170
+   * return 255 - wavePosition*3
+   * }
+   * 
+   */ public static boolean isRed() {
     var alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
       return alliance.get() == DriverStation.Alliance.Red;
