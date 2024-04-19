@@ -48,7 +48,7 @@ public class VisionSubsystem extends SubsystemBase {
   }
 
   public void computeVisionMeasurements() {
-    if (inputs.hasTarget) {
+    if (inputs.hasTarget && inputs.targetDistance != -1 && inputs.currentPipelineNumber == 0) {
       if (inputs.targetDistance < 5) {
         RobotState.addVisionMeasurements(inputs.estimatedPose2d, inputs.timestampLatency,
             VecBuilder.fill(.3, .3, 9999999));
@@ -72,7 +72,7 @@ public class VisionSubsystem extends SubsystemBase {
     return inputs.hasTarget && inputs.targetID == ID;
   }
 
-  public void changePipeline(int pipelineNumber) {
+  private void changePipeline(int pipelineNumber) {
     io.changePipeline(pipelineNumber);
   }
 

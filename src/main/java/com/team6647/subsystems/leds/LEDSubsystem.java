@@ -90,6 +90,15 @@ public class LEDSubsystem extends SubsystemBase {
     }
   }
 
+  public void strobePurple(double duration) {
+    boolean c1On = ((Timer.getFPGATimestamp() % duration) / duration) > 0.5;
+    if (c1On) {
+      solidPurple();
+    } else {
+      turnOffLeds();
+    }
+  }
+
   public void solidYellow() {
     leds.all_leds_yellow(1);
   }
@@ -100,6 +109,10 @@ public class LEDSubsystem extends SubsystemBase {
 
   public void solidBlue() {
     leds.all_leds_blue(1);
+  }
+
+  public void solidPurple() {
+    leds.all_leds_purple(1);
   }
 
   public void solidGreen() {
@@ -114,29 +127,23 @@ public class LEDSubsystem extends SubsystemBase {
     leds.rainbow_effect(1);
   }
 
-  public void goofy() {
-    System.out.println("bromita");
-    for (int j = 0; j < 60; j++) {
+  private int wavePos = 0;
+  private int waveSpeed = 1;
+  private int ledLength = 50;
 
-      leds.single_led_control(1, 10, 0, 0, 255);
+  public void wave() {
+    boolean c1On = ((Timer.getFPGATimestamp() % 0.2) / 0.2) > 0.5;
+    if (c1On) {
+      wavePos = (wavePos + waveSpeed) % ledLength;
+
+      for (int i = 0; i < ledLength; i++) {
+        int distance = Math.abs(i - wavePos);
+        leds.single_led_control(1, i, 0, 0, Math.max(0, 255 - (distance * 10)));
+      }
     }
-
   }
 
-  /*
-   * public int wave(byte wavePosition){
-   * wavePosition = 255 - wavePositionve;
-   * if (waPosition < 85) {
-   * 
-   * }
-   * if (wavePosition < 170) {
-   * 
-   * }
-   * wavePosition -= 170
-   * return 255 - wavePosition*3
-   * }
-   * 
-   */ public static boolean isRed() {
+  public static boolean isRed() {
     var alliance = DriverStation.getAlliance();
     if (alliance.isPresent()) {
       return alliance.get() == DriverStation.Alliance.Red;

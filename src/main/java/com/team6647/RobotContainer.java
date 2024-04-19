@@ -284,7 +284,8 @@ public class RobotContainer extends SuperRobotContainer {
                                                 new RunCommand(() -> leds.solidGreen())).ignoringDisable(true)
                                                 .repeatedly());
 
-                new Trigger(() -> shooterSubsystem.getBeamBrake() && intakeSubsystem.getBeamBrake() && shooterPivotSubsystem.getMState() == ShooterPivotState.HOMED)
+                new Trigger(() -> shooterSubsystem.getBeamBrake() && intakeSubsystem.getBeamBrake()
+                                && shooterPivotSubsystem.getMState() == ShooterPivotState.HOMED)
                                 .whileTrue(Commands.sequence(
                                                 new RunCommand(() -> leds.solidBlue())).ignoringDisable(true)
                                                 .repeatedly());
@@ -339,6 +340,11 @@ public class RobotContainer extends SuperRobotContainer {
                                                 () -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
 
                 OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp())
+                                .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
+                                                .andThen(SuperStructure.update(SuperStructureState.IDLE)));
+
+                OperatorConstants.driverController1.y()
+                                .whileTrue(SuperStructure.update(SuperStructureState.SHUTTLE_ALIGN))
                                 .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
                                                 .andThen(SuperStructure.update(SuperStructureState.IDLE)));
 

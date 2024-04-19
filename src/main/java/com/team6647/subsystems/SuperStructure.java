@@ -18,6 +18,7 @@ import com.team6647.commands.IntakeRollerTarget;
 import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.VisionIntakeAlign;
+import com.team6647.commands.VisionShuttleAlign;
 import com.team6647.commands.VisionSpeakerAlign;
 import com.team6647.subsystems.drive.Drive;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
@@ -26,6 +27,7 @@ import com.team6647.subsystems.intake.IntakeCommands;
 import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.roller.IntakeSubsystem;
 import com.team6647.subsystems.intake.roller.IntakeSubsystem.IntakeRollerState;
+import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.subsystems.neural.NeuralVisionSubsystem;
 import com.team6647.subsystems.shooter.ShooterCommands;
 import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem;
@@ -44,6 +46,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 
 public class SuperStructure {
 
@@ -85,6 +88,7 @@ public class SuperStructure {
         SHOOTING_SUBWOOFER,
         AUTO_SHOOTING_SUBWOOFER,
         SHUTTLE,
+        SHUTTLE_ALIGN,
         SCORING_AMP,
         PREPARING_AMP,
         SHOOTING_TRAP,
@@ -137,6 +141,8 @@ public class SuperStructure {
                 return shootingWhileMoving();
             case STOPPING_CLIMB:
                 return homeElevator();
+            case SHUTTLE_ALIGN:
+                return new VisionShuttleAlign(andromedaSwerve, visionSubsystem);
             case INTAKE_ALIGN:
                 return new VisionIntakeAlign(neuralVisionSubsystem,
                         andromedaSwerve);
@@ -242,9 +248,8 @@ public class SuperStructure {
                         IntakeCommands.getFullIntakeCommand(),
                         Commands.waitSeconds(0.5)))
                 .andThen(Commands.parallel(
-                    new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
-                    new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED)
-                ));
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
+                        new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED)));
     }
 
     private static Command idleCommand() {
@@ -351,18 +356,22 @@ public class SuperStructure {
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
+    private static final LEDSubsystem leds = LEDSubsystem.getInstance();
+
     private static Command sendNotes() {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHUTTLE),
                 new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 2500);
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 2000);
 
                     updateShootingParameters(ampParams);
                 }),
                 Commands.parallel(
                         new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
-                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+                Commands.sequence(
+                        new RunCommand(() -> leds.strobePurple(0.2)).withTimeout(2),
+                        new RunCommand(() -> leds.solidPurple())).repeatedly());
     }
 
     private static Command suppIndexCommand() {
@@ -402,14 +411,14 @@ public class SuperStructure {
 
                     updateShootingParameters(ampParams);
                 }),
-                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(1),
-                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING).withTimeout(1));
+                Commands.parallel(
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.AMP).withTimeout(2),
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING).withTimeout(2)));
     }
 
     private static Command scoreAmp() {
         return Commands.sequence(
                 prepareScoreAmp(),
-                Commands.waitSeconds(1),
                 setGoalCommand(SuperStructureState.SCORING_AMP),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
