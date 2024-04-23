@@ -53,8 +53,6 @@ public class VisionShuttleAlign extends Command {
     this.parameters = ShootingCalculatorUtil.getShootingParameters(RobotState.getPose(),
         speakerPose);
 
-    SuperStructure.updateShootingParameters(parameters);
-
     Drive.setMDriveMode(DriveMode.HEADING_LOCK);
 
     swerve.setTargetHeading(parameters.robotAngle());
