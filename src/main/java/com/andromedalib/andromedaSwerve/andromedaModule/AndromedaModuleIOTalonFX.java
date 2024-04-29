@@ -139,13 +139,16 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 .rotationsToRadians(driveMotor.getAcceleration().getValueAsDouble())
                                 * (andromedaModuleConfig.wheelDiameter / 2);
 
-                inputs.driveApplied = driveAppliedVolts.getValueAsDouble();
+                inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
+
+                inputs.driveCurrent = driveCurrent.getValueAsDouble();
 
                 inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValue());
 
                 inputs.steerAngle = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
                 inputs.turnVelocity = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
                 inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
+                inputs.turnCurrent = turnCurrent.getValueAsDouble();
 
                 inputs.odometryTimestamps = timestampQueue.stream().mapToDouble((Double value) -> value).toArray();
                 inputs.odometryDrivePositions = drivePositionQueue.stream()

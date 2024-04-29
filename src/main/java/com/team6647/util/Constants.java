@@ -71,7 +71,7 @@ public class Constants {
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.SIM;
+                public static final Mode currentMode = Mode.REAL;
 
                 public static final boolean tuningMode = true;
 
@@ -119,6 +119,8 @@ public class Constants {
                 // Rotation2d.fromDegrees(-90));
 
                 public static Pose2d amp = new Pose2d(new Translation2d(1.826, 7), Rotation2d.fromDegrees(-90));
+
+                public static Pose2d shuttlePose = new Pose2d(0.18, 7.71, new Rotation2d());
 
                 /** Staging locations for each note */
                 public static final class StagingLocations {
@@ -210,8 +212,8 @@ public class Constants {
                 public static final double pivotKp = 45.0;
                 public static final double pivotKi = 1.5;
                 public static final double pivotKd = 0.0;
-                public static final double pivotMaxVel = 0.6;
-                public static final double pivotMaxAccel = 3.0;
+                public static final double pivotMaxVel = 1.2;
+                public static final double pivotMaxAccel = 3.2;
 
                 public static final double pidPositionTolerance = 0.05;
                 public static final double positionTolerance = 1.5;
@@ -223,7 +225,7 @@ public class Constants {
                 public static final int shooterMotorCurrentLimit = 80;
                 public static final int rollerMotorCurrentLimit = 80;
 
-                public static final double shooterPivotEncoderOffset = -0.154785;
+                public static final double shooterPivotEncoderOffset = -Math.abs(0.065186 - 0.0083333333333333);
                 public static final SensorDirectionValue shooterPivotEncoderInverted = SensorDirectionValue.CounterClockwise_Positive;
 
                 public static final double pivotMinPosition = -95;

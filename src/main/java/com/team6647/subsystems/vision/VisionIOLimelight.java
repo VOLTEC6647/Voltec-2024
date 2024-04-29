@@ -33,19 +33,6 @@ public class VisionIOLimelight implements VisionIO {
             robotHeading = robotHeading.rotateBy(Rotation2d.fromDegrees(-180));
         }
 
-        boolean doRejectUpdate = false;
-        LimelightHelpers.SetRobotOrientation(VisionConstants.aprilLimeNTName,
-                robotHeading.getDegrees(), 0, 0, 0, 0, 0);
-        LimelightHelpers.PoseEstimate mt2 = LimelightHelpers
-                .getBotPoseEstimate_wpiBlue_MegaTag2(VisionConstants.aprilLimeNTName);
-        if (Math.abs(headingVelocity) > 720) {
-            doRejectUpdate = true;
-        }
-        if (!doRejectUpdate) {
-            inputs.estimatedPose2d = mt2.pose;
-            inputs.timestampLatency = mt2.timestampSeconds;
-        }
-
         LimelightHelpers.Results result = LimelightHelpers
                 .getLatestResults(VisionConstants.aprilLimeNTName).targetingResults;
 
@@ -54,6 +41,19 @@ public class VisionIOLimelight implements VisionIO {
         if (!(result.botpose[0] == 0 && result.botpose[1] == 0) &&
                 LimelightHelpers.getTA(VisionConstants.aprilLimeNTName) > 0.1) {
             inputs.hasTarget = true;
+
+            boolean doRejectUpdate = false;
+            LimelightHelpers.SetRobotOrientation(VisionConstants.aprilLimeNTName,
+                    robotHeading.getDegrees(), 0, 0, 0, 0, 0);
+            LimelightHelpers.PoseEstimate mt2 = LimelightHelpers
+                    .getBotPoseEstimate_wpiBlue_MegaTag2(VisionConstants.aprilLimeNTName);
+            if (Math.abs(headingVelocity) > 720) {
+                doRejectUpdate = true;
+            }
+            if (!doRejectUpdate) {
+                inputs.estimatedPose2d = mt2.pose;
+                inputs.timestampLatency = mt2.timestampSeconds;
+            }
 
             inputs.TX = LimelightHelpers.getTX(VisionConstants.aprilLimeNTName);
             inputs.TY = LimelightHelpers.getTY(VisionConstants.aprilLimeNTName);

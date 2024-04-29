@@ -138,7 +138,7 @@ public class AndromedaModule {
      * @return Voltage in volts
      */
     public double getDriveVoltage() {
-        return inputs.driveApplied;
+        return inputs.driveAppliedVolts;
     }
 
     /**

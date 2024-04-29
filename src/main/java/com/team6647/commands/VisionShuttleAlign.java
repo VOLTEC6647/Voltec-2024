@@ -1,8 +1,7 @@
-/**
- * Written by Juan Pablo Gutiérrez
- * 
- * 10 03 2024
- */
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package com.team6647.commands;
 
 import org.littletonrobotics.junction.Logger;
@@ -12,16 +11,17 @@ import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.drive.Drive;
 import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.subsystems.vision.VisionSubsystem;
-import com.team6647.util.Constants.FieldConstants.Speaker;
-import com.team6647.util.Constants.VisionConstants;
 import com.team6647.util.AllianceFlipUtil;
+import com.team6647.util.Constants.FieldConstants;
+import com.team6647.util.Constants.FieldConstants.Speaker;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class VisionSpeakerAlign extends Command {
+public class VisionShuttleAlign extends Command {
+
   private Drive swerve;
   private VisionSubsystem visionSubsystem;
 
@@ -29,28 +29,29 @@ public class VisionSpeakerAlign extends Command {
 
   private ShootingParameters parameters;
 
-
-  public VisionSpeakerAlign(Drive swevre, VisionSubsystem visionSubsystem) {
+  /** Creates a new VisionShuttleAlign. */
+  public VisionShuttleAlign(Drive swevre, VisionSubsystem visionSubsystem) {
     this.swerve = swevre;
     this.visionSubsystem = visionSubsystem;
 
     addRequirements(visionSubsystem, swerve);
+    // Use addRequirements() here to declare subsystem dependencies.
   }
 
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
     visionSubsystem.setLimelightMode(2);
-    speakerPose = AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d());
-    Logger.recordOutput("VisionSpeakerAlign/SpeakerPose", speakerPose);
+    speakerPose = AllianceFlipUtil.apply(FieldConstants.shuttlePose.getTranslation());
+    Logger.recordOutput("VisionShuttle/SpeakerPose", speakerPose);
 
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     this.parameters = ShootingCalculatorUtil.getShootingParameters(RobotState.getPose(),
         speakerPose);
-
-    SuperStructure.updateShootingParameters(parameters);
 
     Drive.setMDriveMode(DriveMode.HEADING_LOCK);
 

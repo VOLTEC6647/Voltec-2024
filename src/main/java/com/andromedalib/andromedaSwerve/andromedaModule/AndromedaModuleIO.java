@@ -16,11 +16,13 @@ public interface AndromedaModuleIO {
 
         public double driveVelocity = 0.0;
         public double drivePosition = 0.0;
-        public double driveApplied = 0.0;
+        public double driveAppliedVolts = 0.0;
         public double driveAcceleration = 0.0;
+        public double driveCurrent = 0.0;
 
         public Rotation2d steerAngle = new Rotation2d();
         public double turnAppliedVolts = 0.0;
+        public double turnCurrent = 0.0;
         public double turnVelocity = 0.0;
         public Rotation2d encoderAbsolutePosition = new Rotation2d();
 

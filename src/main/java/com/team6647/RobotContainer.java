@@ -201,7 +201,8 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("ShootStay",
                                 SuperStructure.update(SuperStructureState.AUTO_SHOOTING_SPEAKER));
                 NamedCommands.registerCommand("SecondaryShootStay",
-                                SuperStructure.update(SuperStructureState.SECONDARY_AUTO_SHOOTING_SPEAKER).withTimeout(6));
+                                SuperStructure.update(SuperStructureState.SECONDARY_AUTO_SHOOTING_SPEAKER)
+                                                .withTimeout(6));
                 NamedCommands.registerCommand("GrabPiece",
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING_COMPLETE));
                 NamedCommands.registerCommand("ExtendIntake",
@@ -283,8 +284,11 @@ public class RobotContainer extends SuperRobotContainer {
                                                 new RunCommand(() -> leds.solidGreen())).ignoringDisable(true)
                                                 .repeatedly());
 
-                // leds.setDefaultCommand(new RunCommand(() ->
-                // leds.solidBlue()).ignoringDisable(true));
+                new Trigger(() -> shooterSubsystem.getBeamBrake() && intakeSubsystem.getBeamBrake()
+                                && shooterPivotSubsystem.getMState() == ShooterPivotState.HOMED)
+                                .whileTrue(Commands.sequence(
+                                                new RunCommand(() -> leds.solidBlue())).ignoringDisable(true)
+                                                .repeatedly());
 
                 /*
                  * new Trigger(() -> DriverStation.isDisabled()).whileTrue(
@@ -336,6 +340,11 @@ public class RobotContainer extends SuperRobotContainer {
                                                 () -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
 
                 OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp())
+                                .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
+                                                .andThen(SuperStructure.update(SuperStructureState.IDLE)));
+
+                OperatorConstants.driverController1.y()
+                                .whileTrue(SuperStructure.update(SuperStructureState.SHUTTLE_ALIGN))
                                 .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
                                                 .andThen(SuperStructure.update(SuperStructureState.IDLE)));
 
