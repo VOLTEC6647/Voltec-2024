@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3140196323188638,
-      "y": 5.4806715034257465
+      "x": 1.2213902529656913,
+      "y": 5.415617738642885
     },
     "rotation": 1.1796376863995455
   },
@@ -24,13 +24,13 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
+            "name": "Idle"
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
@@ -40,49 +40,37 @@
                 }
               },
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "MiddleToRight"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "MiddleToRight"
+                      }
+                    }
+                  ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootBottom"
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "deadline",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "GrabPiece"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "RightToCenter"
-                }
-              }
-            ]
+            "waitTime": 0.2
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootMiddle"
+            "name": "SecondaryShootStay"
           }
         },
         {
@@ -102,18 +90,37 @@
                 }
               },
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "CenterToLeft"
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "RightToCenter"
+                      }
+                    }
+                  ]
                 }
               }
             ]
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "ShootTop"
+            "name": "SecondaryShootStay"
           }
         }
       ]

@@ -18,7 +18,9 @@ import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.util.PathPlannerLogging;
+import com.team6647.RobotState;
 import com.team6647.subsystems.drive.controllers.HeadingController;
 import com.team6647.subsystems.drive.controllers.TeleopController;
 import com.team6647.util.Constants.DriveConstants;
@@ -39,7 +41,7 @@ public class Drive extends AndromedaSwerve {
 
     @Setter
     @AutoLogOutput(key = "Swerve/mMode")
-    private DriveMode mDriveMode = DriveMode.TELEOP;
+    public static DriveMode mDriveMode = DriveMode.TELEOP;
 
     private ChassisSpeeds desiredChassisSpeeds;
 
@@ -47,12 +49,12 @@ public class Drive extends AndromedaSwerve {
     private HeadingController headingController = new HeadingController();
 
     private Drive(GyroIO gyroIO, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig andromedaProfile) {
-        super(gyroIO, modulesIO, andromedaProfile);
+        super(gyroIO, modulesIO, andromedaProfile, RobotState.getInstance());
         AutoBuilder.configureHolonomic(
-                this::getPose,
-                this::resetPose,
+                RobotState::getPose,
+                RobotState::resetPose,
                 this::getRobotRelativeChassisSpeeds,
-                this::drive,
+                this::acceptInputs,
                 DriveConstants.holonomicPathConfig,
                 () -> {
                     var alliance = DriverStation.getAlliance();
@@ -98,9 +100,7 @@ public class Drive extends AndromedaSwerve {
                 break;
         }
 
-        if (!DriverStation.isAutonomous()) {
-            drive(desiredChassisSpeeds);
-        }
+        drive(desiredChassisSpeeds);
     }
 
     public enum DriveMode {
@@ -135,6 +135,11 @@ public class Drive extends AndromedaSwerve {
                 rotation.getAsDouble(), fieldOrientedControl.getAsBoolean());
     }
 
+    private void acceptInputs(ChassisSpeeds speeds) {
+        setMDriveMode(DriveMode.PATH_FOLLOWING);
+        desiredChassisSpeeds = speeds;
+    }
+
     public void setTargetHeading(Rotation2d heading) {
         headingController.setTargetHeading(heading);
     }
@@ -147,7 +152,6 @@ public class Drive extends AndromedaSwerve {
      * @return Command to drive to target pose
      */
     public Command getPathFindPath(Pose2d targetPose, PathConstraints constraints) {
-
         return Commands.sequence(
                 new InstantCommand(() -> {
                     mDriveMode = DriveMode.PATH_FOLLOWING;
@@ -156,10 +160,15 @@ public class Drive extends AndromedaSwerve {
                         targetPose,
                         constraints,
                         0.0,
-                        0.0))
-                .andThen(new InstantCommand(() -> {
-                    mDriveMode = DriveMode.TELEOP;
-                }));
+                        0.0));
+    }
+
+    public Command getPathFindThenFollowPath(String pathName, PathConstraints constraints) {
+        return Commands.sequence(
+                new InstantCommand(() -> {
+                    mDriveMode = DriveMode.PATH_FOLLOWING;
+                }),
+                AutoBuilder.pathfindThenFollowPath(PathPlannerPath.fromPathFile(pathName), constraints));
     }
 
     /**

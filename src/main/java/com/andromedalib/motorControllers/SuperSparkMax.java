@@ -96,8 +96,10 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(mode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
-        getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setPositionConversionFactor(absolutePositionConversionFactor);
-        getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setVelocityConversionFactor(absolutePositionConversionFactor / 60);
+        getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle)
+                .setPositionConversionFactor(absolutePositionConversionFactor);
+        getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle)
+                .setVelocityConversionFactor(absolutePositionConversionFactor / 60);
         getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setZeroOffset(zeroOfsset);
         getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setInverted(encoderInverted);
     }
@@ -131,6 +133,22 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         super(motorID, MotorType.kBrushless);
         restoreFactoryDefaults();
         setMode(GlobalIdleMode.Coast);
+        setInverted(isInverted);
+        burnFlash();
+    }
+
+    /**
+     * Configures SuperSparkMax motor controller without a current limit. The
+     * {@link IdleMode} set to
+     * Coast, the {@link MotorType} set to brushless
+     *
+     * @param motorID  ID of the motor controller
+     * @param inverted Inverted state of the motor controller
+     */
+    public SuperSparkMax(int motorID, boolean isInverted, GlobalIdleMode mode) {
+        super(motorID, MotorType.kBrushless);
+        restoreFactoryDefaults();
+        setMode(mode);
         setInverted(isInverted);
         burnFlash();
     }

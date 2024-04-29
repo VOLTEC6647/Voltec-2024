@@ -15,10 +15,13 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.math.Functions;
+import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
+import com.andromedalib.motorControllers.SuperTalonFX;
 import com.andromedalib.util.Alert;
 import com.andromedalib.util.Alert.AlertType;
 import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.util.LoggedTunableNumber;
+import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
@@ -28,14 +31,17 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+@SuppressWarnings("unused")
 public class ShooterPivotSubsystem extends SubsystemBase {
 
   private static ShooterPivotSubsystem instance;
 
   @AutoLogOutput(key = "Shooter/Pivot/State")
-  public ShooterPivotState mState = ShooterPivotState.HOMED;
+  @Getter
+  private ShooterPivotState mState = ShooterPivotState.HOMED;
 
   private ShooterPivotIO io;
   private ShooterPivotIOInputsAutoLogged inputs = new ShooterPivotIOInputsAutoLogged();
@@ -43,7 +49,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private LoggedTunableNumber pivotKp = new LoggedTunableNumber("Shooter/Pivot/kp", ShooterConstants.pivotKp);
   private LoggedTunableNumber pivotKi = new LoggedTunableNumber("Shooter/Pivot/ki", ShooterConstants.pivotKi);
   private LoggedTunableNumber pivotKd = new LoggedTunableNumber("Shooter/Pivot/kd", ShooterConstants.pivotKd);
-  private LoggedTunableNumber pivotKf = new LoggedTunableNumber("Shooter/Pivot/kf", ShooterConstants.pivotKf);
+  private LoggedTunableNumber pivotMaxVel = new LoggedTunableNumber("Shooter/Pivot/maxVel",
+      ShooterConstants.pivotMaxVel);
+  private LoggedTunableNumber pivotMaxAccel = new LoggedTunableNumber("Shooter/Pivot/maxAccel",
+      ShooterConstants.pivotMaxAccel);
 
   private LoggedTunableNumber pivotSetpoint = new LoggedTunableNumber("Shooter/Pivot/Setpoint",
       ShooterConstants.pivotHomedPosition);
@@ -56,21 +65,39 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   @AutoLogOutput(key = "Shooter/Pivot/Setpoint")
   private double setpoint = ShooterConstants.pivotHomedPosition;
 
-  private Alert pivotEncoderAlert = new Alert("Shooter Pivot Encoder disconnected", AlertType.WARNING);
+  private Alert pivotEncoderRangeAlert = new Alert("Shooter Pivot Encoder out of range", AlertType.WARNING);
+  private Alert pivotEncoderDisconnectedAlert = new Alert("Shooter Pivot Encoder disconnected", AlertType.WARNING);
+  private Alert pivotLeftMotorDiconnectedAlert = new Alert("Shooter Pivot Left Motor disconnected", AlertType.WARNING);
+  private Alert pivotRightMotorDisconnectedAlert = new Alert("Shooter Pivot Right Motor disconnected",
+      AlertType.WARNING);
 
-  private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-      new SysIdRoutine.Config(Volts.of(1).per(Seconds.of(1)), Volts.of(2), Seconds.of(10)),
-      new SysIdRoutine.Mechanism(
-          (Measure<Voltage> volts) -> {
-            runPivotCharacterization(volts.in(Units.Volts));
-          },
-          log -> {
-            log.motor("pivot")
-                .voltage(Volts.of(inputs.shooterPivotRightMotorAppliedVolts))
-                .angularPosition(Rotations.of(inputs.shooterPivotRightMotorPosition))
-                .angularVelocity(RotationsPerSecond.of(inputs.shooterPivotRightMotorVelocity));
-          },
-          this));
+  /*
+   * private static SuperTalonFX shooterPivotLeftMotor = new SuperTalonFX(
+   * ShooterConstants.shooterPivotLeftMotorID,
+   * GlobalIdleMode.Brake, RobotConstants.mechanismsCANnivore);
+   * 
+   * private static SuperTalonFX shooterPivotRightMotor = new SuperTalonFX(
+   * ShooterConstants.shooterPivotRightMotorID,
+   * GlobalIdleMode.Brake, true, RobotConstants.mechanismsCANnivore);
+   * 
+   * private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+   * new SysIdRoutine.Config(Volts.of(0.25).per(Seconds.of(1)), Volts.of(3),
+   * Seconds.of(10)),
+   * new SysIdRoutine.Mechanism(
+   * (Measure<Voltage> volts) -> {
+   * runPivotVolts(volts.in(Units.Volts));
+   * },
+   * log -> {
+   * log.motor("pivot")
+   * .voltage(Volts.of(shooterPivotLeftMotor.getMotorVoltage().getValueAsDouble())
+   * )
+   * .angularPosition(Rotations.of(shooterPivotLeftMotor.getPosition().
+   * getValueAsDouble()))
+   * .angularVelocity(RotationsPerSecond.of(shooterPivotLeftMotor.getVelocity().
+   * getValueAsDouble()));
+   * },
+   * this));
+   */
 
   /** Creates a new ShooterPivotSubsystem. */
   private ShooterPivotSubsystem(
@@ -89,11 +116,20 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     Logger.processInputs("Shooter/Pivot", inputs);
-    pivotEncoderAlert.set(inputs.cancoderAbsolutePosition < ShooterConstants.pivotMinPosition
+    pivotEncoderRangeAlert.set(inputs.cancoderAbsolutePosition < ShooterConstants.pivotMinPosition
         || inputs.cancoderAbsolutePosition > ShooterConstants.pivotMaxPosition);
+
+    pivotEncoderDisconnectedAlert.set(!inputs.cancoderConnected);
+    pivotLeftMotorDiconnectedAlert.set(!inputs.shooterPivotLeftMotorConnected);
+    pivotRightMotorDisconnectedAlert.set(!inputs.shooterPivotRightMotorConnected);
 
     if (inputs.cancoderAbsolutePosition < ShooterConstants.pivotMinPosition
         || inputs.cancoderAbsolutePosition > ShooterConstants.pivotMaxPosition) {
+      setShooterPivotState(ShooterPivotState.EMERGENCY_DISABLED);
+      io.disablePivot();
+    }
+
+    if (!inputs.cancoderConnected) {
       setShooterPivotState(ShooterPivotState.EMERGENCY_DISABLED);
       io.disablePivot();
     }
@@ -104,10 +140,10 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     }
 
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
-      io.setPIDF(pid[0], pid[1], pid[2], pid[3]);
+      io.setPIDVel(pid[0], pid[1], pid[2], pid[3], pid[4]);
 
-      changeSetpoint(pid[4]);
-    }, pivotKp, pivotKi, pivotKd, pivotKf, pivotSetpoint);
+      changeSetpoint(pid[5]);
+    }, pivotKp, pivotKi, pivotKd, pivotMaxVel, pivotMaxAccel, pivotSetpoint);
 
     if (mState != ShooterPivotState.HOMED) {
       LEDSubsystem.getInstance().pivotHomed = false;
@@ -123,8 +159,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     AMP(ShooterConstants.pivotAmpPosition),
     INDEXING(ShooterConstants.pivotIndexingPosition),
     CLIMBING(ShooterConstants.pivotClimbPosition),
-    EMERGENCY_DISABLED(-1),
-    CUSTOM(-1);
+    EMERGENCY_DISABLED(-1);
 
     private final double setpoint;
   }
@@ -152,9 +187,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
         changeSetpoint(inputs.cancoderAbsolutePosition);
         io.disablePivot();
         break;
-      case CUSTOM:
-        changeSetpoint(setpoint);
-        break;
+
     }
   }
 
@@ -182,17 +215,23 @@ public class ShooterPivotSubsystem extends SubsystemBase {
     currentParameters = newParameters;
   }
 
+  public void enablePivot() {
+    io.enablePivot();
+  }
+
   /* Characterization */
-
-  public void runPivotCharacterization(double volts) {
-    io.runPivotCharacterization(volts);
+  public void runPivotVolts(double volts) {
+    // shooterPivotLeftMotor.setVoltage(volts);
+    // shooterPivotRightMotor.setVoltage(volts);
+    // io.runPivotVolts(volts);
   }
 
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.quasistatic(direction);
-  }
+  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+  // return m_sysIdRoutine.quasistatic(direction);
+  // }
 
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return m_sysIdRoutine.dynamic(direction);
-  }
+  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+  // return m_sysIdRoutine.dynamic(direction);
+  // }
+
 }

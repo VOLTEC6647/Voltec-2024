@@ -9,6 +9,7 @@ package com.team6647.subsystems.vision;
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 
 public interface VisionIO {
     @AutoLog
@@ -17,7 +18,7 @@ public interface VisionIO {
         public double TY = 0.0;
         public double TX = 0.0;
         public int currentPipelineNumber = 0;
-        public Pose2d observedPose2d = new Pose2d();
+        public Pose2d estimatedPose2d = new Pose2d();
         public double timestampLatency = 0.0;
         public boolean hasTarget = false;
         public double targetDistance = 0.0;
@@ -25,7 +26,7 @@ public interface VisionIO {
     }
 
     /** Updates the set of loggable inputs. */
-    public default void updateInputs(VisionIOInputs inputs) {
+    public default void updateInputs(VisionIOInputs inputs, Rotation2d robotHeading, double headingVelocity) {
     }
 
     public default void changePipeline(int pipelineNumber) {

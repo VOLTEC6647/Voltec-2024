@@ -14,7 +14,6 @@ import com.team6647.util.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.Command;
 
 @SuppressWarnings("unused")
-
 public class VisionIntakeAlign extends Command {
   private NeuralVisionSubsystem neuralVisionSubsystem;
   private Drive andromedaSwerve;
@@ -38,7 +37,7 @@ public class VisionIntakeAlign extends Command {
 
     double targetingXVel = neuralVisionSubsystem.getTX() * kp;
     double targetingYVel = neuralVisionSubsystem.getTY() * kpRange;
-    targetingXVel *= DriveConstants.maxAngularVelocity;
+    targetingXVel *= DriveConstants.maxAngularVelocityRadsPerSec;
 
     targetingXVel *= -1;
     targetingYVel *= -1;

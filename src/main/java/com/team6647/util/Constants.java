@@ -56,19 +56,26 @@ public class Constants {
                 /* Driver 2 */
 
                 public static final Trigger TOGGLE_INTAKE = driverController2.povRight(),
+                                INDEXING = driverController2.povUp(),
+                                INTAKING_ONLY = driverController2.povDown(),
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = driverController2.b(),
                                 SHOOT_SUBWOOFER = driverController2.a(),
-                                SEND_NOTES = driverController2.y(),
+                                SHUTTLE = driverController2.y(),
                                 CLIMB_TOP = driverController2.povUp(), INTAKE_FEEDER = driverController2.rightTrigger(),
                                 EXHAUST_FEEDER = driverController2.leftTrigger(),
-                                FORCE_IDLE = driverController2.povLeft();
+                                FORCE_IDLE = driverController2.povLeft(),
+                                PREPARE_CLIMB = driverController2.leftBumper(),
+                                CLIMB = driverController2.rightBumper(),
+                                RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick());
         }
 
         public static class RobotConstants {
-                public static final Mode currentMode = Mode.SIM;
+                public static final Mode currentMode = Mode.REAL;
 
                 public static final boolean tuningMode = true;
+
+                public static final String mechanismsCANnivore = "6647_Mechanisms";
 
                 public static Mode getMode() {
                         if ((currentMode == Mode.SIM || currentMode == Mode.REPLAY) && RobotBase.isReal()) {
@@ -108,7 +115,12 @@ public class Constants {
                 public static double podiumX = Units.inchesToMeters(126.75);
                 public static double startingLineX = Units.inchesToMeters(74.111);
 
-                public static Pose2d amp = new Pose2d(new Translation2d(1.80, 7.62), Rotation2d.fromDegrees(-90));
+                // public static Pose2d amp = new Pose2d(new Translation2d(1.87, 7.52),
+                // Rotation2d.fromDegrees(-90));
+
+                public static Pose2d amp = new Pose2d(new Translation2d(1.826, 7), Rotation2d.fromDegrees(-90));
+
+                public static Pose2d shuttlePose = new Pose2d(0.18, 7.71, new Rotation2d());
 
                 /** Staging locations for each note */
                 public static final class StagingLocations {
@@ -197,13 +209,14 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 35.0;
-                public static final double pivotKi = 5.75;
+                public static final double pivotKp = 45.0;
+                public static final double pivotKi = 1.5;
                 public static final double pivotKd = 0.0;
-                public static final double pivotKf = 0.37;
+                public static final double pivotMaxVel = 1.2;
+                public static final double pivotMaxAccel = 3.2;
 
                 public static final double pidPositionTolerance = 0.05;
-                public static final double positionTolerance = 1;
+                public static final double positionTolerance = 1.5;
 
                 public static final double pivotMaxVelocity = 1500.0;
                 public static final double pivotMaxAcceleration = 1500.0;
@@ -212,14 +225,14 @@ public class Constants {
                 public static final int shooterMotorCurrentLimit = 80;
                 public static final int rollerMotorCurrentLimit = 80;
 
-                public static final double shooterPivotEncoderOffset = -0.154785;
+                public static final double shooterPivotEncoderOffset = -Math.abs(0.065186 - 0.0083333333333333);
                 public static final SensorDirectionValue shooterPivotEncoderInverted = SensorDirectionValue.CounterClockwise_Positive;
 
                 public static final double pivotMinPosition = -95;
                 public static final double pivotMaxPosition = 90;
                 public static final double pivotHomedPosition = -85;
                 public static final double pivotIndexingPosition = -43;
-                public static final double pivotAmpPosition = 30;
+                public static final double pivotAmpPosition = 25;
                 public static final double pivotClimbPosition = 5;
 
                 public static final double flywheelAmpRPM = 1000;
@@ -240,16 +253,27 @@ public class Constants {
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 
                 static {
-                        shooterPivotMap.put(1.10053, -45.0);
-                        shooterPivotMap.put(1.5215, -43.0);
-                        shooterPivotMap.put(2.11578, -37.0);
-                        shooterPivotMap.put(2.64562, -34.0);
-                        shooterPivotMap.put(2.92418, -31.0);
-                        shooterPivotMap.put(3.18782, -31.0);
-                        shooterPivotMap.put(3.36144, -26.0);
-                        shooterPivotMap.put(3.84594, -23.5);
-                        shooterPivotMap.put(4.28348, -23.0);
-                        shooterPivotMap.put(5.32926, -21.5);
+                        shooterPivotMap.put(1.0936344809639507, -43.0);
+                        shooterPivotMap.put(1.3647448719759743, -40.0);
+                        shooterPivotMap.put(1.4662830296465148, -40.0);
+                        shooterPivotMap.put(1.6591138264389274, -38.0);
+                        shooterPivotMap.put(1.7600910482436123, -35.0);
+                        shooterPivotMap.put(1.913340356564228, -33.0);
+                        shooterPivotMap.put(2.1716554944487902, -30.0);
+                        shooterPivotMap.put(2.3032792648108207, -27.0);
+                        shooterPivotMap.put(2.481864300202367, -24.0);
+                        shooterPivotMap.put(2.8409444270649162, -22.0);
+                        shooterPivotMap.put(2.8409444270649162, -22.0);
+                        shooterPivotMap.put(3.0616964133256297, -20.0);
+                        shooterPivotMap.put(3.232448333251388, -20.0);
+                        shooterPivotMap.put(3.4114312033790997, -19.0);
+                        shooterPivotMap.put(3.5778698732172343, -18.0);
+                        shooterPivotMap.put(3.826650816147822, -19.0);
+                        shooterPivotMap.put(4.0869433490820315, -18.0);
+                        shooterPivotMap.put(4.182890957872784, -17.0);
+                        shooterPivotMap.put(4.360953069105574, -17.0);
+                        shooterPivotMap.put(4.809843985735209, -16.0);
+                        shooterPivotMap.put(5.0295966570759445, -15.0);
                 }
 
                 public static final InterpolatingDoubleTreeMap shooterTimeMap = new InterpolatingDoubleTreeMap();
@@ -290,7 +314,7 @@ public class Constants {
         public static class IntakeConstants {
                 public static final int intakeMotorID = 17;
 
-                public static final double homedKp = 0.05;
+                public static final double homedKp = 0.045;
                 public static final double homedKi = 0.0;// 0.00004;
                 public static final double homedKd = 0.0;
 
@@ -307,10 +331,10 @@ public class Constants {
                 public static final double homedPIDMaxVelocity = 2500.0;
                 public static final double homedPIDMaxAcceleration = 1500.0;
 
-                public static final double minIntakePivotPosition = 137.400;
-                public static final double maxIntakePivotPosition = 197.040;
-                public static final double intakeHomedPosition = 140.00;
-                public static final double intakeExtendedPosition = 195.000;
+                public static final double minIntakePivotPosition = 100.400;
+                public static final double maxIntakePivotPosition = 170.040;
+                public static final double intakeHomedPosition = 109.00;
+                public static final double intakeExtendedPosition = 166.000;
 
                 public static final int intakePivotLeftMotorID = 14;
                 public static final int intakePivotRightMotorID = 15;
@@ -335,12 +359,11 @@ public class Constants {
                 public static final double pushingHomedPosition = 2;
 
                 public static final int pushingLimitSwitch = 9;
-                public static final int intakeLimitSwitch = 8;
                 public static final int intakeBeamBrakeChannel = 1;
         }
 
         public static class VisionConstants {
-                public static final String aprilLimeNTName = "limelight";
+                public static final String aprilLimeNTName = "limelight-backcam";
                 public static final String neuralLimeNTName = "limelight-intake";
 
                 public static final int speakerBlueCenterTagID = 7;
@@ -410,9 +433,10 @@ public class Constants {
 
                         driveMotorConfig.MotorOutput.Inverted = driveMotorInvert;
 
-                        driveMotorConfig.Feedback.SensorToMechanismRatio = driveGearRatio;
                         driveMotorConfig.Audio.BeepOnBoot = true;
                         driveMotorConfig.Audio.BeepOnConfig = true;
+
+                        driveMotorConfig.Feedback.SensorToMechanismRatio = driveGearRatio;
 
                         driveMotorConfig.CurrentLimits.SupplyCurrentLimit = driveContinuousCurrentLimit;
                         driveMotorConfig.CurrentLimits.SupplyCurrentLimitEnable = driveEnableCurrentLimit;
@@ -434,7 +458,6 @@ public class Constants {
 
                         turningMotorConfig.MotorOutput.Inverted = angleMotorInvert;
 
-                        turningMotorConfig.Feedback.SensorToMechanismRatio = steeringGearRatio;
                         turningMotorConfig.Audio.BeepOnBoot = true;
                         turningMotorConfig.Audio.BeepOnConfig = true;
 
@@ -444,6 +467,7 @@ public class Constants {
                         turningMotorConfig.CurrentLimits.SupplyTimeThreshold = anglePeakCurrentDuration;
 
                         turningMotorConfig.ClosedLoopGeneral.ContinuousWrap = true;
+                        turningMotorConfig.Feedback.SensorToMechanismRatio = steeringGearRatio;
 
                         turningMotorConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
@@ -473,17 +497,17 @@ public class Constants {
                 public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
                                 moduleTranslations);
 
-                public static final double maxSpeed = 4.641013629172587;
-                public static final double maxAcceleration = maxSpeed * 0.85; // 13.804786438404268;
-                /** Radians per Second */
-                public static final double maxAngularVelocity = 11.5; // 13.804786438404268;
-                public static final double maxAngularAcceleration = 3.5; // 0.09714;
+                public static final double maxSpeedMetersPerSecond = 4.7244;
+                public static final double maxAccelerationMetersPerSecondSquared = maxSpeedMetersPerSecond * 0.85;
+                public static final double maxAngularVelocityRadsPerSec = 11.5;
+                public static final double maxAngularAccelerationRadsPerSec = 3.5;
 
                 public static final AndromedaSwerveConfig andromedaSwerveConfig = new AndromedaSwerveConfig(0.1,
                                 trackWidth,
-                                wheelBase, swerveKinematics, moduleTranslations, maxSpeed, maxAcceleration,
-                                maxAngularVelocity,
-                                maxAngularAcceleration, wheelDiameter);
+                                wheelBase, swerveKinematics, moduleTranslations, maxSpeedMetersPerSecond,
+                                maxAccelerationMetersPerSecondSquared,
+                                maxAngularVelocityRadsPerSec,
+                                maxAngularAccelerationRadsPerSec, wheelDiameter);
 
                 public static final int gyroID = 13;
 
@@ -507,7 +531,7 @@ public class Constants {
                 public static final HolonomicPathFollowerConfig holonomicPathConfig = new HolonomicPathFollowerConfig(
                                 DriveConstants.translationConstants,
                                 DriveConstants.rotationConstants,
-                                maxSpeed,
+                                maxSpeedMetersPerSecond,
                                 Math.sqrt(Math.pow(trackWidth, 2) + Math.pow(trackWidth, 2)),
                                 new ReplanningConfig());
         }

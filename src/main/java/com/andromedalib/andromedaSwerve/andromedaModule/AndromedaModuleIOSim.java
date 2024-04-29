@@ -53,7 +53,7 @@ public class AndromedaModuleIOSim implements AndromedaModuleIO {
 
         inputs.drivePosition = driveSim.getAngularPositionRad() * (wheelRadius);
         inputs.driveVelocity = driveSim.getAngularVelocityRadPerSec() * (wheelRadius);
-        inputs.driveApplied = driveAppliedVolts;
+        inputs.driveAppliedVolts = driveAppliedVolts;
 
         inputs.encoderAbsolutePosition = new Rotation2d(turnSim.getAngularPositionRad()).plus(turnAbsoluteInitPosition);
         inputs.steerAngle = Rotation2d.fromRadians(turnSim.getAngularPositionRad());

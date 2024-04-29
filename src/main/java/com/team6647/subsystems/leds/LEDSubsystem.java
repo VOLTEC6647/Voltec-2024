@@ -5,17 +5,12 @@
  */
 package com.team6647.subsystems.leds;
 
-import java.util.Optional;
+import com.team6647.util.TejuinoBoard;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-@SuppressWarnings("unused")
 public class LEDSubsystem extends SubsystemBase {
   private static LEDSubsystem instance;
 
@@ -37,75 +32,21 @@ public class LEDSubsystem extends SubsystemBase {
   public boolean climbing = false;
   public boolean trapping = false;
   public boolean endgameAlert = false;
-  public boolean sameBattery = false;
   public boolean pivotHomed = true;
-  public boolean armCoast = false;
-  public boolean armEstopped = false;
-  public boolean autoFinished = false;
-  public double autoFinishedTime = 0.0;
   public boolean lowBatteryAlert = false;
-  public boolean demoMode = false;
 
-  private Optional<Alliance> alliance = Optional.empty();
-  private Color allianceColor = Color.kGold;
-  private Color secondaryDisabledColor = Color.kDarkBlue;
-  private boolean lastEnabledAuto = false;
-  private double lastEnabledTime = 0.0;
   private boolean estopped = false;
 
-  // LED IO
-  private final Spark leds = new Spark(1);
-  private final Notifier loadingNotifier;
+  private static TejuinoBoard leds = new TejuinoBoard();
 
-  // Constants
-  private static final boolean prideLeds = false;
   private static final int minLoopCycleCount = 10;
-  private static final int length = 12;
-  private static final int staticSectionLength = 3;
-  private static final double strobeFastDuration = 0.1;
-  private static final double strobeSlowDuration = 0.2;
-  private static final double breathDuration = 1.0;
-  private static final double rainbowCycleLength = 25.0;
-  private static final double rainbowDuration = 0.25;
-  private static final double waveExponent = 0.4;
-  private static final double waveFastCycleLength = 25.0;
-  private static final double waveFastDuration = 0.25;
-  private static final double waveSlowCycleLength = 25.0;
-  private static final double waveSlowDuration = 3.0;
-  private static final double waveAllianceCycleLength = 15.0;
-  private static final double waveAllianceDuration = 2.0;
-  private static final double autoFadeTime = 2.5; // 3s nominal
-  private static final double autoFadeMaxTime = 5.0; // Return to normal
 
   private LEDSubsystem() {
     System.out.println("[Init] Creating LEDs");
-    loadingNotifier = new Notifier(
-        () -> {
-          synchronized (this) {
-            periodic();
-          }
-        });
-    loadingNotifier.startPeriodic(0.02);
+    leds.init(1);
   }
 
   public synchronized void periodic() {
-    // Update alliance color
-    if (DriverStation.isFMSAttached()) {
-      alliance = DriverStation.getAlliance();
-      allianceColor = alliance
-          .map(alliance -> alliance == Alliance.Blue ? Color.kBlue : Color.kFirstRed)
-          .orElse(Color.kGold);
-      secondaryDisabledColor = alliance.isPresent() ? Color.kBlack : Color.kDarkBlue;
-    }
-
-    // Update auto state
-    if (DriverStation.isDisabled()) {
-      autoFinished = false;
-    } else {
-      lastEnabledAuto = DriverStation.isAutonomous();
-      lastEnabledTime = Timer.getFPGATimestamp();
-    }
-
     // Update estop state
     if (DriverStation.isEStopped()) {
       estopped = true;
@@ -117,67 +58,89 @@ public class LEDSubsystem extends SubsystemBase {
       return;
     }
 
-    // Stop loading notifier if running
-    loadingNotifier.stop();
-
-    if (DriverStation.isDisabled()) {
-      sinelon(); // Default to off
-    }
-
     if (estopped) {
       solidRed();
     }
+  }
 
-    if (endgameAlert) {
-      strobeGreen();
-    }
-
-    if (intakeHasNote) {
-      solidOrange();
-    } else if (shooterHasNote) {
+  public void strobeGreen(double duration) {
+    boolean c1On = ((Timer.getFPGATimestamp() % duration) / duration) > 0.5;
+    if (c1On) {
       solidGreen();
-    } else if (!pivotHomed) {
+    } else {
+      turnOffLeds();
+    }
+  }
+
+  public void strobeYellow(double duration) {
+    boolean c1On = ((Timer.getFPGATimestamp() % duration) / duration) > 0.5;
+    if (c1On) {
+      solidYellow();
+    } else {
+      turnOffLeds();
+    }
+  }
+
+  public void strobRed(double duration) {
+    boolean c1On = ((Timer.getFPGATimestamp() % duration) / duration) > 0.5;
+    if (c1On) {
       solidRed();
     } else {
-      solidBlue();
+      turnOffLeds();
     }
-    // Update LEDs
   }
 
-  private void solidRed() {
-    leds.set(0.61);
+  public void strobePurple(double duration) {
+    boolean c1On = ((Timer.getFPGATimestamp() % duration) / duration) > 0.5;
+    if (c1On) {
+      solidPurple();
+    } else {
+      turnOffLeds();
+    }
   }
 
-  private void solidBlue() {
-    leds.set(0.83);
+  public void solidYellow() {
+    leds.all_leds_yellow(1);
   }
 
-  private void strobeGreen() {
-    leds.set(-0.61);
+  public void solidRed() {
+    leds.all_leds_red(1);
   }
 
-  private void solidGreen() {
-    leds.set(0.77);
+  public void solidBlue() {
+    leds.all_leds_blue(1);
   }
 
-  private void solidOrange() {
-    leds.set(0.65);
+  public void solidPurple() {
+    leds.all_leds_purple(1);
   }
 
-  private void breath() {
-    leds.set(-0.15);
+  public void solidGreen() {
+    leds.all_leds_green(1);
   }
 
-  private void rainbow(double cycleLength, double duration) {
-    leds.set(-0.93);
+  public void turnOffLeds() {
+    leds.turn_off_all_leds(1);
   }
 
-  private void wave() {
-    leds.set(-0.31);
+  public void rainbow() {
+    leds.rainbow_effect(1);
   }
 
-  private void sinelon() {
-    leds.set(-0.75);
+  private int wavePos = 0;
+  private int waveSpeed = 1;
+  private int ledLength = 50;
+
+  public void wave() {
+    boolean c1On = ((Timer.getFPGATimestamp() % 0.2) / 0.2) > 0.5;
+    if (c1On) {
+      wavePos = (wavePos + waveSpeed) % ledLength;
+
+      for (int i = 0; i < ledLength; i++) {
+        int distance = Math.abs(i - wavePos);
+        leds.single_led_control(1, i, 0, 0, Math.max(0, 255 - (distance * 10)));
+      }
+    }
   }
 
   public static boolean isRed() {

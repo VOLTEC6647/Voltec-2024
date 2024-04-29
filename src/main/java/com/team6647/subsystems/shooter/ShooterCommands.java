@@ -32,5 +32,4 @@ public class ShooterCommands {
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING),
                 new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED));
     }
-
 }

@@ -8,17 +8,18 @@ package com.team6647.subsystems.vision;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
+import com.team6647.RobotContainer;
+import com.team6647.RobotState;
 import com.team6647.util.Constants.VisionConstants;
 
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class VisionSubsystem extends SubsystemBase {
 
   private static VisionSubsystem instance;
+  private static AndromedaSwerve andromedaSwerve = RobotContainer.andromedaSwerve;
 
   private VisionIO io;
   private VisionIOInputsAutoLogged inputs = new VisionIOInputsAutoLogged();
@@ -40,27 +41,17 @@ public class VisionSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    io.updateInputs(inputs);
+    io.updateInputs(inputs, andromedaSwerve.getSwerveAngle(), andromedaSwerve.getHeadingVelocity());
     Logger.processInputs("Vision", inputs);
     computeVisionMeasurements();
     Logger.recordOutput("IsAutonomous", DriverStation.isAutonomous());
   }
 
   public void computeVisionMeasurements() {
-    if (inputs.hasTarget) {
+    if (inputs.hasTarget && inputs.targetDistance != -1 && inputs.currentPipelineNumber == 0) {
       if (inputs.targetDistance < 5) {
-
-        double xyStdDev = 0.035
-            * Math.pow(inputs.targetDistance, 2.0)
-            * 1;
-
-        Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(xyStdDev, xyStdDev,
-            edu.wpi.first.math.util.Units.degreesToRadians(50));
-
-        Logger.recordOutput("Vision/StandarDev", xyStdDev);
-
-        AndromedaSwerve.addVisionMeasurements(inputs.observedPose2d, inputs.timestampLatency,
-            visionmeasurementStandardDeviations);
+        RobotState.addVisionMeasurements(inputs.estimatedPose2d, inputs.timestampLatency,
+            VecBuilder.fill(.3, .3, 9999999));
       }
     }
   }
@@ -81,7 +72,7 @@ public class VisionSubsystem extends SubsystemBase {
     return inputs.hasTarget && inputs.targetID == ID;
   }
 
-  public void changePipeline(int pipelineNumber) {
+  private void changePipeline(int pipelineNumber) {
     io.changePipeline(pipelineNumber);
   }
 

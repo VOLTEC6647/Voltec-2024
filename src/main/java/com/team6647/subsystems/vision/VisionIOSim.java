@@ -11,6 +11,7 @@ import org.photonvision.simulation.VisionSystemSim;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class VisionIOSim implements VisionIO {
@@ -32,7 +33,7 @@ public class VisionIOSim implements VisionIO {
     }
 
     @Override
-    public synchronized void updateInputs(VisionIOInputs inputs) {
+    public synchronized void updateInputs(VisionIOInputs inputs, Rotation2d robotHeading, double headingVelocity) {
     }
 
 }

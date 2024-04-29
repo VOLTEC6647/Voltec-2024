@@ -128,10 +128,6 @@ public class IntakePivotSubsystem extends SubsystemBase {
     return inputs.pushingLimitSwitchPressed;
   }
 
-  public boolean getIntakeLimitSwitchPressed() {
-    return inputs.intakeLimitSwitchPressed;
-  }
-
   public boolean emergencyDisabled() {
     return mState == IntakePivotState.EMERGENCY_DISABLED;
   }

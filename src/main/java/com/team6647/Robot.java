@@ -11,6 +11,8 @@ import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 import com.andromedalib.robot.SuperRobot;
+import com.team6647.subsystems.drive.Drive;
+import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.hal.AllianceStationID;
@@ -22,8 +24,6 @@ public class Robot extends SuperRobot {
 
   @Override
   public void robotInit() {
-    // Pathfinding.setPathfinder(new LocalADStarAK());
-
     System.out.println("[Init] Starting AdvantageKit");
     Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
     Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -70,5 +70,11 @@ public class Robot extends SuperRobot {
     container = RobotContainer.getInstance();
     super.setRobotContainer(container, false);
     super.robotInit();
+  }
+
+  @Override
+  public void teleopInit() {
+    super.teleopInit();
+    Drive.setMDriveMode(DriveMode.TELEOP);
   }
 }

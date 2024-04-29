@@ -14,7 +14,6 @@ import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.util.Alert;
 import com.andromedalib.util.Alert.AlertType;
-import com.team6647.RobotContainer;
 import com.team6647.subsystems.leds.LEDSubsystem;
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.Constants.ShooterConstants;
@@ -149,10 +148,8 @@ public class ShooterSubsystem extends SubsystemBase {
     rollerBeamBrakeAlert.set(!getBeamBrake());
 
     if (!getBeamBrake()) {
-      RobotContainer.visionSubsytem.setLimelightMode(2);
       LEDSubsystem.getInstance().shooterHasNote = true;
     } else {
-      RobotContainer.visionSubsytem.setLimelightMode(1);
       LEDSubsystem.getInstance().shooterHasNote = false;
     }
   }

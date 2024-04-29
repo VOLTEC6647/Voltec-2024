@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3140196323188638,
-      "y": 5.4806715034257465
+      "x": 0.4357068913852507,
+      "y": 7.319272841113443
     },
-    "rotation": 1.1796376863995455
+    "rotation": 0
   },
   "command": {
     "type": "sequential",
@@ -18,15 +18,21 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "ShootSubwoofer"
+            "pathName": "TopShoot"
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
+            "name": "ShootStay"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
           }
         },
         {
@@ -42,16 +48,28 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "MiddleToCenter"
+                  "pathName": "TopOut"
                 }
               }
             ]
           }
         },
         {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "5ToWing"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "ShootMiddle"
+            "name": "SecondaryShootStay"
           }
         }
       ]

@@ -26,6 +26,7 @@ import com.team6647.commands.ShooterRollerStartEnd;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.drive.Drive;
+import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
@@ -47,6 +48,7 @@ import com.team6647.subsystems.shooter.pivot.ShooterPivotIO;
 import com.team6647.subsystems.shooter.pivot.ShooterPivotIOSim;
 import com.team6647.subsystems.shooter.pivot.ShooterPivotIOTalonFX;
 import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem;
+import com.team6647.subsystems.shooter.pivot.ShooterPivotSubsystem.ShooterPivotState;
 import com.team6647.subsystems.shooter.roller.ShooterIORollerSim;
 import com.team6647.subsystems.shooter.roller.ShooterIORollerSparkMax;
 import com.team6647.subsystems.shooter.roller.ShooterRollerIO;
@@ -66,9 +68,8 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
@@ -81,12 +82,15 @@ public class RobotContainer extends SuperRobotContainer {
         public static ShooterRollerSubsystem shooterRollerSubsystem;
         public static VisionSubsystem visionSubsytem;
         public static NeuralVisionSubsystem neuralVisionSubsystem;
+        public static RobotState robotState;
 
         private static final LEDSubsystem leds = LEDSubsystem.getInstance();
 
         public static SuperStructure superStructure;
 
         private static LoggedDashboardChooser<Command> autoDashboardChooser;
+
+        SlewRateLimiter xLimiter, yLimiter, turningLimiter;
 
         private RobotContainer() {
         }
@@ -180,13 +184,14 @@ public class RobotContainer extends SuperRobotContainer {
                                 break;
                 }
                 superStructure = SuperStructure.getInstance();
+                robotState = RobotState.getInstance();
 
                 // -------- Auto Declaration --------
 
                 NamedCommands.registerCommand("InitIntake",
                                 new InitIntake(intakePivotSubsystem));
                 NamedCommands.registerCommand("ShootSubwoofer",
-                                SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).withTimeout(7));
+                                SuperStructure.update(SuperStructureState.AUTO_SHOOTING_SUBWOOFER));
                 NamedCommands.registerCommand("ShootMiddle",
                                 SuperStructure.autoMiddleCommand().withTimeout(7));
                 NamedCommands.registerCommand("ShootTop",
@@ -194,15 +199,22 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("AmpScore",
                                 SuperStructure.update(SuperStructureState.AUTO_AMP));
                 NamedCommands.registerCommand("ShootStay",
-                                SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER).withTimeout(7));
+                                SuperStructure.update(SuperStructureState.AUTO_SHOOTING_SPEAKER));
+                NamedCommands.registerCommand("SecondaryShootStay",
+                                SuperStructure.update(SuperStructureState.SECONDARY_AUTO_SHOOTING_SPEAKER)
+                                                .withTimeout(6));
                 NamedCommands.registerCommand("GrabPiece",
+                                SuperStructure.update(SuperStructureState.AUTO_INTAKING_COMPLETE));
+                NamedCommands.registerCommand("ExtendIntake",
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING));
+                NamedCommands.registerCommand("IndexPiece",
+                                SuperStructure.update(SuperStructureState.AUTO_INDEXING));
                 NamedCommands.registerCommand("Idle",
                                 SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
                 NamedCommands.registerCommand("VisionAlign",
                                 SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
-                NamedCommands.registerCommand("IntakeDown",
-                                SuperStructure.update(SuperStructureState.INTAKING).withTimeout(1));
+                NamedCommands.registerCommand("SuppIndex",
+                                SuperStructure.update(SuperStructureState.SUPP_INDEXING));
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
@@ -231,9 +243,11 @@ public class RobotContainer extends SuperRobotContainer {
                 new Trigger(
                                 () -> DriverStation.isTeleopEnabled()
                                                 && DriverStation.getMatchTime() > 0
-                                                && DriverStation.getMatchTime() <= Math.round(30.0))
-                                .onTrue(controllerRumbleCommandFactory.apply(0.5));
-
+                                                && DriverStation.getMatchTime() <= Math.round(25.0))
+                                .onTrue(Commands.sequence(
+                                                controllerRumbleCommandFactory.apply(1.0),
+                                                Commands.waitSeconds(0.1),
+                                                controllerRumbleCommandFactory.apply(1.0)));
                 new Trigger(
                                 () -> DriverStation.isTeleopEnabled()
                                                 && DriverStation.getMatchTime() > 0
@@ -245,13 +259,46 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 controllerRumbleCommandFactory.apply(0.2),
                                                                 Commands.waitSeconds(0.1),
                                                                 controllerRumbleCommandFactory.apply(0.2)));
-                new Trigger(() -> !shooterSubsystem.getBeamBrake())
-                                .whileTrue(new StartEndCommand(() -> visionSubsytem.setLimelightMode(2),
-                                                () -> visionSubsytem.setLimelightMode(1), visionSubsytem)
-                                                .withTimeout(3));
-        }
+                new Trigger(() -> DriverStation.isTeleopEnabled() && !shooterSubsystem.getBeamBrake())
+                                .onTrue(Commands.sequence(
+                                                controllerRumbleCommandFactory.apply(0.4),
+                                                Commands.waitSeconds(0.1),
+                                                controllerRumbleCommandFactory.apply(0.4)
 
-        SlewRateLimiter xLimiter, yLimiter, turningLimiter;
+                                ));
+                new Trigger(() -> shooterPivotSubsystem.getMState() != ShooterPivotState.HOMED).whileTrue(
+                                Commands.sequence(
+                                                new RunCommand(() -> leds.strobRed(0.2)).withTimeout(2),
+                                                new RunCommand(() -> leds.solidRed())).ignoringDisable(true)
+                                                .repeatedly());
+
+                new Trigger(() -> !intakeSubsystem.getBeamBrake())
+                                .whileTrue(Commands.sequence(
+                                                new RunCommand(() -> leds.strobeYellow(0.2)).withTimeout(2),
+                                                new RunCommand(() -> leds.solidYellow())).ignoringDisable(true)
+                                                .repeatedly());
+
+                new Trigger(() -> !shooterSubsystem.getBeamBrake())
+                                .whileTrue(Commands.sequence(
+                                                new RunCommand(() -> leds.strobeGreen(0.2)).withTimeout(2),
+                                                new RunCommand(() -> leds.solidGreen())).ignoringDisable(true)
+                                                .repeatedly());
+
+                new Trigger(() -> shooterSubsystem.getBeamBrake() && intakeSubsystem.getBeamBrake()
+                                && shooterPivotSubsystem.getMState() == ShooterPivotState.HOMED)
+                                .whileTrue(Commands.sequence(
+                                                new RunCommand(() -> leds.solidBlue())).ignoringDisable(true)
+                                                .repeatedly());
+
+                /*
+                 * new Trigger(() -> DriverStation.isDisabled()).whileTrue(
+                 * new RunCommand(() -> leds.rainbow()).ignoringDisable(true));
+                 * 
+                 * new Trigger(() -> DriverStation.isEnabled()).whileTrue(
+                 * new RunCommand(() -> leds.solidBlue()).ignoringDisable(true));
+                 */
+                configSysIdBindings();
+        }
 
         @Override
         public void configureBindings() {
@@ -262,37 +309,6 @@ public class RobotContainer extends SuperRobotContainer {
                 andromedaSwerve.setDefaultCommand(
                                 andromedaSwerve.run(
                                                 () -> {
-
-                                                        /*
-                                                         * double linearMagnitude = MathUtil.applyDeadband(
-                                                         * Math.hypot(-OperatorConstants.driverController1
-                                                         * .getLeftX(),
-                                                         * -OperatorConstants.driverController1
-                                                         * .getLeftY()),
-                                                         * 0.1);
-                                                         * Rotation2d linearDirection = new Rotation2d(
-                                                         * -OperatorConstants.driverController1
-                                                         * .getLeftX(),
-                                                         * -OperatorConstants.driverController1
-                                                         * .getLeftY());
-                                                         * 
-                                                         * // Calcaulate new linear velocity
-                                                         * Translation2d linearVelocity = new Pose2d(new
-                                                         * Translation2d(),
-                                                         * linearDirection)
-                                                         * .transformBy(new Transform2d(linearMagnitude,
-                                                         * 0.0, new Rotation2d()))
-                                                         * .getTranslation();
-                                                         * 
-                                                         * andromedaSwerve.acceptTeleopInputs(
-                                                         * linearVelocity,
-                                                         * () -> MathUtil.applyDeadband(
-                                                         * -OperatorConstants.driverController1
-                                                         * .getRightX(),
-                                                         * 0.1),
-                                                         * () -> true);
-                                                         */
-
                                                         double ySpeed = yLimiter
                                                                         .calculate(-OperatorConstants.driverController1
                                                                                         .getLeftY());
@@ -317,19 +333,43 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Gyro Commands --------
 
+                // configSysIdBindings();
+
                 OperatorConstants.RESET_GYRO
-                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
+                                .whileTrue(new InstantCommand(
+                                                () -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
+
+                OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp())
+                                .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
+                                                .andThen(SuperStructure.update(SuperStructureState.IDLE)));
+
+                OperatorConstants.driverController1.y()
+                                .whileTrue(SuperStructure.update(SuperStructureState.SHUTTLE_ALIGN))
+                                .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
+                                                .andThen(SuperStructure.update(SuperStructureState.IDLE)));
 
                 /* Driver 2 */
 
                 OperatorConstants.FORCE_IDLE
-                                .whileTrue(SuperStructure.update(SuperStructureState.IDLE));
+                                .whileTrue(SuperStructure.update(SuperStructureState.IDLE))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Superstructure --------
 
                 // -------- Intake Commands --------
 
+                // Complete intaking sequence
                 OperatorConstants.TOGGLE_INTAKE
+                                .whileTrue(SuperStructure.update(SuperStructureState.INTAKING_COMPLETE))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                // Pass intake from intake to shooter
+                OperatorConstants.INDEXING
+                                .whileTrue(SuperStructure.update(SuperStructureState.INDEXING))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                // Intake only, no shooter
+                OperatorConstants.INTAKING_ONLY
                                 .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
@@ -346,8 +386,8 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // Shooting notes to wing
 
-                OperatorConstants.SEND_NOTES
-                                .whileTrue(SuperStructure.update(SuperStructureState.SEND_NOTES))
+                OperatorConstants.SHUTTLE
+                                .whileTrue(SuperStructure.update(SuperStructureState.SHUTTLE))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Amp Commands --------
@@ -373,18 +413,27 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 ShooterFeederState.STOPPED),
                                                 new IntakeRollerStartEnd(intakeSubsystem, IntakeRollerState.EXHAUSTING,
                                                                 IntakeRollerState.STOPPED)));
+
+                // -------- Climbing --------
+
+                OperatorConstants.PREPARE_CLIMB
+                                .whileTrue(SuperStructure.update(SuperStructureState.PREPARE_CLIMB))
+                                .and(OperatorConstants.CLIMB
+                                                .whileTrue(SuperStructure.update(SuperStructureState.CLIMBING)));
+                // -------- Re enabling pivot --------
+
         }
 
         public void configSysIdBindings() {
-                OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kForward));
-                OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kReverse));
+                // OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
+                // .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kForward));
+                // OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
+                // .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kReverse));
 
-                OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kForward));
-                OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                                .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kReverse));
+                // OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
+                // .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kForward));
+                // OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
+                // .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kReverse));
         }
 
         public void configTuningBindings() {

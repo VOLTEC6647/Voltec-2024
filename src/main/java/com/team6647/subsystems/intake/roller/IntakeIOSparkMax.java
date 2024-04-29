@@ -7,12 +7,13 @@
 package com.team6647.subsystems.intake.roller;
 
 import com.andromedalib.motorControllers.SuperSparkMax;
+import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.team6647.util.Constants.IntakeConstants;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class IntakeIOSparkMax implements IntakeIO {
-    private SuperSparkMax intakeMotor = new SuperSparkMax(IntakeConstants.intakeMotorID, false);
+    private SuperSparkMax intakeMotor = new SuperSparkMax(IntakeConstants.intakeMotorID, false, GlobalIdleMode.Brake);
 
     private DigitalInput intakeBeamBrake = new DigitalInput(IntakeConstants.intakeBeamBrakeChannel);
 
