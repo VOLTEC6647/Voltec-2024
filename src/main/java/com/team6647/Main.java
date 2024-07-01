@@ -1,8 +1,12 @@
 /**
- * Teamm 6647
+ * Team 6647
  * 
  * Voltec 2024
  * 
+ * "Who knows? 
+ * Have patience. 
+ * Go where you must go, and hope!" 
+ *
  * Written by 
  * Juan Pablo Gutiérrez
  * Mauricio Villarreal 
