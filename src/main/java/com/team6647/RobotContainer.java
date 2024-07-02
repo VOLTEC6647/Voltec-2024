@@ -131,8 +131,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterRollerSubsystem = ShooterRollerSubsystem
                                                 .getInstance(new ShooterIORollerSparkMax());
                                 visionSubsytem = VisionSubsystem.getInstance(new VisionIOLimelight());
-                                neuralVisionSubsystem = NeuralVisionSubsystem
-                                                .getInstance(new NeuralVisionIOLimelight());
+                                neuralVisionSubsystem = NeuralVisionSubsystem.getInstance(new NeuralVisionIOLimelight());
                                 break;
                         case SIM:
                                 andromedaSwerve = Drive.getInstance(
@@ -149,8 +148,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSim());
                                 shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterIORollerSim());
                                 visionSubsytem = VisionSubsystem.getInstance(new VisionIOSim());
-                                neuralVisionSubsystem = NeuralVisionSubsystem
-                                                .getInstance(new NeuralVisionIOLimelight());
+                                //neuralVisionSubsystem = NeuralVisionSubsystem.getInstance(new NeuralVisionIOLimelightSim());
                                 break;
 
                         default:
