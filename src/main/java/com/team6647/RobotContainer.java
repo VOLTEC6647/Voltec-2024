@@ -107,7 +107,9 @@ public class RobotContainer extends SuperRobotContainer {
         public void initSubsystems() {
                 switch (RobotConstants.getMode()) {
                         case REAL:
-                                andromedaSwerve = Drive.getInstance(new GyroIOPigeon2(DriveConstants.gyroID, "6647_CANivore"),new AndromedaModuleIO[] {
+                                andromedaSwerve = Drive.getInstance(
+                                                new GyroIOPigeon2(DriveConstants.gyroID, "6647_CANivore"),
+                                                new AndromedaModuleIO[] {
                                                                 new AndromedaModuleIOTalonFX(0,
                                                                                 DriveConstants.andromedModuleConfig(
                                                                                                 AndromedaMap.mod1Const)),
@@ -119,7 +121,64 @@ public class RobotContainer extends SuperRobotContainer {
                                                                                                 AndromedaMap.mod3Const)),
                                                                 new AndromedaModuleIOTalonFX(3,
                                                                                 DriveConstants.andromedModuleConfig(
-                                                                                                AndromedaMap.mod4Const)),}, DriveConstants.andromedaSwerveConfig);
+                                                                                                AndromedaMap.mod4Const)),
+                                                }, DriveConstants.andromedaSwerveConfig);
+                                intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOTalonFX());
+                                intakePivotSubsystem = IntakePivotSubsystem
+                                                .getInstance(new IntakePivotIOSparkMaxKraken());
+                                shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOTalonFX());
+                                shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOKraken());
+                                shooterRollerSubsystem = ShooterRollerSubsystem
+                                                .getInstance(new ShooterIORollerSparkMax());
+                                visionSubsytem = VisionSubsystem.getInstance(new VisionIOLimelight());
+                                neuralVisionSubsystem = NeuralVisionSubsystem.getInstance(new NeuralVisionIOLimelight());
+                                break;
+                        case SIM:
+                                andromedaSwerve = Drive.getInstance(
+                                                new GyroIO() {
+                                                }, new AndromedaModuleIO[] {
+                                                                new AndromedaModuleIOSim(0.1),
+                                                                new AndromedaModuleIOSim(0.1),
+                                                                new AndromedaModuleIOSim(0.1),
+                                                                new AndromedaModuleIOSim(0.1),
+                                                }, DriveConstants.andromedaSwerveConfig);
+                                intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOSim());
+                                intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSim());
+                                shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSim());
+                                shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSim());
+                                shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterIORollerSim());
+                                visionSubsytem = VisionSubsystem.getInstance(new VisionIOSim());
+                                //neuralVisionSubsystem = NeuralVisionSubsystem.getInstance(new NeuralVisionIOLimelightSim());
+                                break;
+
+                        default:
+                                andromedaSwerve = Drive.getInstance(
+                                                new GyroIO() {
+                                                }, new AndromedaModuleIO[] {
+                                                                new AndromedaModuleIO() {
+                                                                },
+                                                                new AndromedaModuleIO() {
+                                                                },
+                                                                new AndromedaModuleIO() {
+                                                                },
+                                                                new AndromedaModuleIO() {
+                                                                },
+                                                }, DriveConstants.andromedaSwerveConfig);
+                                intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIO() {
+                                });
+
+                                intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIO() {
+                                });
+                                shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIO() {
+                                });
+                                shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIO() {
+                                });
+                                shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterRollerIO() {
+                                });
+                                visionSubsytem = VisionSubsystem.getInstance(new VisionIO() {
+                                });
+                                neuralVisionSubsystem = NeuralVisionSubsystem.getInstance(new NeuralVisionIO() {
+                                });
                                 break;
                 }
                 superStructure = SuperStructure.getInstance();
