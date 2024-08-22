@@ -8,6 +8,7 @@ import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.ModuleMotor
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
 import com.andromedalib.andromedaSwerve.utils.AndromedModuleIDs;
+import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -405,7 +406,15 @@ public class Constants {
                         double openLoopRamp = 0.25;
                         double closedLoopRamp = 0.0;
 
-                        InvertedValue driveMotorInvert = InvertedValue.CounterClockwise_Positive; // False
+                        InvertedValue driveMotorInvert;
+                        
+                        // if (moduleIDs.equals(AndromedaMap.mod2Const))  {
+                        //         driveMotorInvert = InvertedValue.Clockwise_Positive; // True 
+                        // } else {
+                        //         driveMotorInvert = InvertedValue.CounterClockwise_Positive; // False    
+                        // }
+                        
+                        driveMotorInvert = InvertedValue.CounterClockwise_Positive;
                         InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive; // True
                         SensorDirectionValue canCoderInvert = SensorDirectionValue.CounterClockwise_Positive; // False
 
