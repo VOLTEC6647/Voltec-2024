@@ -407,15 +407,23 @@ public class Constants {
                         double closedLoopRamp = 0.0;
 
                         InvertedValue driveMotorInvert;
+                        InvertedValue angleMotorInvert;
                         
-                        // if (moduleIDs.equals(AndromedaMap.mod2Const))  {
+                        // if (moduleIDs.equals(AndromedaMap.mod2Const) ||  moduleIDs.equals(AndromedaMap.mod1Const))  {
                         //         driveMotorInvert = InvertedValue.Clockwise_Positive; // True 
                         // } else {
                         //         driveMotorInvert = InvertedValue.CounterClockwise_Positive; // False    
                         // }
+
+                        // if (moduleIDs.equals(AndromedaMap.mod3Const) || moduleIDs.equals(AndromedaMap.mod4Const)) {
+                        //         angleMotorInvert = InvertedValue.CounterClockwise_Positive; // False
+                        // } else {
+                        //         angleMotorInvert = InvertedValue.Clockwise_Positive; // True
+                        // }    
+
                         
                         driveMotorInvert = InvertedValue.CounterClockwise_Positive;
-                        InvertedValue angleMotorInvert = InvertedValue.Clockwise_Positive; // True
+                        angleMotorInvert = InvertedValue.Clockwise_Positive; // True
                         SensorDirectionValue canCoderInvert = SensorDirectionValue.CounterClockwise_Positive; // False
 
                         /* Current Limiting */
