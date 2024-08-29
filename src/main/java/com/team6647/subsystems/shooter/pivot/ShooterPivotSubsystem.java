@@ -71,33 +71,33 @@ public class ShooterPivotSubsystem extends SubsystemBase {
   private Alert pivotRightMotorDisconnectedAlert = new Alert("Shooter Pivot Right Motor disconnected",
       AlertType.WARNING);
 
-  /*
-   * private static SuperTalonFX shooterPivotLeftMotor = new SuperTalonFX(
-   * ShooterConstants.shooterPivotLeftMotorID,
-   * GlobalIdleMode.Brake, RobotConstants.mechanismsCANnivore);
-   * 
-   * private static SuperTalonFX shooterPivotRightMotor = new SuperTalonFX(
-   * ShooterConstants.shooterPivotRightMotorID,
-   * GlobalIdleMode.Brake, true, RobotConstants.mechanismsCANnivore);
-   * 
-   * private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
-   * new SysIdRoutine.Config(Volts.of(0.25).per(Seconds.of(1)), Volts.of(3),
-   * Seconds.of(10)),
-   * new SysIdRoutine.Mechanism(
-   * (Measure<Voltage> volts) -> {
-   * runPivotVolts(volts.in(Units.Volts));
-   * },
-   * log -> {
-   * log.motor("pivot")
-   * .voltage(Volts.of(shooterPivotLeftMotor.getMotorVoltage().getValueAsDouble())
-   * )
-   * .angularPosition(Rotations.of(shooterPivotLeftMotor.getPosition().
-   * getValueAsDouble()))
-   * .angularVelocity(RotationsPerSecond.of(shooterPivotLeftMotor.getVelocity().
-   * getValueAsDouble()));
-   * },
-   * this));
-   */
+  
+   private static SuperTalonFX shooterPivotLeftMotor = new SuperTalonFX(
+   ShooterConstants.shooterPivotLeftMotorID,
+   GlobalIdleMode.Brake, RobotConstants.mechanismsCANnivore);
+   
+   private static SuperTalonFX shooterPivotRightMotor = new SuperTalonFX(
+   ShooterConstants.shooterPivotRightMotorID,
+   GlobalIdleMode.Brake, true, RobotConstants.mechanismsCANnivore);
+   
+   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
+   new SysIdRoutine.Config(Volts.of(0.25).per(Seconds.of(1)), Volts.of(3),
+   Seconds.of(10)),
+   new SysIdRoutine.Mechanism(
+   (Measure<Voltage> volts) -> {
+   runPivotVolts(volts.in(Units.Volts));
+   },
+   log -> {
+   log.motor("pivot")
+   .voltage(Volts.of(shooterPivotLeftMotor.getMotorVoltage().getValueAsDouble())
+   )
+   .angularPosition(Rotations.of(shooterPivotLeftMotor.getPosition().
+   getValueAsDouble()))
+   .angularVelocity(RotationsPerSecond.of(shooterPivotLeftMotor.getVelocity().
+   getValueAsDouble()));
+   },
+   this));
+   
 
   /** Creates a new ShooterPivotSubsystem. */
   private ShooterPivotSubsystem(
@@ -221,17 +221,17 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
   /* Characterization */
   public void runPivotVolts(double volts) {
-    // shooterPivotLeftMotor.setVoltage(volts);
-    // shooterPivotRightMotor.setVoltage(volts);
-    // io.runPivotVolts(volts);
+     shooterPivotLeftMotor.setVoltage(volts);
+     shooterPivotRightMotor.setVoltage(volts);
+     io.runPivotVolts(volts);
   }
 
-  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-  // return m_sysIdRoutine.quasistatic(direction);
-  // }
+   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+   return m_sysIdRoutine.quasistatic(direction);
+   }
 
-  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-  // return m_sysIdRoutine.dynamic(direction);
-  // }
+   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+   return m_sysIdRoutine.dynamic(direction);
+   }
 
 }

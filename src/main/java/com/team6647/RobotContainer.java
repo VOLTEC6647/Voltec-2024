@@ -70,6 +70,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class RobotContainer extends SuperRobotContainer {
         private static RobotContainer instance;
@@ -335,6 +336,8 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // configSysIdBindings();
 
+
+/* 
                 OperatorConstants.RESET_GYRO
                                 .whileTrue(new InstantCommand(
                                                 () -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
@@ -348,6 +351,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
                                                 .andThen(SuperStructure.update(SuperStructureState.IDLE)));
 
+                                                */
                 /* Driver 2 */
 
                 OperatorConstants.FORCE_IDLE
@@ -425,15 +429,15 @@ public class RobotContainer extends SuperRobotContainer {
         }
 
         public void configSysIdBindings() {
-                // OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                // .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kForward));
-                // OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
-                // .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kReverse));
+                 OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
+                 .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kForward));
+                 OperatorConstants.BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER
+                 .whileTrue(shooterPivotSubsystem.sysIdQuasistatic(Direction.kReverse));
 
-                // OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                // .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kForward));
-                // OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
-                // .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kReverse));
+                 OperatorConstants.FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
+                 .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kForward));
+                 OperatorConstants.BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER
+                 .whileTrue(shooterPivotSubsystem.sysIdDynamic(Direction.kReverse));
         }
 
         public void configTuningBindings() {

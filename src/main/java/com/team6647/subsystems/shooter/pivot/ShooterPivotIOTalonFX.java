@@ -18,6 +18,7 @@ import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
 public class ShooterPivotIOTalonFX implements ShooterPivotIO {
+        /*
 
         private static SuperTalonFX shooterPivotLeftMotor;
         private static SuperTalonFX shooterPivotRightMotor;
@@ -170,11 +171,12 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 inputs.setpoint = setpoint * 360;
 
                 inputs.disabled = disabled;
-
+                
                 if (!disabled) {
                         shooterPivotLeftMotor.setControl(
                                         motionMagicVoltage.withPosition(setpoint).withEnableFOC(true));
                 }
+                
         }
 
         @Override
@@ -225,8 +227,9 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
 
         @Override
         public void runPivotVolts(double volts) {
-                // shooterPivotLeftMotor.setVoltage(volts);
-                // shooterPivotRightMotor.setVoltage(volts);
+                 shooterPivotLeftMotor.setVoltage(volts);
+                 shooterPivotRightMotor.setVoltage(volts);
 
         }
+        */
 }
