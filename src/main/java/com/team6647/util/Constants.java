@@ -226,12 +226,12 @@ public class Constants {
                 public static final int shooterMotorCurrentLimit = 80;
                 public static final int rollerMotorCurrentLimit = 80;
 
-                public static final double shooterPivotEncoderOffset = -Math.abs(0.065186 - 0.0083333333333333);
+                public static final double shooterPivotEncoderOffset = -0.090847;
                 public static final SensorDirectionValue shooterPivotEncoderInverted = SensorDirectionValue.CounterClockwise_Positive;
 
                 public static final double pivotMinPosition = -95;
                 public static final double pivotMaxPosition = 90;
-                public static final double pivotHomedPosition = -85;
+                public static final double pivotHomedPosition = -85     ;
                 public static final double pivotIndexingPosition = -43;
                 public static final double pivotAmpPosition = 25;
                 public static final double pivotClimbPosition = 5;
@@ -408,19 +408,6 @@ public class Constants {
 
                         InvertedValue driveMotorInvert;
                         InvertedValue angleMotorInvert;
-                        
-                        // if (moduleIDs.equals(AndromedaMap.mod2Const) ||  moduleIDs.equals(AndromedaMap.mod1Const))  {
-                        //         driveMotorInvert = InvertedValue.Clockwise_Positive; // True 
-                        // } else {
-                        //         driveMotorInvert = InvertedValue.CounterClockwise_Positive; // False    
-                        // }
-
-                        // if (moduleIDs.equals(AndromedaMap.mod3Const) || moduleIDs.equals(AndromedaMap.mod4Const)) {
-                        //         angleMotorInvert = InvertedValue.CounterClockwise_Positive; // False
-                        // } else {
-                        //         angleMotorInvert = InvertedValue.Clockwise_Positive; // True
-                        // }    
-
                         
                         driveMotorInvert = InvertedValue.CounterClockwise_Positive;
                         angleMotorInvert = InvertedValue.Clockwise_Positive; // True

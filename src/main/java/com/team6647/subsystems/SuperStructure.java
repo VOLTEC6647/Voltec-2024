@@ -362,7 +362,7 @@ public class SuperStructure {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHUTTLE),
                 new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 2500);
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -1, 3500);
 
                     updateShootingParameters(ampParams);
                 }),

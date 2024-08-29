@@ -141,7 +141,7 @@ public class ShooterPivotSubsystem extends SubsystemBase {
 
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
       io.setPIDVel(pid[0], pid[1], pid[2], pid[3], pid[4]);
-
+      System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAA");
       changeSetpoint(pid[5]);
     }, pivotKp, pivotKi, pivotKd, pivotMaxVel, pivotMaxAccel, pivotSetpoint);
 
