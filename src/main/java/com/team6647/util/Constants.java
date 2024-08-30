@@ -68,7 +68,8 @@ public class Constants {
                                 FORCE_IDLE = driverController2.povLeft(),
                                 PREPARE_CLIMB = driverController2.leftBumper(),
                                 CLIMB = driverController2.rightBumper(),
-                                RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick());
+                                RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick()),
+                                PREPARE_SHOOTER = driverController2.rightStick();
         }
 
         public static class RobotConstants {

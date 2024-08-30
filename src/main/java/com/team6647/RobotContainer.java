@@ -375,6 +375,9 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Shooter Commands --------
 
+                OperatorConstants.PREPARE_SHOOTER
+                                .onTrue(SuperStructure.update(SuperStructureState.PREPARING_SHOOTER));
+
                 OperatorConstants.SHOOT_SPEAKER
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));

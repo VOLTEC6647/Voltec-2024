@@ -15,6 +15,7 @@ import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerTarget;
+import com.team6647.commands.PrepareShooter;
 import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.VisionIntakeAlign;
@@ -38,6 +39,7 @@ import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.FieldConstants.Speaker;
 import com.team6647.util.Constants.ShooterConstants;
+import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.AllianceFlipUtil;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
@@ -63,6 +65,10 @@ public class SuperStructure {
 
     @AutoLogOutput(key = "SuperStructure/State")
     private static SuperStructureState mRobotState = SuperStructureState.IDLE;
+    
+    private static LoggedTunableNumber shuttleAngle = new LoggedTunableNumber("Shooter/Pivot/ShuttleAngle", 1);
+    private static LoggedTunableNumber shuttleRPM = new LoggedTunableNumber("Shooter/Pivot/ShuttleAngle", 2500);
+
 
     public static SuperStructure getInstance() {
         if (instance == null) {
@@ -97,6 +103,7 @@ public class SuperStructure {
         INTAKE_ALIGN,
         PREPARE_CLIMB,
         CLIMBING,
+        PREPARING_SHOOTER
     }
 
     public static Command update(SuperStructureState newState) {
@@ -152,6 +159,8 @@ public class SuperStructure {
                 return prepareClimb();
             case CLIMBING:
                 return climb();
+            case PREPARING_SHOOTER:
+                return new PrepareShooter(shooterSubsystem);
             default:
                 break;
         }
@@ -363,6 +372,7 @@ public class SuperStructure {
                 setGoalCommand(SuperStructureState.SHUTTLE),
                 new InstantCommand(() -> {
                     ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -1, 3500);
+                    //ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), shuttleAngle.getAsDouble(), shuttleRPM.getAsDouble());
 
                     updateShootingParameters(ampParams);
                 }),
