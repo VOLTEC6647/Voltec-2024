@@ -214,7 +214,7 @@ public class Constants {
                 public static final double pivotKp = 45.0;
                 public static final double pivotKi = 1.5;
                 public static final double pivotKd = 0.0;
-                public static final double pivotMaxVel = 1.2;
+                public static final double pivotMaxVel = 0.6;
                 public static final double pivotMaxAccel = 3.2;
 
                 public static final double pidPositionTolerance = 0.05;

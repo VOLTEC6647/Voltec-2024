@@ -218,6 +218,9 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
+                NamedCommands.registerCommand("InitNeural",
+                                new InitIntake(intakePivotSubsystem));
+
                 autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
                                 AutoBuilder.buildAutoChooser());
 
