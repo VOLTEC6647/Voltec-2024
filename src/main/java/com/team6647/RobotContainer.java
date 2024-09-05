@@ -209,6 +209,8 @@ public class RobotContainer extends SuperRobotContainer {
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING));
                 NamedCommands.registerCommand("IndexPiece",
                                 SuperStructure.update(SuperStructureState.AUTO_INDEXING));
+                NamedCommands.registerCommand("EnableNeural",
+                                SuperStructure.update(SuperStructureState.ENABLE_NEURAL));
                 NamedCommands.registerCommand("Idle",
                                 SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
                 NamedCommands.registerCommand("VisionAlign",
@@ -218,7 +220,6 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
 
-                NamedCommands.registerCommand("EnableNeural", SuperStructure.update(SuperStructureState.ENABLE_NEURAL));
 
                 autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
                                 AutoBuilder.buildAutoChooser());
