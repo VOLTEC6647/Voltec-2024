@@ -17,6 +17,8 @@ public interface NeuralVisionIO {
         public double TX = 0.0;
         public double timestampLatency = 0.0;
         public boolean hasTarget = false;
+        public double confidence;
+        public int numTargets;
     }
 
     public default void updateInputs(NeuralVisionIOInputs inputs) {

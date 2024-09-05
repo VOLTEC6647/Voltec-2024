@@ -103,7 +103,8 @@ public class SuperStructure {
         INTAKE_ALIGN,
         PREPARE_CLIMB,
         CLIMBING,
-        PREPARING_SHOOTER
+        PREPARING_SHOOTER,
+        ENABLE_NEURAL
     }
 
     public static Command update(SuperStructureState newState) {
@@ -161,6 +162,8 @@ public class SuperStructure {
                 return climb();
             case PREPARING_SHOOTER:
                 return new PrepareShooter(shooterSubsystem);
+            case ENABLE_NEURAL:
+                return EnableNeural();
             default:
                 break;
         }
@@ -489,5 +492,9 @@ public class SuperStructure {
                         new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+    }
+
+    public static Command EnableNeural() {
+        return new InstantCommand(()->neuralVisionSubsystem.isEnabled=true);
     }
 }
