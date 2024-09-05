@@ -365,7 +365,7 @@ public class Constants {
         }
 
         public static class VisionConstants {
-                public static final String aprilLimeNTName = "limelight-backcam";
+                public static final String aprilLimeNTName = "limelight";
                 public static final String neuralLimeNTName = "limelight-intake";
 
                 public static final int speakerBlueCenterTagID = 7;
