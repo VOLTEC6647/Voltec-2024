@@ -37,7 +37,10 @@ public class VisionIOLimelight implements VisionIO {
                 .getLatestResults(VisionConstants.aprilLimeNTName).targetingResults;
 
         inputs.TA = LimelightHelpers.getTA(VisionConstants.aprilLimeNTName);
-
+        inputs.bp1 = result.botpose[0];
+        inputs.bp2 = result.botpose[1];
+        System.out.println("GGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+        System.out.println(result.getBotPose2d().getX());
         if (!(result.botpose[0] == 0 && result.botpose[1] == 0) &&
                 LimelightHelpers.getTA(VisionConstants.aprilLimeNTName) > 0.1) {
             inputs.hasTarget = true;
