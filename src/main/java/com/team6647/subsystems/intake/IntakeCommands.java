@@ -56,12 +56,10 @@ public class IntakeCommands {
         }
 
         public static final Command getForcedIntakeCommand() {
-                Debouncer debounce = new Debouncer(0.1);
-
                 return Commands.sequence(
                                 new IntakeExtend().andThen(new InitIntake(intakePivotSubsystem)),
                                 new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.INTAKING),
-                                Commands.deadline(Commands.waitUntil(() -> Constants.OperatorConstants.INTAKING_ONLY_FORCED.getAsBoolean()), Commands.waitUntil(() -> debounce.calculate(!intakeSubsystem.getBeamBrake()))),
+                                Commands.waitUntil(() -> !Constants.OperatorConstants.INTAKING_ONLY_FORCED.getAsBoolean()),
                                 new IntakeRollerTarget(
                                                 intakeSubsystem,
                                                 IntakeRollerState.STOPPED),
