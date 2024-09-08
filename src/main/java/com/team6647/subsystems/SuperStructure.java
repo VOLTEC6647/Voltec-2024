@@ -103,8 +103,9 @@ public class SuperStructure {
         INTAKE_ALIGN,
         PREPARE_CLIMB,
         CLIMBING,
-        PREPARING_SHOOTER,
-        ENABLE_NEURAL
+        ENABLE_NEURAL,
+        PREPARING_SHOOTER, 
+        INTAKING_FORCED
     }
 
     public static Command update(SuperStructureState newState) {
@@ -117,6 +118,8 @@ public class SuperStructure {
                 return fullIntakingCommand();
             case INTAKING:
                 return intakingCommand();
+            case INTAKING_FORCED:
+                return intakingForcedCommand();
             case AUTO_INTAKING:
                 return autoIntakingCommand();
             case INDEXING:
@@ -206,6 +209,14 @@ public class SuperStructure {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.INTAKING),
                 IntakeCommands.getIntakeCommand(),
+                Commands.waitSeconds(0.5))
+                .andThen(SuperStructure.update(SuperStructureState.IDLE));
+    }
+
+    private static Command intakingForcedCommand() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.INTAKING_FORCED),
+                IntakeCommands.getForcedIntakeCommand(),
                 Commands.waitSeconds(0.5))
                 .andThen(SuperStructure.update(SuperStructureState.IDLE));
     }

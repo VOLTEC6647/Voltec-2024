@@ -353,9 +353,9 @@ public class RobotContainer extends SuperRobotContainer {
 
                 /* Driver 2 */
 
-                OperatorConstants.FORCE_IDLE
-                                .whileTrue(SuperStructure.update(SuperStructureState.IDLE))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                //OperatorConstants.FORCE_IDLE
+                                //.whileTrue(SuperStructure.update(SuperStructureState.IDLE))
+                                //.onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Superstructure --------
 
@@ -374,6 +374,12 @@ public class RobotContainer extends SuperRobotContainer {
                 // Intake only, no shooter
                 OperatorConstants.INTAKING_ONLY
                                 .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+
+                // Ignores Beam Break
+
+                OperatorConstants.INTAKING_ONLY_FORCED
+                                .whileTrue(SuperStructure.update(SuperStructureState.INTAKING_FORCED))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Shooter Commands --------
