@@ -46,7 +46,7 @@ public class Robot extends SuperRobot {
     switch (RobotConstants.getMode()) {
       case REAL:
         Logger.addDataReceiver(new WPILOGWriter());
-        //Logger.addDataReceiver(new NT4Publisher());
+        Logger.addDataReceiver(new NT4Publisher());
         break;
       case SIM:
         Logger.addDataReceiver(new NT4Publisher());

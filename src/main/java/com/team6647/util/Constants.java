@@ -46,17 +46,17 @@ public class Constants {
                                 OperatorConstants.kDriverControllerPort2);
 
                 /* Driver 1 */
-                public static final Trigger FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.y(),
-                                BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.a(),
-                                FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.b(),
-                                BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.x(),
-                                RESET_GYRO = driverController1.a(),
+                public static final Trigger //FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.y(),
+                                //BACKWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.povDownLeft(),
+                                //FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.povRight(),
+                                //BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.povLeft(),
+                                RESET_GYRO = driverController1.povDown(),
 
                                 GMODE = driverController1.rightBumper(),
-                                FACE_UP = driverController2.povUp(),
-                                FACE_DOWN = driverController2.povDown(),
-                                FACE_LEFT = driverController2.povLeft(),
-                                FACE_RIGHT = driverController2.povRight();
+                                FACE_UP = driverController1.y(),
+                                FACE_DOWN = driverController1.a(),
+                                FACE_LEFT = driverController1.x(),
+                                FACE_RIGHT = driverController1.b();
 
                 /* Driver 2 */
 

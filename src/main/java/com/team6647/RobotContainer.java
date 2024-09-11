@@ -349,10 +349,12 @@ public class RobotContainer extends SuperRobotContainer {
                                 //.onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
                                                 //.andThen(SuperStructure.update(SuperStructureState.IDLE)));
 
+                /*
                 OperatorConstants.driverController1.y()
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHUTTLE_ALIGN))
                                 .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
                                                 .andThen(SuperStructure.update(SuperStructureState.IDLE)));
+                */
 
                 /* Driver 2 */
 
@@ -439,26 +441,44 @@ public class RobotContainer extends SuperRobotContainer {
 
 
                 // -------- Auto heading --------
-
-                OperatorConstants.FACE_UP.
-                        whileTrue(new ConditionalCommand(
-                                new InstantCommand(() -> System.out.println("Facing up")),
-                                new InstantCommand(() -> andromedaSwerve.setTargetHeading(new Rotation2d(0)))
-                                        .andThen(SuperStructure.update(SuperStructureState.AUTO_HEADING)),
-                                (BooleanSupplier) new InstantCommand(()->OperatorConstants.GMODE.getAsBoolean())));
+                
+                OperatorConstants.FACE_UP
+                        .whileTrue(
+                                new InstantCommand(()->{Drive.setMDriveMode(DriveMode.HEADING_LOCK);})
+                                .andThen(new ConditionalCommand(
+                                        new InstantCommand(() -> System.out.println("Placeholder")),
+                                        new InstantCommand(() -> {andromedaSwerve.setTargetHeading(new Rotation2d(0));}),
+                                        (BooleanSupplier) OperatorConstants.GMODE)))
+                        .onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
 
                 OperatorConstants.FACE_DOWN
-                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setTargetHeading(new Rotation2d(Math.PI)))
-                                .andThen(SuperStructure.update(SuperStructureState.AUTO_HEADING)));
+                        .whileTrue(
+                                new InstantCommand(()->{Drive.setMDriveMode(DriveMode.HEADING_LOCK);})
+                                .andThen(new ConditionalCommand(
+                                        new InstantCommand(() -> System.out.println("Placeholder")),
+                                        new InstantCommand(() -> {andromedaSwerve.setTargetHeading(new Rotation2d(Math.PI));}),
+                                        (BooleanSupplier) OperatorConstants.GMODE)))
+                        .onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
 
                 OperatorConstants.FACE_LEFT
-                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setTargetHeading(new Rotation2d(Math.PI / 2)))
-                                .andThen(SuperStructure.update(SuperStructureState.AUTO_HEADING)));
+                                .whileTrue(
+                                new InstantCommand(()->{Drive.setMDriveMode(DriveMode.HEADING_LOCK);})
+                                .andThen(new ConditionalCommand(
+                                        new InstantCommand(() -> System.out.println("Placeholder")),
+                                        new InstantCommand(() -> {andromedaSwerve.setTargetHeading(new Rotation2d(Math.PI/2));}),
+                                        (BooleanSupplier) OperatorConstants.GMODE)))
+                        .onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
 
                 OperatorConstants.FACE_RIGHT
-                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setTargetHeading(new Rotation2d(-Math.PI / 2)))
-                                .andThen(SuperStructure.update(SuperStructureState.AUTO_HEADING)));
-        }
+                                .whileTrue(
+                                new InstantCommand(()->{Drive.setMDriveMode(DriveMode.HEADING_LOCK);})
+                                .andThen(new ConditionalCommand(
+                                        new InstantCommand(() -> System.out.println("Placeholder")),
+                                        new InstantCommand(() -> {andromedaSwerve.setTargetHeading(new Rotation2d(-Math.PI/2));}),
+                                        (BooleanSupplier) OperatorConstants.GMODE)))
+                        .onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
+        
+        }       
 
         public void configSysIdBindings() {
                 // OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER

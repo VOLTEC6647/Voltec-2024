@@ -106,9 +106,8 @@ public class SuperStructure {
         CLIMBING,
         ENABLE_NEURAL,
         PREPARING_SHOOTER, 
-        INTAKING_FORCED,
-        AUTO_HEADING
-    }
+        INTAKING_FORCED
+        }
 
     public static Command update(SuperStructureState newState) {
         switch (newState) {
@@ -169,8 +168,6 @@ public class SuperStructure {
                 return new PrepareShooter(shooterSubsystem);
             case ENABLE_NEURAL:
                 return EnableNeural();
-            case AUTO_HEADING:
-                return Auto_Heading();
             default:
                 break;
         }
@@ -514,10 +511,5 @@ public class SuperStructure {
     public static Command EnableNeural() {
         return new InstantCommand(()->neuralVisionSubsystem.isEnabled=true);
     }
-
-    private static Command Auto_Heading() {
-        return Commands.sequence(
-            new InstantCommand(() -> {Drive.setMDriveMode(DriveMode.HEADING_LOCK);})
-        );
-    }
+    
 }
