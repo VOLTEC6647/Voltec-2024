@@ -372,9 +372,9 @@ public class RobotContainer extends SuperRobotContainer {
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // Intake only, no shooter
-                OperatorConstants.INTAKING_ONLY
-                                .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                //OperatorConstants.INTAKING_ONLY
+                                //.whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
+                                //.onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // Ignores Beam Break
 
@@ -433,6 +433,9 @@ public class RobotContainer extends SuperRobotContainer {
                                 .and(OperatorConstants.CLIMB
                                                 .whileTrue(SuperStructure.update(SuperStructureState.CLIMBING)));
                 // -------- Re enabling pivot --------
+
+                OperatorConstants.INTAKE_SHUTTLE.whileTrue(SuperStructure.update(SuperStructureState.INTAKE_SHOOT));
+
 
         }
 

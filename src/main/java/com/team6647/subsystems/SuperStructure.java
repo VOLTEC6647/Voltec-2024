@@ -37,10 +37,12 @@ import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem;
 import com.team6647.subsystems.shooter.roller.ShooterRollerSubsystem.ShooterFeederState;
 import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.util.Constants.DriveConstants;
+import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.FieldConstants.Speaker;
 import com.team6647.util.Constants.ShooterConstants;
 import com.team6647.util.LoggedTunableNumber;
 import com.team6647.util.AllianceFlipUtil;
+import com.team6647.util.Constants;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
@@ -105,7 +107,7 @@ public class SuperStructure {
         CLIMBING,
         ENABLE_NEURAL,
         PREPARING_SHOOTER, 
-        INTAKING_FORCED
+        INTAKING_FORCED, INTAKE_SHOOT
     }
 
     public static Command update(SuperStructureState newState) {
@@ -167,11 +169,46 @@ public class SuperStructure {
                 return new PrepareShooter(shooterSubsystem);
             case ENABLE_NEURAL:
                 return EnableNeural();
+            case INTAKE_SHOOT:
+                return IntakeShoot();
             default:
                 break;
         }
 
         return Commands.waitSeconds(0);
+    }
+
+    private static Command IntakeShoot() {
+        // insh
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.INDEXING),
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 2800);//-1
+                    updateShootingParameters(ampParams);
+                }),
+                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                new IntakeHome(intakePivotSubsystem),
+                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.INDEXING),
+                Commands.deadline(
+                        ShooterCommands.getShooterIntakingCommand(),
+                        new IntakeRollerTarget(
+                                intakeSubsystem,
+                                IntakeRollerState.INTAKING)),
+                new IntakeRollerTarget(
+                        intakeSubsystem,
+                        IntakeRollerState.STOPPED),
+                Commands.waitSeconds(0.5),
+
+                Commands.waitUntil(() -> !Constants.OperatorConstants.INTAKE_SHUTTLE.getAsBoolean()),
+
+                Commands.parallel(
+                        new InstantCommand(()->System.out.println("b")),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                Commands.sequence(
+                        new RunCommand(() -> leds.strobePurple(0.2)).withTimeout(2),
+                        new RunCommand(() -> leds.solidPurple())).repeatedly());
+
+                
     }
 
     private static Command autoShootingSubwoofer() {
