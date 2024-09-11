@@ -51,8 +51,12 @@ public class Constants {
                                 FORWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.b(),
                                 BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.x(),
                                 RESET_GYRO = driverController1.a(),
-                                GO_TO_AMP = driverController1.b(),
-                                GO_TO_SPEAKER = driverController1.y();
+
+                                GMODE = driverController1.rightBumper(),
+                                FACE_UP = driverController2.povUp(),
+                                FACE_DOWN = driverController2.povDown(),
+                                FACE_LEFT = driverController2.povLeft(),
+                                FACE_RIGHT = driverController2.povRight();
 
                 /* Driver 2 */
 
@@ -71,6 +75,7 @@ public class Constants {
                                 CLIMB = driverController2.rightBumper(),
                                 RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick()),
                                 PREPARE_SHOOTER = driverController2.rightStick();
+
         }
 
         public static class RobotConstants {

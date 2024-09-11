@@ -22,6 +22,7 @@ import com.team6647.commands.VisionIntakeAlign;
 import com.team6647.commands.VisionShuttleAlign;
 import com.team6647.commands.VisionSpeakerAlign;
 import com.team6647.subsystems.drive.Drive;
+import com.team6647.subsystems.drive.Drive.DriveMode;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.IntakeCommands;
@@ -105,7 +106,8 @@ public class SuperStructure {
         CLIMBING,
         ENABLE_NEURAL,
         PREPARING_SHOOTER, 
-        INTAKING_FORCED
+        INTAKING_FORCED,
+        AUTO_HEADING
     }
 
     public static Command update(SuperStructureState newState) {
@@ -167,12 +169,16 @@ public class SuperStructure {
                 return new PrepareShooter(shooterSubsystem);
             case ENABLE_NEURAL:
                 return EnableNeural();
+            case AUTO_HEADING:
+                return Auto_Heading();
             default:
                 break;
         }
 
         return Commands.waitSeconds(0);
     }
+
+    
 
     private static Command autoShootingSubwoofer() {
         return Commands.deadline(
@@ -507,5 +513,11 @@ public class SuperStructure {
 
     public static Command EnableNeural() {
         return new InstantCommand(()->neuralVisionSubsystem.isEnabled=true);
+    }
+
+    private static Command Auto_Heading() {
+        return Commands.sequence(
+            new InstantCommand(() -> {Drive.setMDriveMode(DriveMode.HEADING_LOCK);})
+        );
     }
 }

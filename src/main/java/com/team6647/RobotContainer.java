@@ -7,6 +7,7 @@ package com.team6647;
 
 import static edu.wpi.first.units.Units.Rotations;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.Function;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
@@ -63,10 +64,12 @@ import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -342,9 +345,9 @@ public class RobotContainer extends SuperRobotContainer {
                                 .whileTrue(new InstantCommand(
                                                 () -> andromedaSwerve.setGyroAngle(Rotations.of(0))));
 
-                OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp())
-                                .onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
-                                                .andThen(SuperStructure.update(SuperStructureState.IDLE)));
+                //OperatorConstants.GO_TO_AMP.whileTrue(SuperStructure.goToAmp())
+                                //.onFalse(new InstantCommand(() -> Drive.setMDriveMode(DriveMode.TELEOP))
+                                                //.andThen(SuperStructure.update(SuperStructureState.IDLE)));
 
                 OperatorConstants.driverController1.y()
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHUTTLE_ALIGN))
@@ -434,6 +437,27 @@ public class RobotContainer extends SuperRobotContainer {
                                                 .whileTrue(SuperStructure.update(SuperStructureState.CLIMBING)));
                 // -------- Re enabling pivot --------
 
+
+                // -------- Auto heading --------
+
+                OperatorConstants.FACE_UP.
+                        whileTrue(new ConditionalCommand(
+                                new InstantCommand(() -> System.out.println("Facing up")),
+                                new InstantCommand(() -> andromedaSwerve.setTargetHeading(new Rotation2d(0)))
+                                        .andThen(SuperStructure.update(SuperStructureState.AUTO_HEADING)),
+                                (BooleanSupplier) new InstantCommand(()->OperatorConstants.GMODE.getAsBoolean())));
+
+                OperatorConstants.FACE_DOWN
+                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setTargetHeading(new Rotation2d(Math.PI)))
+                                .andThen(SuperStructure.update(SuperStructureState.AUTO_HEADING)));
+
+                OperatorConstants.FACE_LEFT
+                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setTargetHeading(new Rotation2d(Math.PI / 2)))
+                                .andThen(SuperStructure.update(SuperStructureState.AUTO_HEADING)));
+
+                OperatorConstants.FACE_RIGHT
+                                .whileTrue(new InstantCommand(() -> andromedaSwerve.setTargetHeading(new Rotation2d(-Math.PI / 2)))
+                                .andThen(SuperStructure.update(SuperStructureState.AUTO_HEADING)));
         }
 
         public void configSysIdBindings() {
