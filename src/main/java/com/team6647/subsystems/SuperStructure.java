@@ -63,7 +63,7 @@ public class SuperStructure {
     private static ShooterPivotSubsystem shooterPivotSubsystem = RobotContainer.shooterPivotSubsystem;
     private static IntakeSubsystem intakeSubsystem = RobotContainer.intakeSubsystem;
     private static IntakePivotSubsystem intakePivotSubsystem = RobotContainer.intakePivotSubsystem;
-    private static VisionSubsystem visionSubsystem = RobotContainer.visionSubsytem;
+    private static VisionSubsystem visionSubsystem = RobotContainer.visionSubsystem;
     private static NeuralVisionSubsystem neuralVisionSubsystem = RobotContainer.neuralVisionSubsystem;
 
     @AutoLogOutput(key = "SuperStructure/State")
@@ -202,13 +202,12 @@ public class SuperStructure {
                 Commands.waitSeconds(0.5),
 
                 Commands.waitUntil(() -> !Constants.OperatorConstants.INTAKE_SHUTTLE.getAsBoolean()),
-
                 Commands.parallel(
-                        new InstantCommand(()->System.out.println("b")),
-                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
-                Commands.sequence(
-                        new RunCommand(() -> leds.strobePurple(0.2)).withTimeout(2),
-                        new RunCommand(() -> leds.solidPurple())).repeatedly());
+                    new InstantCommand(()->System.out.println("b")),
+                    new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+            Commands.sequence(
+                    new RunCommand(() -> leds.strobePurple(0.2)).withTimeout(2),
+                    new RunCommand(() -> leds.solidPurple())).repeatedly());
 
                 
     }
@@ -368,6 +367,42 @@ public class SuperStructure {
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
+    private static Command shootingStationary2P() {
+        //Rewrite pending, make parallel be repetedly
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.SHOOTING_SPEAKER),
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = ShootingCalculatorUtil.getShootingParameters(
+                            RobotState.getPose(),
+                            AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+
+                    updateShootingParameters(ampParams);
+                }),
+                Commands.parallel(
+                        new VisionSpeakerAlign(andromedaSwerve, visionSubsystem),
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                Commands.deadline(Commands.waitUntil(()-> OperatorConstants.READY.getAsBoolean()),
+                new InstantCommand(()->{
+
+                    Commands.parallel(
+                    new InstantCommand(() -> {
+                            ShootingParameters ampParams = ShootingCalculatorUtil.getShootingParameters(
+                            RobotState.getPose(),
+                            AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+                            updateShootingParameters(ampParams);
+                    }),
+                    new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)
+                    ).repeatedly();
+                    
+                
+                })
+                ),
+                
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)
+                );
+    }
+
     private static Command autoShootingStationary() {
         return Commands.deadline(
                 Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
@@ -416,6 +451,22 @@ public class SuperStructure {
                         new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+    }
+
+    private static Command shootingSubwoofer2P() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 3000);
+
+                    updateShootingParameters(ampParams);
+                }),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                Commands.waitUntil(()-> OperatorConstants.READY.getAsBoolean()),
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+               
     }
 
     private static final LEDSubsystem leds = LEDSubsystem.getInstance();

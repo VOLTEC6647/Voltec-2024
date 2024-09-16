@@ -133,6 +133,8 @@ public class ShooterSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     io.updateInputs(inputs);
+    inputs.ready = this.bottomInTolerance() && this.topInTolerance();
+    inputs.rpmPercentage = ((Math.abs(inputs.bottomMotorVelocity - mVelocitySetpoint) / ShooterConstants.shooterTolerance)+(Math.abs(inputs.topMotorVelocity - mVelocitySetpoint) / ShooterConstants.shooterTolerance))/2;
     Logger.processInputs("Shooter/Flywheel", inputs);
 
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
@@ -193,4 +195,10 @@ public class ShooterSubsystem extends SubsystemBase {
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
   }
+
+  public boolean ready(){
+    return inputs.ready;
+  }
+
+
 }

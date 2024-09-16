@@ -24,6 +24,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
+import com.team6647.commands.VisionSpeakerAlign;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
 import com.team6647.subsystems.drive.Drive;
@@ -62,6 +63,7 @@ import com.team6647.subsystems.vision.VisionIOSim;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
+import com.team6647.util.Constants.ShooterConstants;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -83,7 +85,7 @@ public class RobotContainer extends SuperRobotContainer {
         public static ShooterPivotSubsystem shooterPivotSubsystem;
         public static ShooterSubsystem shooterSubsystem;
         public static ShooterRollerSubsystem shooterRollerSubsystem;
-        public static VisionSubsystem visionSubsytem;
+        public static VisionSubsystem visionSubsystem;
         public static NeuralVisionSubsystem neuralVisionSubsystem;
         public static RobotState robotState;
 
@@ -133,7 +135,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOKraken());
                                 shooterRollerSubsystem = ShooterRollerSubsystem
                                                 .getInstance(new ShooterIORollerSparkMax());
-                                visionSubsytem = VisionSubsystem.getInstance(new VisionIOLimelight());
+                                visionSubsystem = VisionSubsystem.getInstance(new VisionIOLimelight());
                                 neuralVisionSubsystem = NeuralVisionSubsystem
                                                 .getInstance(new NeuralVisionIOLimelight());
                                 break;
@@ -151,7 +153,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOSim());
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOSim());
                                 shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterIORollerSim());
-                                visionSubsytem = VisionSubsystem.getInstance(new VisionIOSim());
+                                visionSubsystem = VisionSubsystem.getInstance(new VisionIOSim());
                                 neuralVisionSubsystem = NeuralVisionSubsystem
                                                 .getInstance(new NeuralVisionIOLimelight());
                                 break;
@@ -180,7 +182,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 });
                                 shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterRollerIO() {
                                 });
-                                visionSubsytem = VisionSubsystem.getInstance(new VisionIO() {
+                                visionSubsystem = VisionSubsystem.getInstance(new VisionIO() {
                                 });
                                 neuralVisionSubsystem = NeuralVisionSubsystem.getInstance(new NeuralVisionIO() {
                                 });
@@ -446,6 +448,17 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Auto heading --------
                 
+                OperatorConstants.FACE_UP.or(OperatorConstants.FACE_DOWN.or(OperatorConstants.FACE_LEFT.or(OperatorConstants.FACE_RIGHT)))
+                .onTrue(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.HEADING_LOCK);}))
+                .whileTrue(
+                        new InstantCommand(() -> {
+                                int divAmount = (OperatorConstants.FACE_DOWN.getAsBoolean()?1 : 0)+(OperatorConstants.FACE_UP.getAsBoolean()?1:0)+(OperatorConstants.FACE_LEFT.getAsBoolean()? 1 : 0)+(OperatorConstants.FACE_RIGHT.getAsBoolean()? 1 : 0);
+                                Rotation2d dir = new Rotation2d(0).plus(new Rotation2d((OperatorConstants.FACE_DOWN.getAsBoolean()?Math.PI : 0))).plus(new Rotation2d((OperatorConstants.FACE_LEFT.getAsBoolean()?Math.PI/2 : 0))).plus(new Rotation2d((OperatorConstants.FACE_RIGHT.getAsBoolean()?-Math.PI/2 : 0))).times(1/divAmount);
+                        })
+                        
+                ).onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
+
+                /* 
                 OperatorConstants.FACE_UP
                         .whileTrue(
                                 new InstantCommand(()->{Drive.setMDriveMode(DriveMode.HEADING_LOCK);})
@@ -481,6 +494,13 @@ public class RobotContainer extends SuperRobotContainer {
                                         new InstantCommand(() -> {andromedaSwerve.setTargetHeading(new Rotation2d(-Math.PI/2));}),
                                         (BooleanSupplier) OperatorConstants.GMODE)))
                         .onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
+
+                        */
+                        
+                OperatorConstants.SHOOTER_ALIGN1.or(OperatorConstants.SHOOTER_ALIGN2).onTrue(new InstantCommand(()->
+                {Drive.setMDriveMode(DriveMode.HEADING_LOCK);}
+                ).andThen(new VisionSpeakerAlign(andromedaSwerve, visionSubsystem).repeatedly())).onFalse(new InstantCommand(()->
+                {Drive.setMDriveMode(DriveMode.TELEOP);}));
         
         }       
 

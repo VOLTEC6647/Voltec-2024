@@ -28,6 +28,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -56,25 +57,34 @@ public class Constants {
                                 FACE_UP = driverController1.y(),
                                 FACE_DOWN = driverController1.a(),
                                 FACE_LEFT = driverController1.x(),
-                                FACE_RIGHT = driverController1.b();
+                                FACE_RIGHT = driverController1.b(),
+
+                                SHOOTER_ALIGN1 = driverController1.leftTrigger().or(driverController1.back());
 
                 /* Driver 2 */
 
-                public static final Trigger TOGGLE_INTAKE = driverController2.povRight(),
+                public static final Trigger
+                                TOGGLE_INTAKE = driverController2.povRight(),
                                 INDEXING = driverController2.povUp(),
-                                TOGGLE_AMP = driverController2.x(),
-                                SHOOT_SPEAKER = driverController2.b(),
-                                SHOOT_SUBWOOFER = driverController2.a(),
-                                SHUTTLE = driverController2.y(),
                                 INTAKE_SHUTTLE = driverController2.povDown(),
-                                CLIMB_TOP = driverController2.povUp(), INTAKE_FEEDER = driverController2.rightTrigger(),
+                                INTAKING_ONLY_FORCED = driverController2.povLeft(),
+                                
+                                TOGGLE_AMP = driverController2.x(),
+                                SHOOT_SPEAKER = null,
+                                SHOOT_SUBWOOFER = driverController2.b(), //SHOOT_SUBWOOFER = driverController2.a(),
+                                READY = driverController2.a(),
+                                SHUTTLE = driverController2.y(),
+                                
+                                CLIMB_TOP = driverController2.povUp(),
+                                INTAKE_FEEDER = driverController2.rightTrigger(),
                                 EXHAUST_FEEDER = driverController2.leftTrigger(),
                                 //FORCE_IDLE = driverController2.povLeft(),
-                                INTAKING_ONLY_FORCED = driverController2.povLeft(),
                                 PREPARE_CLIMB = driverController2.leftBumper(),
                                 CLIMB = driverController2.rightBumper(),
                                 RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick()),
-                                PREPARE_SHOOTER = driverController2.rightStick();
+                                PREPARE_SHOOTER = null,//driverController2.rightStick();
+
+                                SHOOTER_ALIGN2 = driverController2.back();
 
         }
 
