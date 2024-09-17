@@ -107,7 +107,8 @@ public class ShooterSubsystem extends SubsystemBase {
     STOPPED(ShooterConstants.shooterStoppedSpeed),
     EXHAUSTING(ShooterConstants.shooterExhaustSpeed),
     SHOOTING(-1),
-    IDLE(ShooterConstants.shooterIdleSpeed);
+    IDLE(ShooterConstants.shooterIdleSpeed),
+    PREPARING(ShooterConstants.preparingRPM);
 
     public final double velocity;
   }
@@ -126,6 +127,8 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case IDLE:
         setShooterSpeed(ShooterConstants.shooterIdleSpeed);
+      case PREPARING:
+        setShooterSpeed(ShooterConstants.preparingRPM);
         break;
     }
   }

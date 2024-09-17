@@ -74,7 +74,7 @@ public class Constants {
                                 PREPARE_CLIMB = driverController2.leftBumper(),
                                 CLIMB = driverController2.rightBumper(),
                                 RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick()),
-                                PREPARE_SHOOTER = driverController2.rightStick();
+                                PREPARE_SHOOTER = driverController2.start();
 
         }
 
@@ -256,6 +256,7 @@ public class Constants {
 
                 public static final int forwardLimitSwitchID = 7;
 
+                public static final double preparingRPM = 3500;
                 public static final double shootingRPM = 5000;
 
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();

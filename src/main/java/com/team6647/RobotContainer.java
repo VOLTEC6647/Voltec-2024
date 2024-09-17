@@ -32,6 +32,7 @@ import com.team6647.subsystems.flywheel.ShooterIO;
 import com.team6647.subsystems.flywheel.ShooterIOKraken;
 import com.team6647.subsystems.flywheel.ShooterIOSim;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
+import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 import com.team6647.subsystems.intake.pivot.IntakePivotIO;
 import com.team6647.subsystems.intake.pivot.IntakePivotIOSim;
 import com.team6647.subsystems.intake.pivot.IntakePivotIOSparkMaxKraken;
@@ -390,7 +391,14 @@ public class RobotContainer extends SuperRobotContainer {
                 // -------- Shooter Commands --------
 
                 OperatorConstants.PREPARE_SHOOTER
-                                .onTrue(SuperStructure.update(SuperStructureState.PREPARING_SHOOTER));
+                                .onTrue(new InstantCommand(()->{
+                                        if(shooterSubsystem.mFlywheelState == FlywheelState.STOPPED){
+                                                shooterSubsystem.setFlywheelState(FlywheelState.SHOOTING);
+                                        }else if(shooterSubsystem.mFlywheelState == FlywheelState.SHOOTING){
+                                                shooterSubsystem.setFlywheelState(FlywheelState.STOPPED);
+                                        }
+                                        
+                                }));
 
                 OperatorConstants.SHOOT_SPEAKER
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
