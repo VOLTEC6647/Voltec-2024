@@ -25,6 +25,8 @@ public interface ShooterIO {
         public double bottomMotorTemperature = 0.0;
 
         public boolean beamBrake = false;
+        public boolean ready = false;
+        public double rpmPercentage = 0;
     }
 
     /** Updates the set of loggable inputs. */

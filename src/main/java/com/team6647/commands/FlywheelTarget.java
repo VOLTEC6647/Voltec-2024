@@ -3,7 +3,9 @@
  */
 package com.team6647.commands;
 
+import com.team6647.subsystems.flywheel.ShooterIOInputsAutoLogged;
 import com.team6647.subsystems.flywheel.ShooterSubsystem;
+import com.team6647.subsystems.flywheel.ShooterIO.ShooterIOInputs;
 import com.team6647.subsystems.flywheel.ShooterSubsystem.FlywheelState;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -39,6 +41,6 @@ public class FlywheelTarget extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return shooterSubsystem.bottomInTolerance() && shooterSubsystem.topInTolerance();
+    return shooterSubsystem.ready();
   }
 }
