@@ -15,7 +15,8 @@ import edu.wpi.first.wpilibj.DigitalInput;
 public class IntakeIOSparkMax implements IntakeIO {
     private SuperSparkMax intakeMotor = new SuperSparkMax(IntakeConstants.intakeMotorID, false, GlobalIdleMode.Brake);
 
-    private DigitalInput intakeBeamBrake = new DigitalInput(IntakeConstants.intakeBeamBrakeChannel);
+    private DigitalInput intakeLimitSwitchL = new DigitalInput(IntakeConstants.intakeLimitSwitchLChannel);
+    private DigitalInput intakeLimitSwitchR = new DigitalInput(IntakeConstants.intakeLimitSwitchRChannel);
 
     public IntakeIOSparkMax() {
         intakeMotor.setSmartCurrentLimit(5);
@@ -26,7 +27,9 @@ public class IntakeIOSparkMax implements IntakeIO {
         inputs.intakeMotorAppliedVoltage = intakeMotor.getBusVoltage();
         inputs.intakeMotorVelocity = intakeMotor.getVelocity();
         inputs.intakeMotorCurrent = intakeMotor.getOutputCurrent();
-        inputs.intakeBeamBrake = intakeBeamBrake.get();
+        
+        inputs.intakeLimitSwitchL = intakeLimitSwitchL.get();
+        inputs.intakeLimitSwitchR = intakeLimitSwitchR.get();
     }
 
     @Override

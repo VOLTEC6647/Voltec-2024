@@ -143,7 +143,7 @@ public class SuperStructure {
             case SECONDARY_AUTO_SHOOTING_SPEAKER:
                 return secondaryAutoShootingStationary();
             case SHOOTING_SUBWOOFER:
-                return shootingSubwoofer();
+                return shootingSubwoofer2P();
             case AUTO_SHOOTING_SUBWOOFER:
                 return autoShootingSubwoofer();
             case SCORING_AMP:

@@ -107,7 +107,8 @@ public class ShooterSubsystem extends SubsystemBase {
     STOPPED(ShooterConstants.shooterStoppedSpeed),
     EXHAUSTING(ShooterConstants.shooterExhaustSpeed),
     SHOOTING(-1),
-    IDLE(ShooterConstants.shooterIdleSpeed);
+    IDLE(ShooterConstants.shooterIdleSpeed),
+    PREPARING(ShooterConstants.preparingRPM);
 
     public final double velocity;
   }
@@ -126,6 +127,8 @@ public class ShooterSubsystem extends SubsystemBase {
         break;
       case IDLE:
         setShooterSpeed(ShooterConstants.shooterIdleSpeed);
+      case PREPARING:
+        setShooterSpeed(ShooterConstants.preparingRPM);
         break;
     }
   }
@@ -134,7 +137,8 @@ public class ShooterSubsystem extends SubsystemBase {
   public void periodic() {
     io.updateInputs(inputs);
     inputs.ready = this.bottomInTolerance() && this.topInTolerance();
-    inputs.rpmPercentage = ((Math.abs(inputs.bottomMotorVelocity - mVelocitySetpoint) / ShooterConstants.shooterTolerance)+(Math.abs(inputs.topMotorVelocity - mVelocitySetpoint) / ShooterConstants.shooterTolerance))/2;
+    inputs.rpmPercentageT = (Math.abs(inputs.bottomMotorVelocity - mVelocitySetpoint) / ShooterConstants.shooterTolerance);
+    inputs.rpmPercentageB = (Math.abs(inputs.topMotorVelocity - mVelocitySetpoint) / ShooterConstants.shooterTolerance);
     Logger.processInputs("Shooter/Flywheel", inputs);
 
     LoggedTunableNumber.ifChanged(hashCode(), pid -> {
