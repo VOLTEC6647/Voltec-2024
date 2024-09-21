@@ -20,7 +20,8 @@ public class IntakeIOTalonFX implements IntakeIO {
     private SuperTalonFX intakeMotor = new SuperTalonFX(IntakeConstants.intakeMotorID, GlobalIdleMode.Coast, false,
             RobotConstants.mechanismsCANnivore);
 
-    private DigitalInput intakeBeamBrake = new DigitalInput(IntakeConstants.intakeBeamBrakeChannel);
+    private DigitalInput intakeLimitSwitchL = new DigitalInput(IntakeConstants.intakeLimitSwitchLChannel);
+    private DigitalInput intakeLimitSwitchR = new DigitalInput(IntakeConstants.intakeLimitSwitchRChannel);
 
     DutyCycleOut dutyCycleOut = new DutyCycleOut(0);
 
@@ -50,7 +51,9 @@ public class IntakeIOTalonFX implements IntakeIO {
         inputs.intakeMotorVelocity = intakeMotor.getVelocity().getValueAsDouble();
         inputs.intakeMotorCurrent = intakeMotor.getStatorCurrent().getValueAsDouble();
 
-        inputs.intakeBeamBrake = intakeBeamBrake.get();
+        inputs.intakeLimitSwitchL = intakeLimitSwitchL.get();
+        inputs.intakeLimitSwitchR = intakeLimitSwitchR.get();
+
     }
 
     @Override

@@ -74,6 +74,6 @@ public class IntakeSubsystem extends SubsystemBase {
   }
 
   public boolean getBeamBrake() {
-    return !inputs.intakeBeamBrake;
+    return inputs.intakeLimitSwitchL && inputs.intakeLimitSwitchR;
   }
 }

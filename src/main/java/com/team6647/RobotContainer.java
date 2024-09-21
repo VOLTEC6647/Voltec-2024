@@ -457,14 +457,30 @@ public class RobotContainer extends SuperRobotContainer {
                 // -------- Auto heading --------
                 
                 OperatorConstants.FACE_UP.or(OperatorConstants.FACE_DOWN.or(OperatorConstants.FACE_LEFT.or(OperatorConstants.FACE_RIGHT)))
+                .onTrue(new InstantCommand(()->{
+                        Drive.setMDriveMode(DriveMode.HEADING_LOCK);
+                })).whileTrue(
+                        new InstantCommand(()->{
+                        int divAmount = (OperatorConstants.FACE_DOWN.getAsBoolean()?1 : 0)+(OperatorConstants.FACE_UP.getAsBoolean()?1:0)+(OperatorConstants.FACE_LEFT.getAsBoolean()? 1 : 0)+(OperatorConstants.FACE_RIGHT.getAsBoolean()? 1 : 0);
+                        Rotation2d dir = new Rotation2d((0+(OperatorConstants.FACE_DOWN.getAsBoolean()?Math.PI : 0)+(OperatorConstants.FACE_LEFT.getAsBoolean()?Math.PI/2 : 0)+(OperatorConstants.FACE_RIGHT.getAsBoolean()?-Math.PI/2 : 0))/divAmount);
+                        System.out.println(dir.getDegrees());
+                        System.out.println(divAmount);
+                        andromedaSwerve.setTargetHeading(dir);
+                }).repeatedly()
+                ).onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
+
+                /* 
+                OperatorConstants.FACE_UP.or(OperatorConstants.FACE_DOWN.or(OperatorConstants.FACE_LEFT.or(OperatorConstants.FACE_RIGHT)))
                 .onTrue(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.HEADING_LOCK);}))
                 .whileTrue(
                         new InstantCommand(() -> {
                                 int divAmount = (OperatorConstants.FACE_DOWN.getAsBoolean()?1 : 0)+(OperatorConstants.FACE_UP.getAsBoolean()?1:0)+(OperatorConstants.FACE_LEFT.getAsBoolean()? 1 : 0)+(OperatorConstants.FACE_RIGHT.getAsBoolean()? 1 : 0);
                                 Rotation2d dir = new Rotation2d(0).plus(new Rotation2d((OperatorConstants.FACE_DOWN.getAsBoolean()?Math.PI : 0))).plus(new Rotation2d((OperatorConstants.FACE_LEFT.getAsBoolean()?Math.PI/2 : 0))).plus(new Rotation2d((OperatorConstants.FACE_RIGHT.getAsBoolean()?-Math.PI/2 : 0))).times(1/divAmount);
+                                andromedaSwerve.setTargetHeading(dir);
                         })
                         
                 ).onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
+                */
 
                 /* 
                 OperatorConstants.FACE_UP
@@ -505,9 +521,9 @@ public class RobotContainer extends SuperRobotContainer {
 
                         */
                         
-                OperatorConstants.SHOOTER_ALIGN1.or(OperatorConstants.SHOOTER_ALIGN2).onTrue(new InstantCommand(()->
-                {Drive.setMDriveMode(DriveMode.HEADING_LOCK);}
-                ).andThen(new VisionSpeakerAlign(andromedaSwerve, visionSubsystem).repeatedly())).onFalse(new InstantCommand(()->
+                OperatorConstants.SHOOTER_ALIGN1.or(OperatorConstants.SHOOTER_ALIGN2).whileTrue(
+                new VisionSpeakerAlign(andromedaSwerve, visionSubsystem))
+                .onFalse(new InstantCommand(()->
                 {Drive.setMDriveMode(DriveMode.TELEOP);}));
         
         }       

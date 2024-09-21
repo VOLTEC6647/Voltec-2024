@@ -45,6 +45,8 @@ public class Constants {
                                 OperatorConstants.kDriverControllerPort);
                 public static final CommandXboxController driverController2 = new CommandXboxController(
                                 OperatorConstants.kDriverControllerPort2);
+                
+                private static final Trigger NONE = new Trigger(() -> false);
 
                 /* Driver 1 */
                 public static final Trigger //FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER = driverController1.y(),
@@ -70,7 +72,7 @@ public class Constants {
                                 INTAKING_ONLY_FORCED = driverController2.povLeft(),
                                 
                                 TOGGLE_AMP = driverController2.x(),
-                                SHOOT_SPEAKER = null,
+                                SHOOT_SPEAKER = NONE,
                                 SHOOT_SUBWOOFER = driverController2.b(), //SHOOT_SUBWOOFER = driverController2.a(),
                                 READY = driverController2.a(),
                                 SHUTTLE = driverController2.y(),
@@ -82,7 +84,7 @@ public class Constants {
                                 PREPARE_CLIMB = driverController2.leftBumper(),
                                 CLIMB = driverController2.rightBumper(),
                                 RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick()),
-                                PREPARE_SHOOTER = null,//driverController2.start();
+                                PREPARE_SHOOTER = NONE,//driverController2.start();
 
                                 SHOOTER_ALIGN2 = driverController2.back();
 
@@ -378,7 +380,8 @@ public class Constants {
                 public static final double pushingHomedPosition = 2;
 
                 public static final int pushingLimitSwitch = 9;
-                public static final int intakeBeamBrakeChannel = 1;
+                public static final int intakeLimitSwitchLChannel = 1;
+                public static final int intakeLimitSwitchRChannel = 3;
         }
 
         public static class VisionConstants {
