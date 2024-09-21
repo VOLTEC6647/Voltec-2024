@@ -325,7 +325,7 @@ public class RobotContainer extends SuperRobotContainer {
                                                                                         .getLeftX());
                                                         double rotationSpeed = turningLimiter
                                                                         .calculate(-OperatorConstants.driverController1
-                                                                                        .getRightX());
+                                                                                        .getRightX()*DriveConstants.rotationSensibility);
 
                                                         andromedaSwerve.acceptTeleopInputs(
                                                                         () -> xSpeed,
@@ -447,7 +447,7 @@ public class RobotContainer extends SuperRobotContainer {
         
 
                 // -------- Auto heading --------
-                
+                //55 deg
                 OperatorConstants.FACE_UP.or(OperatorConstants.FACE_DOWN.or(OperatorConstants.FACE_LEFT.or(OperatorConstants.FACE_RIGHT)))
                 .onTrue(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.HEADING_LOCK);}))
                 .whileTrue(

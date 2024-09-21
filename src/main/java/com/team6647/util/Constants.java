@@ -397,6 +397,8 @@ public class Constants {
 
         public static class DriveConstants {
 
+                public static final double rotationSensibility = 0.6;
+
                 public static AndromedaModuleConfig andromedModuleConfig(AndromedModuleIDs moduleIDs) {
                         TalonFXConfiguration driveMotorConfig = new TalonFXConfiguration();
                         TalonFXConfiguration turningMotorConfig = new TalonFXConfiguration();
