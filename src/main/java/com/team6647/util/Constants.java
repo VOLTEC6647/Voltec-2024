@@ -55,17 +55,19 @@ public class Constants {
                                 //BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.povLeft(),
                                 RESET_GYRO = driverController1.povDown(),
 
-                                GMODE = driverController1.rightBumper(),
-                                FACE_UP = driverController1.y(),
-                                FACE_DOWN = driverController1.a(),
-                                FACE_LEFT = driverController1.x(),
-                                FACE_RIGHT = driverController1.b(),
+                                GMODE1 = driverController1.rightBumper(),
+                                FACE_UP = driverController1.a(),
+                                FACE_DOWN = driverController1.y(),
+                                FACE_LEFT = driverController1.b(),
+                                FACE_RIGHT = driverController1.x(),
 
                                 SHOOTER_ALIGN1 = driverController1.leftTrigger().or(driverController1.back());
 
                 /* Driver 2 */
 
                 public static final Trigger
+                                GMODE2 = driverController1.back(),
+
                                 TOGGLE_INTAKE = driverController2.povRight(),
                                 INDEXING = driverController2.povUp(),
                                 INTAKE_SHUTTLE = driverController2.povDown(),
@@ -78,15 +80,20 @@ public class Constants {
                                 SHUTTLE = driverController2.y(),
                                 
                                 CLIMB_TOP = driverController2.povUp(),
-                                INTAKE_FEEDER = driverController2.rightTrigger(),
-                                EXHAUST_FEEDER = driverController2.leftTrigger(),
+                                INTAKE_FEEDER = driverController2.leftTrigger().and(GMODE2.negate()),
+                                EXHAUST_FEEDER = driverController2.rightTrigger().and(GMODE2.negate()),
+
+                                INTAKE_SHOOTER_FEEDER = driverController2.leftTrigger().and(GMODE2),
+                                EXHAUST_SHOOTER_FEEDER = driverController2.rightTrigger().and(GMODE2),
                                 //FORCE_IDLE = driverController2.povLeft(),
                                 PREPARE_CLIMB = driverController2.leftBumper(),
                                 CLIMB = driverController2.rightBumper(),
                                 RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick()),
-                                PREPARE_SHOOTER = NONE,//driverController2.start();
+                                //PREPARE_SHOOTER = driverController2.rightStick(),//driverController2.start();
+                                PREPARE_SHOOTER = new Trigger(()->Math.abs(driverController2.getRightX())>0.2||Math.abs(driverController2.getRightY())>0.2),
+                                UNPREPARE_SHOOTER = driverController2.start(),
 
-                                SHOOTER_ALIGN2 = driverController2.back();
+                                SHOOTER_ALIGN2 = NONE;
 
         }
 
@@ -255,7 +262,7 @@ public class Constants {
                 public static final double pivotAmpPosition = 25;
                 public static final double pivotClimbPosition = 5;
 
-                public static final double flywheelAmpRPM = 1000;
+                public static final double flywheelAmpRPM = 500;
 
                 public static final double rollerStoppedVelocity = 0.0;
                 public static final double rollerIntakingVelocity = 0.3;

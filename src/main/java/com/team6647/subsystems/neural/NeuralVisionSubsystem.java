@@ -53,7 +53,7 @@ public class NeuralVisionSubsystem extends SubsystemBase {
   //Todo: fix magic number p, add confidence check, fix time check amount, do offsets ig, might only need to call this once
   public Optional<Rotation2d> getRotationTargetOverride(){
     if(isEnabled&&DriverStation.isAutonomous()){
-      if(inputs.numTargets>0 && inputs.confidence>0){
+      if(inputs.hasTarget){
         lastTarget = Timer.getFPGATimestamp();
         return Optional.of(RobotState.getPose().getRotation().plus(Rotation2d.fromDegrees(10*inputs.TX)));
       }else if(Timer.getFPGATimestamp()-lastTarget<5){
@@ -79,11 +79,4 @@ public class NeuralVisionSubsystem extends SubsystemBase {
     return inputs.TX;
   }
 
-  public double getConfidence(){
-    return inputs.confidence;
-  }
-
-  public double getNumTargets(){
-    return inputs.numTargets;
-  }
 }

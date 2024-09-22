@@ -109,7 +109,7 @@ public class SuperStructure {
         ENABLE_NEURAL,
         PREPARING_SHOOTER, 
         INTAKING_FORCED,
-        INTAKE_SHOOT
+        INTAKE_SHOOT, INTAKE_IDLE
     }
 
     public static Command update(SuperStructureState newState) {
@@ -172,6 +172,8 @@ public class SuperStructure {
             case ENABLE_NEURAL:
                 return EnableNeural();
             case INTAKE_SHOOT:
+                return IntakeShoot();
+            case INTAKE_IDLE:
                 return IntakeShoot();
             default:
                 break;
@@ -240,7 +242,10 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getFullIntakeCommand(),
                         Commands.waitSeconds(0.5)))
-                .andThen(SuperStructure.update(SuperStructureState.IDLE));
+                .andThen(SuperStructure.update(SuperStructureState.IDLE))
+                .andThen(SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).onlyIf(()->OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()));
+                       
+
     }
 
     private static Command intakingCommand() {
@@ -324,6 +329,16 @@ public class SuperStructure {
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.HOMED),
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
                         new FlywheelTarget(shooterSubsystem, FlywheelState.STOPPED)));
+    }
+
+    private static Command intakeIdleCommand() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.INTAKE_IDLE),
+                new InitIntake(intakePivotSubsystem),
+                Commands.parallel(
+                        Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
+                        new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED)
+                ));
     }
 
     private static Command autoIdleCommand() {
@@ -457,7 +472,7 @@ public class SuperStructure {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
                 new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 3000);
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -40, 2200);
 
                     updateShootingParameters(ampParams);
                 }),

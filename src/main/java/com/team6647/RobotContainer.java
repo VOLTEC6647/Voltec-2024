@@ -24,6 +24,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
+import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.VisionSpeakerAlign;
 import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.SuperStructure.SuperStructureState;
@@ -394,13 +395,17 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.PREPARE_SHOOTER
                                 .onTrue(new InstantCommand(()->{
-                                        if(shooterSubsystem.mFlywheelState == FlywheelState.STOPPED){
+
                                                 shooterSubsystem.setFlywheelState(FlywheelState.SHOOTING);
-                                        }else if(shooterSubsystem.mFlywheelState == FlywheelState.SHOOTING){
+                                        }
+                                ));
+
+                OperatorConstants.UNPREPARE_SHOOTER
+                                .onTrue(new InstantCommand(()->{
+
                                                 shooterSubsystem.setFlywheelState(FlywheelState.STOPPED);
                                         }
-                                        
-                                }));
+                                ));
 
                 OperatorConstants.SHOOT_SPEAKER
                                 .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SPEAKER))
@@ -408,7 +413,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // Subwoofer shootings
                 OperatorConstants.SHOOT_SUBWOOFER
-                                .whileTrue(SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER))
+                                .onTrue(SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // Shooting notes to wing
@@ -440,6 +445,22 @@ public class RobotContainer extends SuperRobotContainer {
                                                                 ShooterFeederState.STOPPED),
                                                 new IntakeRollerStartEnd(intakeSubsystem, IntakeRollerState.EXHAUSTING,
                                                                 IntakeRollerState.STOPPED)));
+
+                OperatorConstants.EXHAUST_SHOOTER_FEEDER
+                                .whileTrue(
+                                        new InstantCommand(()->{
+                                                new ShooterRollerTarget(shooterRollerSubsystem, ShooterFeederState.INTAKING);}))
+                                        .onFalse(new InstantCommand(()->{
+                                                new ShooterRollerTarget(shooterRollerSubsystem, ShooterFeederState.STOPPED);
+                                        }));
+
+                OperatorConstants.INTAKE_SHOOTER_FEEDER
+                                .whileTrue(
+                                        new InstantCommand(()->{
+                                                new ShooterRollerTarget(shooterRollerSubsystem, ShooterFeederState.EXHAUSTING);}))
+                                        .onFalse(new InstantCommand(()->{
+                                                new ShooterRollerTarget(shooterRollerSubsystem, ShooterFeederState.STOPPED);
+                                        }));
 
                 // -------- Climbing --------
 

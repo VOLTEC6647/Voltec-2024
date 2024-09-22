@@ -20,14 +20,13 @@ public class NeuralVisionIOLimelight implements NeuralVisionIO {
             inputs.TA = LimelightHelpers.getTA(VisionConstants.neuralLimeNTName);
             inputs.TY = LimelightHelpers.getTY(VisionConstants.neuralLimeNTName);
             inputs.TX = LimelightHelpers.getTX(VisionConstants.neuralLimeNTName);
-            inputs.hasTarget = (inputs.TA > 1) ? true : false;
+            inputs.hasTarget = (inputs.TA != 0) ? true : false;
             if(inputs.hasTarget){
-                inputs.confidence = results.targetingResults.targets_Detector[0].confidence;
-                inputs.numTargets = results.targetingResults.targets_Detector.length;
+                //inputs.confidence = results.targetingResults.targets_Detector[0].confidence;
+                
 
             }else{
-                inputs.confidence = 0;
-                inputs.numTargets = 0;
+
             }
             
             
