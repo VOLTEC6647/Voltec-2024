@@ -1,43 +1,37 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.4357068913852507,
-      "y": 7.319272841113443
-    },
-    "rotation": 0
-  },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "WallToSide"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "InitIntake"
+            "name": "ShootSubwoofer"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "TopToAmp"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AmpScore"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Idle"
+            "pathName": "LeaveFromSide"
           }
         }
       ]
     }
   },
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

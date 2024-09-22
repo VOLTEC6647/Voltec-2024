@@ -76,6 +76,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 public class RobotContainer extends SuperRobotContainer {
@@ -214,18 +215,26 @@ public class RobotContainer extends SuperRobotContainer {
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING_COMPLETE));
                 NamedCommands.registerCommand("ExtendIntake",
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING));
+                NamedCommands.registerCommand("IntakeHome",
+                                SuperStructure.update(SuperStructureState.INTAKE_HOMED));
                 NamedCommands.registerCommand("IndexPiece",
                                 SuperStructure.update(SuperStructureState.AUTO_INDEXING));
                 NamedCommands.registerCommand("EnableNeural",
-                                SuperStructure.update(SuperStructureState.ENABLE_NEURAL));
+                                new InstantCommand(()->{neuralVisionSubsystem.isEnabled=true;}));
+                NamedCommands.registerCommand("DisableNeural",
+                                new InstantCommand(()->{neuralVisionSubsystem.isEnabled=false;}));
                 NamedCommands.registerCommand("Idle",
                                 SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
                 NamedCommands.registerCommand("VisionAlign",
                                 SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
                 NamedCommands.registerCommand("SuppIndex",
                                 SuperStructure.update(SuperStructureState.SUPP_INDEXING));
-
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
+                NamedCommands.registerCommand("PrepareShoot", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING_SUBWOOFER));
+                NamedCommands.registerCommand("PrepareCamShoot", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING));
+                NamedCommands.registerCommand("ReadyShoot", new InstantCommand(()->{SuperStructure.canShoot=true;}));
+                NamedCommands.registerCommand("AngleLong", new InstantCommand(()->{SuperStructure.autoShootingAngle=-30;}));
+
 
 
                 autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
@@ -373,7 +382,7 @@ public class RobotContainer extends SuperRobotContainer {
                 // Complete intaking sequence
                 OperatorConstants.TOGGLE_INTAKE
                                 .whileTrue(SuperStructure.update(SuperStructureState.INTAKING_COMPLETE))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                                .onFalse(new ConditionalCommand(new WaitCommand(0), SuperStructure.update(SuperStructureState.IDLE), ()->OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()));
 
                 // Pass intake from intake to shooter
                 OperatorConstants.INDEXING
@@ -396,7 +405,7 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.PREPARE_SHOOTER
                                 .onTrue(new InstantCommand(()->{
 
-                                                shooterSubsystem.setFlywheelState(FlywheelState.SHOOTING);
+                                                shooterSubsystem.setFlywheelState(FlywheelState.PREPARING);
                                         }
                                 ));
 
@@ -413,7 +422,9 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // Subwoofer shootings
                 OperatorConstants.SHOOT_SUBWOOFER
-                                .onTrue(SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER))
+                                .onTrue(Commands.sequence(
+                                        Commands.waitUntil(()->SuperStructure.mRobotState!=SuperStructureState.INTAKING_COMPLETE),
+                                        SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER)))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // Shooting notes to wing

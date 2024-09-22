@@ -1,12 +1,5 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.4357068913852507,
-      "y": 7.319272841113443
-    },
-    "rotation": 0
-  },
   "command": {
     "type": "sequential",
     "data": {
@@ -18,21 +11,65 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "TopToAmp"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "AmpScore"
+            "name": "ShootSubwoofer"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Idle"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "GrabPiece"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 0.5
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "MiddleToRight"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.2
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SecondaryShootStay"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
           }
         },
         {
@@ -58,7 +95,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "AmpToLeft"
+                        "pathName": "RightToCenter"
                       }
                     }
                   ]
@@ -68,26 +105,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "LeftToAmp"
+            "waitTime": 0.5
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Idle"
+            "name": "SecondaryShootStay"
           }
         }
       ]
     }
   },
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

@@ -50,7 +50,7 @@ public class NeuralVisionSubsystem extends SubsystemBase {
     Logger.processInputs("Neural", inputs);
   }
 
-  //Todo: fix magic number p, add confidence check, fix time check amount, do offsets ig, might only need to call this once
+  //Todo: fix magic number p, fix time check amount, do offsets ig, might only need to call this once
   public Optional<Rotation2d> getRotationTargetOverride(){
     if(isEnabled&&DriverStation.isAutonomous()){
       if(inputs.hasTarget){

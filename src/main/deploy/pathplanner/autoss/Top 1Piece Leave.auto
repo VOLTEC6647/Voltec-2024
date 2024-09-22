@@ -1,12 +1,5 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.4122852182936875,
-      "y": 7.178742802564065
-    },
-    "rotation": 0
-  },
   "command": {
     "type": "sequential",
     "data": {
@@ -20,13 +13,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "TopToAmp"
+            "pathName": "TopShoot"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AmpScore"
+            "name": "ShootStay"
           }
         },
         {
@@ -42,63 +35,32 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "GrabPiece"
+                  "name": "ExtendIntake"
                 }
               },
               {
-                "type": "sequential",
+                "type": "path",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 0.5
-                      }
-                    },
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "AmpToLeft"
-                      }
-                    }
-                  ]
+                  "pathName": "TopOut"
                 }
               }
             ]
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "LeftToAmp"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AmpScore"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Idle"
-          }
-        },
-        {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "GrabPiece"
+                  "name": "IndexPiece"
                 }
               },
               {
                 "type": "path",
                 "data": {
-                  "pathName": "AmpTo5"
+                  "pathName": "5ToWing"
                 }
               }
             ]
@@ -107,24 +69,19 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "5ToWing"
+            "waitTime": 2.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ShootWingTop"
+            "name": "ShootStay"
           }
         }
       ]
     }
   },
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

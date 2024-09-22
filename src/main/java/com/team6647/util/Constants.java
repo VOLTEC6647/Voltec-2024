@@ -275,7 +275,7 @@ public class Constants {
 
                 public static final int forwardLimitSwitchID = 7;
 
-                public static final double preparingRPM = 3500;
+                public static final double subwooferRPM = 2200;
                 public static final double shootingRPM = 5000;
 
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();

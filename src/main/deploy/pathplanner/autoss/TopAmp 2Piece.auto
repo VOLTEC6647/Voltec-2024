@@ -1,12 +1,5 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.4357068913852507,
-      "y": 7.319272841113443
-    },
-    "rotation": 0
-  },
   "command": {
     "type": "sequential",
     "data": {
@@ -84,22 +77,11 @@
           "data": {
             "name": "Idle"
           }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "AmpOut"
-          }
         }
       ]
     }
   },
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

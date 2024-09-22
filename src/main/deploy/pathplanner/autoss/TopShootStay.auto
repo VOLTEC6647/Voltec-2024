@@ -1,12 +1,5 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.5049725484071635,
-      "y": 3.7395713252983147
-    },
-    "rotation": 0
-  },
   "command": {
     "type": "sequential",
     "data": {
@@ -14,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "WallToSide"
+            "pathName": "TopShoot"
           }
         },
         {
@@ -24,20 +17,15 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 0.5
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LeaveFromSide"
+            "name": "Idle"
           }
         }
       ]
     }
   },
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

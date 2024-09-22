@@ -67,7 +67,7 @@ public class SuperStructure {
     private static NeuralVisionSubsystem neuralVisionSubsystem = RobotContainer.neuralVisionSubsystem;
 
     @AutoLogOutput(key = "SuperStructure/State")
-    private static SuperStructureState mRobotState = SuperStructureState.IDLE;
+    public static SuperStructureState mRobotState = SuperStructureState.IDLE;
     
     private static LoggedTunableNumber shuttleAngle = new LoggedTunableNumber("Shooter/Pivot/ShuttleAngle", 1);
     private static LoggedTunableNumber shuttleRPM = new LoggedTunableNumber("Shooter/Pivot/ShuttleAngle", 2500);
@@ -106,10 +106,13 @@ public class SuperStructure {
         INTAKE_ALIGN,
         PREPARE_CLIMB,
         CLIMBING,
-        ENABLE_NEURAL,
         PREPARING_SHOOTER, 
         INTAKING_FORCED,
-        INTAKE_SHOOT, INTAKE_IDLE
+        INTAKE_SHOOT,
+        INTAKE_IDLE,
+        PREPARE_AUTO_SHOOTING_SUBWOOFER,
+        PREPARE_AUTO_SHOOTING,
+        INTAKE_HOMED
     }
 
     public static Command update(SuperStructureState newState) {
@@ -146,6 +149,10 @@ public class SuperStructure {
                 return shootingSubwoofer2P();
             case AUTO_SHOOTING_SUBWOOFER:
                 return autoShootingSubwoofer();
+            case PREPARE_AUTO_SHOOTING_SUBWOOFER:
+                return prepareAutoShootingSubwoofer();
+            case PREPARE_AUTO_SHOOTING:
+                return prepareAutoShootingStationary();
             case SCORING_AMP:
                 return scoreAmp();
             case PREPARING_AMP:
@@ -169,12 +176,12 @@ public class SuperStructure {
                 return climb();
             case PREPARING_SHOOTER:
                 return new PrepareShooter(shooterSubsystem);
-            case ENABLE_NEURAL:
-                return EnableNeural();
             case INTAKE_SHOOT:
                 return IntakeShoot();
             case INTAKE_IDLE:
-                return IntakeShoot();
+                return intakeIdleCommand();
+            case INTAKE_HOMED:
+                return intakeHomeCommand();
             default:
                 break;
         }
@@ -230,6 +237,27 @@ public class SuperStructure {
                                 .withTimeout(3),
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
     }
+    public static int autoShootingAngle = -45;
+
+    public static boolean canShoot = false;
+    private static Command prepareAutoShootingSubwoofer() {
+        return Commands.deadline(
+                Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
+                Commands.sequence(
+                        setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
+                        new InstantCommand(() -> {
+                            ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), autoShootingAngle, 3000);
+
+                            updateShootingParameters(ampParams);
+                        }),
+                        Commands.parallel(
+                                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING))
+                                .withTimeout(1),//huh? 3
+                        Commands.waitUntil( ()-> canShoot),
+                        new InstantCommand(()->{canShoot = false;}),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
+    }
 
     private static Command setGoalCommand(SuperStructureState state) {
         return new InstantCommand(() -> mRobotState = state);
@@ -242,8 +270,8 @@ public class SuperStructure {
                 Commands.sequence(
                         IntakeCommands.getFullIntakeCommand(),
                         Commands.waitSeconds(0.5)))
-                .andThen(SuperStructure.update(SuperStructureState.IDLE))
-                .andThen(SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).onlyIf(()->OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()));
+                .andThen(SuperStructure.update(SuperStructureState.IDLE)).onlyIf(()->!OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean())
+                .andThen(SuperStructure.update(SuperStructureState.INTAKE_IDLE));
                        
 
     }
@@ -339,6 +367,14 @@ public class SuperStructure {
                         Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
                         new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED)
                 ));
+    }
+
+    private static Command intakeHomeCommand() {
+        return Commands.sequence(
+            setGoalCommand(SuperStructureState.INTAKE_IDLE),
+            new IntakeHome(intakePivotSubsystem),
+            new InstantCommand(()->{neuralVisionSubsystem.isEnabled=false;})
+        );
     }
 
     private static Command autoIdleCommand() {
@@ -437,6 +473,27 @@ public class SuperStructure {
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
     }
 
+    private static Command prepareAutoShootingStationary() {
+        return Commands.deadline(
+                Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
+                Commands.sequence(
+                        setGoalCommand(SuperStructureState.AUTO_SHOOTING_SPEAKER),
+                        new InstantCommand(() -> {
+                            ShootingParameters ampParams = ShootingCalculatorUtil.getShootingParameters(
+                                    RobotState.getPose(),
+                                    AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d()));
+
+                            updateShootingParameters(ampParams);
+                        }),
+                        Commands.parallel(
+                                new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                                new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                        Commands.waitUntil( ()-> canShoot),
+                        new InstantCommand(()->{canShoot = false;}),
+                        new VisionSpeakerAlign(andromedaSwerve, visionSubsystem),
+                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
+        }
+
     private static Command secondaryAutoShootingStationary() {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.AUTO_SHOOTING_SPEAKER),
@@ -468,11 +525,20 @@ public class SuperStructure {
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
+    public static int subwooferRotation = -45;
+
     private static Command shootingSubwoofer2P() {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
                 new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -40, 2200);
+                    if(!OperatorConstants.GMODE2.getAsBoolean()){
+                        subwooferRotation = -45;
+                    }else{
+                        if(OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()){
+                            subwooferRotation = -40;
+                        }
+                    }
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), subwooferRotation, ShooterConstants.subwooferRPM);
 
                     updateShootingParameters(ampParams);
                 }),
@@ -610,8 +676,6 @@ public class SuperStructure {
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
-    public static Command EnableNeural() {
-        return new InstantCommand(()->neuralVisionSubsystem.isEnabled=true);
-    }
+
     
 }
