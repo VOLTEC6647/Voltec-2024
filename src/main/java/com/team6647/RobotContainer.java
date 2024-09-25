@@ -21,6 +21,7 @@ import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.robot.SuperRobotContainer;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterRollerStartEnd;
@@ -430,7 +431,9 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.SHOOT_SUBWOOFER
                                 .onTrue(
                                         Commands.sequence(
-                                        Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.READY),
+                                        new FlywheelTarget(shooterSubsystem, FlywheelState.PREPARING),
+                                        Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.READY)
+                                        .onlyIf(()->OperatorConstants.TOGGLE_INTAKE.getAsBoolean()),
                                         
                                         //new ConditionalCommand(Commands.race(
                                           //      Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.INTAKE_DONE),
@@ -446,7 +449,11 @@ public class RobotContainer extends SuperRobotContainer {
                 // Shooting notes to wing
 
                 OperatorConstants.SHUTTLE
-                                .whileTrue(SuperStructure.update(SuperStructureState.SHUTTLE))
+                                .whileTrue(
+                                new FlywheelTarget(shooterSubsystem, FlywheelState.PREPARING)
+                                .andThen(Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.READY))
+                                .onlyIf(()->OperatorConstants.TOGGLE_INTAKE.getAsBoolean())
+                                .andThen(SuperStructure.update(SuperStructureState.SHUTTLE)))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // -------- Amp Commands --------
