@@ -271,11 +271,11 @@ public class SuperStructure {
                         IntakeCommands.getFullIntakeCommand(),
                         Commands.waitSeconds(0.3)))
 
-                .andThen(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()))
+                .andThen(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.INSTANT_SHOOTER.getAsBoolean()))
                 .andThen(Commands.sequence(
                     SuperStructure.update(SuperStructureState.INTAKE_IDLE),
-                    SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER)
-                ).onlyIf(()->OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean())
+                    setGoalCommand(SuperStructureState.READY)
+                ).onlyIf(()->OperatorConstants.INSTANT_SHOOTER.getAsBoolean())
                 
                 );
 

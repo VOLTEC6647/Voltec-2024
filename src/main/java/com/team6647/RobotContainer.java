@@ -429,6 +429,9 @@ public class RobotContainer extends SuperRobotContainer {
                 
                 OperatorConstants.SHOOT_SUBWOOFER
                                 .onTrue(
+                                        Commands.sequence(
+                                        Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.READY),
+                                        
                                         //new ConditionalCommand(Commands.race(
                                           //      Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.INTAKE_DONE),
                                             //    Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.IDLE)
@@ -436,7 +439,7 @@ public class RobotContainer extends SuperRobotContainer {
                  
                                         //new InstantCommand(()->{SuperStructure.mRobotState = SuperStructureState.INDEXING;}),
                                         
-                                        SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).onlyIf(()->!OperatorConstants.TOGGLE_INTAKE.getAsBoolean())
+                                        SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER))//.onlyIf(()->!OperatorConstants.TOGGLE_INTAKE.getAsBoolean())
                                         )
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.TOGGLE_INTAKE.getAsBoolean()));
  

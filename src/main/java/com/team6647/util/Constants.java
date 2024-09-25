@@ -94,6 +94,7 @@ public class Constants {
                                 //PREPARE_SHOOTER = driverController2.rightStick(),//driverController2.start();
                                 PREPARE_SHOOTER = new Trigger(()->Math.abs(driverController2.getRightX())>0.2||Math.abs(driverController2.getRightY())>0.2),
                                 UNPREPARE_SHOOTER = driverController2.start(),
+                                INSTANT_SHOOTER = SHOOT_SUBWOOFER.or(SHUTTLE),
 
                                 SHOOTER_ALIGN2 = NONE;
 
