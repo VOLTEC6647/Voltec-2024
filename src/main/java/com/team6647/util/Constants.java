@@ -61,7 +61,9 @@ public class Constants {
                                 FACE_LEFT = driverController1.b(),
                                 FACE_RIGHT = driverController1.x(),
 
-                                SHOOTER_ALIGN1 = driverController1.leftTrigger().or(driverController1.back());
+                                SHOOTER_ALIGN1 = driverController1.leftBumper().or(driverController1.back()),
+                                LEFT_PASS_ALIGN = driverController1.leftTrigger(),
+                                RIGHT_PASS_ALIGN = driverController1.rightTrigger();
 
                 /* Driver 2 */
 
@@ -80,8 +82,8 @@ public class Constants {
                                 SHUTTLE = driverController2.y(),
                                 
                                 CLIMB_TOP = driverController2.povUp(),
-                                INTAKE_FEEDER = driverController2.leftTrigger().and(GMODE2.negate()),
-                                EXHAUST_FEEDER = driverController2.rightTrigger().and(GMODE2.negate()),
+                                INTAKE_FEEDER = driverController2.rightTrigger().and(GMODE2.negate()),
+                                EXHAUST_FEEDER = driverController2.leftTrigger().and(GMODE2.negate()),
 
                                 INTAKE_SHOOTER_FEEDER = driverController2.leftTrigger().and(GMODE2),
                                 EXHAUST_SHOOTER_FEEDER = driverController2.rightTrigger().and(GMODE2),

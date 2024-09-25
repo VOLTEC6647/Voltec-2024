@@ -19,7 +19,7 @@ public class FlywheelTarget extends Command {
     this.shooterSubsystem = shooterSubsystem;
     this.flywheelState = flywheelState;
 
-    addRequirements(shooterSubsystem);//(:<
+    //addRequirements(shooterSubsystem);//(:<
   }
 
   // Called when the command is initially scheduled.

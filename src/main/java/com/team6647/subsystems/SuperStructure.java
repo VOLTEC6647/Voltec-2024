@@ -112,7 +112,7 @@ public class SuperStructure {
         INTAKE_IDLE,
         PREPARE_AUTO_SHOOTING_SUBWOOFER,
         PREPARE_AUTO_SHOOTING,
-        INTAKE_HOMED
+        INTAKE_HOMED, INTAKE_DONE, ERROR, READY
     }
 
     public static Command update(SuperStructureState newState) {
@@ -269,9 +269,21 @@ public class SuperStructure {
                 setGoalCommand(SuperStructureState.INTAKING_COMPLETE),
                 Commands.sequence(
                         IntakeCommands.getFullIntakeCommand(),
-                        Commands.waitSeconds(0.5)))
-                .andThen(SuperStructure.update(SuperStructureState.IDLE)).onlyIf(()->!OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean())
-                .andThen(SuperStructure.update(SuperStructureState.INTAKE_IDLE));
+                        Commands.waitSeconds(0.3)))
+
+                .andThen(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()))
+                .andThen(Commands.sequence(
+                    SuperStructure.update(SuperStructureState.INTAKE_IDLE),
+                    SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER)
+                ).onlyIf(()->OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean())
+                
+                );
+
+                //.andThen(SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER));
+                
+                
+                //.onlyIf(()->!OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean())
+                //.andThen(SuperStructure.update(SuperStructureState.INTAKE_IDLE));
                        
 
     }
@@ -364,15 +376,20 @@ public class SuperStructure {
                 setGoalCommand(SuperStructureState.INTAKE_IDLE),
                 new InitIntake(intakePivotSubsystem),
                 Commands.parallel(
-                        Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
-                        new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED)
-                ));
+                        
+                        Commands.parallel(
+                            new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
+                            new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED) ,
+                            new IntakeHome(intakePivotSubsystem)       
+                )),
+                setGoalCommand(SuperStructureState.INTAKE_DONE));
     }
 
     private static Command intakeHomeCommand() {
         return Commands.sequence(
-            setGoalCommand(SuperStructureState.INTAKE_IDLE),
-            new IntakeHome(intakePivotSubsystem),
+            setGoalCommand(SuperStructureState.INTAKE_HOMED),
+            new InitIntake(intakePivotSubsystem),
+            Commands.waitSeconds(0.4).andThen(new IntakeHome(intakePivotSubsystem)),
             new InstantCommand(()->{neuralVisionSubsystem.isEnabled=false;})
         );
     }
@@ -532,7 +549,7 @@ public class SuperStructure {
                 setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
                 new InstantCommand(() -> {
                     if(!OperatorConstants.GMODE2.getAsBoolean()){
-                        subwooferRotation = -45;
+                        subwooferRotation = -53             ;
                     }else{
                         if(OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()){
                             subwooferRotation = -40;
@@ -545,8 +562,12 @@ public class SuperStructure {
                 Commands.parallel(
                         new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                setGoalCommand(SuperStructureState.READY),
                 Commands.waitUntil(()-> OperatorConstants.READY.getAsBoolean()),
+                setGoalCommand(SuperStructureState.ERROR),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+                
+                
                
     }
 

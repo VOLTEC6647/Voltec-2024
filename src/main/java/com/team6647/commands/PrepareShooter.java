@@ -12,7 +12,7 @@ public class PrepareShooter extends Command{
     public PrepareShooter(ShooterSubsystem shooterSubsystem){
         this.shooterSubsystem = shooterSubsystem;
 
-        addRequirements(shooterSubsystem);
+        //addRequirements(shooterSubsystem);
     }
 
     @Override

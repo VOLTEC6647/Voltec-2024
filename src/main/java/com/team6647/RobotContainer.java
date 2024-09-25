@@ -196,6 +196,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Auto Declaration --------
 
+                
                 NamedCommands.registerCommand("InitIntake",
                                 new InitIntake(intakePivotSubsystem));
                 NamedCommands.registerCommand("ShootSubwoofer",
@@ -215,24 +216,28 @@ public class RobotContainer extends SuperRobotContainer {
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING_COMPLETE));
                 NamedCommands.registerCommand("ExtendIntake",
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING));
-                NamedCommands.registerCommand("IntakeHome",
-                                SuperStructure.update(SuperStructureState.INTAKE_HOMED));
+                NamedCommands.registerCommand("IntakeHomed",
+                                SuperStructure.update(SuperStructureState.INTAKE_HOMED).withTimeout(1)); 
                 NamedCommands.registerCommand("IndexPiece",
                                 SuperStructure.update(SuperStructureState.AUTO_INDEXING));
+                
+                NamedCommands.registerCommand("Idle",
+                                SuperStructure.update(SuperStructureState.INTAKE_HOMED).withTimeout(1));
+                NamedCommands.registerCommand("VisionAlign",
+                                SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
+                NamedCommands.registerCommand("SuppIndex",
+                                SuperStructure.update(SuperStructureState.SUPP_INDEXING)); 
+
                 NamedCommands.registerCommand("EnableNeural",
                                 new InstantCommand(()->{neuralVisionSubsystem.isEnabled=true;}));
                 NamedCommands.registerCommand("DisableNeural",
                                 new InstantCommand(()->{neuralVisionSubsystem.isEnabled=false;}));
-                NamedCommands.registerCommand("Idle",
-                                SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
-                NamedCommands.registerCommand("VisionAlign",
-                                SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
-                NamedCommands.registerCommand("SuppIndex",
-                                SuperStructure.update(SuperStructureState.SUPP_INDEXING));
+
+
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
                 NamedCommands.registerCommand("PrepareShoot", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING_SUBWOOFER));
-                NamedCommands.registerCommand("PrepareCamShoot", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING));
-                NamedCommands.registerCommand("ReadyShoot", new InstantCommand(()->{SuperStructure.canShoot=true;}));
+                NamedCommands.registerCommand("PrepareCamShoott", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING)); 
+                NamedCommands.registerCommand("ReadyShoott", new InstantCommand(()->{SuperStructure.canShoot=true;}));
                 NamedCommands.registerCommand("AngleLong", new InstantCommand(()->{SuperStructure.autoShootingAngle=-30;}));
 
 
@@ -381,8 +386,8 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // Complete intaking sequence
                 OperatorConstants.TOGGLE_INTAKE
-                                .whileTrue(SuperStructure.update(SuperStructureState.INTAKING_COMPLETE))
-                                .onFalse(new ConditionalCommand(new WaitCommand(0), SuperStructure.update(SuperStructureState.IDLE), ()->OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()));
+                                .onTrue(SuperStructure.update(SuperStructureState.INTAKING_COMPLETE))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()));
 
                 // Pass intake from intake to shooter
                 OperatorConstants.INDEXING
@@ -421,12 +426,20 @@ public class RobotContainer extends SuperRobotContainer {
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // Subwoofer shootings
+                
                 OperatorConstants.SHOOT_SUBWOOFER
-                                .onTrue(Commands.sequence(
-                                        Commands.waitUntil(()->SuperStructure.mRobotState!=SuperStructureState.INTAKING_COMPLETE),
-                                        SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER)))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
-
+                                .onTrue(
+                                        //new ConditionalCommand(Commands.race(
+                                          //      Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.INTAKE_DONE),
+                                            //    Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.IDLE)
+                                              //  ), new WaitCommand(0), ()->SuperStructure.mRobotState==SuperStructureState.INTAKING_COMPLETE),
+                 
+                                        //new InstantCommand(()->{SuperStructure.mRobotState = SuperStructureState.INDEXING;}),
+                                        
+                                        SuperStructure.update(SuperStructureState.SHOOTING_SUBWOOFER).onlyIf(()->!OperatorConstants.TOGGLE_INTAKE.getAsBoolean())
+                                        )
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.TOGGLE_INTAKE.getAsBoolean()));
+ 
                 // Shooting notes to wing
 
                 OperatorConstants.SHUTTLE
@@ -501,6 +514,26 @@ public class RobotContainer extends SuperRobotContainer {
                 }).repeatedly()
                 ).onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
 
+                OperatorConstants.LEFT_PASS_ALIGN.onTrue(
+                        new InstantCommand(()->{
+                        andromedaSwerve.setTargetHeading(new Rotation2d(-30));
+                        Drive.setMDriveMode(DriveMode.HEADING_LOCK);
+                })).onFalse(
+                        new InstantCommand(()->{
+                        Drive.setMDriveMode(DriveMode.TELEOP);
+                }));
+
+                OperatorConstants.RIGHT_PASS_ALIGN.onTrue(
+                        new InstantCommand(()->{
+                        andromedaSwerve.setTargetHeading(new Rotation2d(30));
+                        Drive.setMDriveMode(DriveMode.HEADING_LOCK);
+                })).onFalse(
+                        new InstantCommand(()->{
+                        Drive.setMDriveMode(DriveMode.TELEOP);
+                }));
+
+                
+
                 /* 
                 OperatorConstants.FACE_UP.or(OperatorConstants.FACE_DOWN.or(OperatorConstants.FACE_LEFT.or(OperatorConstants.FACE_RIGHT)))
                 .onTrue(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.HEADING_LOCK);}))
@@ -558,7 +591,7 @@ public class RobotContainer extends SuperRobotContainer {
                 .onFalse(new InstantCommand(()->
                 {Drive.setMDriveMode(DriveMode.TELEOP);}));
         
-        }       
+        }
 
         public void configSysIdBindings() {
                 // OperatorConstants.FORWARD_QUASISTATIC_CHARACTERIZATION_TRIGGER

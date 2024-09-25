@@ -23,7 +23,7 @@ public class PivotEnable extends Command {
     this.shooterPivotSubsystem = shooterPivotSubsystem;
     this.direction = direction;
 
-    addRequirements(shooterPivotSubsystem);
+    //addRequirements(shooterPivotSubsystem);
   }
 
   private enum Direction {

@@ -18,7 +18,7 @@ public class ShooterRollerTarget extends InstantCommand {
     this.shooterRollerSubsystem = shooterRollerSubsystem;
     this.rollerState = rollerState;
 
-    addRequirements(shooterRollerSubsystem);
+    //addRequirements(shooterRollerSubsystem);
   }
 
   @Override

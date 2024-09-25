@@ -21,7 +21,7 @@ public class ShooterRollerStartEnd extends Command {
     this.initialRollerState = initialRollerState;
     this.finalRollerState = finalRollerState;
 
-    addRequirements(shooterRollerSubsystem);
+    //addRequirements(shooterRollerSubsystem);
   }
 
   @Override

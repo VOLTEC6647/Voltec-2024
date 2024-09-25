@@ -19,7 +19,7 @@ public class ShooterPivotTarget extends Command {
     this.shooterPivotSubsystem = shooterPivotSubsystem;
     this.pivotState = shooterPivotState;
 
-    addRequirements(shooterPivotSubsystem);
+    //addRequirements(shooterPivotSubsystem);
   }
 
   @Override
