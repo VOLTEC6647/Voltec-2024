@@ -237,7 +237,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
                 NamedCommands.registerCommand("PrepareShoot", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING_SUBWOOFER));
-                NamedCommands.registerCommand("PrepareCamShoott", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING)); 
+                //NamedCommands.registerCommand("PrepareCamShoott", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING)); 
                 NamedCommands.registerCommand("ReadyShoott", new InstantCommand(()->{SuperStructure.canShoot=true;}));
                 NamedCommands.registerCommand("AngleLong", new InstantCommand(()->{SuperStructure.autoShootingAngle=-30;}));
 
@@ -429,9 +429,11 @@ public class RobotContainer extends SuperRobotContainer {
                 // Subwoofer shootings
                 
                 OperatorConstants.SHOOT_SUBWOOFER
-                                .onTrue(
+                                .whileTrue(
                                         Commands.sequence(
+                                                new InstantCommand(()->{SuperStructure.mRobotState = SuperStructureState.SHUTTLE;}),
                                         new FlywheelTarget(shooterSubsystem, FlywheelState.PREPARING),
+                                        new InstantCommand(()->{SuperStructure.mRobotState = SuperStructureState.PREPARING_SHOOTER;}),
                                         Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.READY)
                                         .onlyIf(()->OperatorConstants.TOGGLE_INTAKE.getAsBoolean()),
                                         

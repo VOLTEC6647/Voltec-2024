@@ -22,7 +22,7 @@ public class FlywheelStartEnd extends Command {
     this.initialFlywheelState = initialFlywheelState;
     this.finalFlywheelState = finalFlywheelState;
 
-    addRequirements(flywheelSubsystem);
+    //addRequirements(flywheelSubsystem);
   }
 
   @Override

@@ -52,6 +52,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class SuperStructure {
 
@@ -373,15 +374,19 @@ public class SuperStructure {
 
     private static Command intakeIdleCommand() {
         return Commands.sequence(
+            
                 setGoalCommand(SuperStructureState.INTAKE_IDLE),
+                Commands.parallel(
+                            
+                            new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED),
+                                            new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED)
+
+                             
+                ),
                 new InitIntake(intakePivotSubsystem),
                 Commands.parallel(
-                        
-                        Commands.parallel(
-                            new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED),
-                            new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED) ,
-                            new IntakeHome(intakePivotSubsystem)       
-                )),
+                        new IntakeHome(intakePivotSubsystem)      
+                        ),
                 setGoalCommand(SuperStructureState.INTAKE_DONE));
     }
 
@@ -491,6 +496,7 @@ public class SuperStructure {
     }
 
     private static Command prepareAutoShootingStationary() {
+        
         return Commands.deadline(
                 Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
                 Commands.sequence(
@@ -505,10 +511,12 @@ public class SuperStructure {
                         Commands.parallel(
                                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
-                        Commands.waitUntil( ()-> canShoot),
+                        Commands.waitUntil(()-> canShoot),
                         new InstantCommand(()->{canShoot = false;}),
                         new VisionSpeakerAlign(andromedaSwerve, visionSubsystem),
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
+
+                        
         }
 
     private static Command secondaryAutoShootingStationary() {
@@ -549,7 +557,7 @@ public class SuperStructure {
                 setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
                 new InstantCommand(() -> {
                     if(!OperatorConstants.GMODE2.getAsBoolean()){
-                        subwooferRotation = -53             ;
+                        subwooferRotation = -35             ;
                     }else{
                         if(OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()){
                             subwooferRotation = -40;
