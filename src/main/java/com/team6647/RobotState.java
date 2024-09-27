@@ -12,6 +12,8 @@ import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.odometry.SuperRobotState;
+import com.andromedalib.util.Alert;
+import com.andromedalib.util.Alert.AlertType;
 import com.team6647.util.AllianceFlipUtil;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.FieldConstants;
@@ -87,6 +89,7 @@ public class RobotState extends SuperRobotState {
     public static Pose2d getPose() {
         return poseEstimator.getEstimatedPosition();
     }
+    private static Alert willReset = new Alert("ShouldReset", AlertType.INFO);
 
     /**
      * Resets the robot's position on the field
@@ -95,6 +98,7 @@ public class RobotState extends SuperRobotState {
      */
     public static void resetPose(Pose2d pose2d) {
         poseEstimator.resetPosition(lastGyroAngle, lastModulePositions, pose2d);
+        willReset.set(true);
     }
 
     /**
