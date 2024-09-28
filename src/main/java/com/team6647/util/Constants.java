@@ -269,6 +269,7 @@ public class Constants {
 
                 public static final double rollerStoppedVelocity = 0.0;
                 public static final double rollerIntakingVelocity = 0.3;
+                public static final double rollerShootingVelocity = 0.6;
                 public static final double rollerExhaustingVelocity = -0.1;
                 public static final double rollerIdleVelocity = 0.1;
 

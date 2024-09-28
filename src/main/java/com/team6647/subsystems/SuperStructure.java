@@ -573,7 +573,7 @@ public class SuperStructure {
                 setGoalCommand(SuperStructureState.READY),
                 Commands.waitUntil(()-> OperatorConstants.READY.getAsBoolean()),
                 setGoalCommand(SuperStructureState.ERROR),
-                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.SHOOTING));
                 
                 
                

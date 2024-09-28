@@ -43,6 +43,7 @@ public class ShooterRollerSubsystem extends SubsystemBase {
     STOPPED(ShooterConstants.shooterStoppedSpeed),
     EXHAUSTING(ShooterConstants.rollerExhaustingVelocity),
     INTAKING(ShooterConstants.rollerIntakingVelocity),
+    SHOOTING(ShooterConstants.rollerShootingVelocity),
     IDLE(ShooterConstants.rollerIdleVelocity);
 
     public final double velocity;
