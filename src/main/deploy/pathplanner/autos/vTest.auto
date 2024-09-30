@@ -12,12 +12,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "InitIntake"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "TopShoot"
@@ -26,7 +20,7 @@
         {
           "type": "named",
           "data": {
-            "name": "ShootStay"
+            "name": "ShootSubwoofer"
           }
         },
         {
@@ -36,40 +30,22 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "named",
+          "data": {
+            "name": null
+          }
+        },
+        {
+          "type": "sequential",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "GrabPiece"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "TopOut"
+                  "name": null
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "wait",
-          "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "5ToWing"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SecondaryShootStay"
           }
         }
       ]
