@@ -344,13 +344,16 @@ public class RobotContainer extends SuperRobotContainer {
                                                                         .calculate(-OperatorConstants.driverController1
                                                                                         .getRightX()*DriveConstants.rotationSensibility);
 
+
+
                                                         andromedaSwerve.acceptTeleopInputs(
                                                                         () -> xSpeed,
                                                                         () -> ySpeed,
                                                                         () -> rotationSpeed,
                                                                         () -> !OperatorConstants.driverController1
                                                                                         .leftStick()
-                                                                                        .getAsBoolean());
+                                                                                        .getAsBoolean(),
+                                                                        () -> OperatorConstants.STRAIGHT.getAsBoolean());
 
                                                 }));
 
@@ -599,9 +602,13 @@ public class RobotContainer extends SuperRobotContainer {
                         */
                         
                 OperatorConstants.SHOOTER_ALIGN1.or(OperatorConstants.SHOOTER_ALIGN2).whileTrue(
-                new VisionSpeakerAlign(andromedaSwerve, visionSubsystem))
+                new VisionSpeakerAlign(andromedaSwerve, visionSubsystem).repeatedly())
                 .onFalse(new InstantCommand(()->
                 {Drive.setMDriveMode(DriveMode.TELEOP);}));
+
+                OperatorConstants.DEBUG_IDLE.onTrue(
+                        SuperStructure.update(SuperStructureState.IDLE)
+                );
         
         }
 

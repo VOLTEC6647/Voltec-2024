@@ -23,15 +23,25 @@ public class TeleopController {
     private double controllerY = 0.0;
     private double controllerOmega = 0.0;
     private boolean fieldRelative = true;
+    private boolean moveStraight = true;
 
-    public void acceptControllerInput(double x, double y, double omega, boolean fieldRelative) {
+    public void acceptControllerInput(double x, double y, double omega, boolean fieldRelative, boolean moveStraight) {
         this.controllerX = x;
         this.controllerY = y;
         this.controllerOmega = omega;
         this.fieldRelative = true;
+        this.moveStraight = moveStraight;
     }
 
     public ChassisSpeeds update(Rotation2d currentAngle) {
+        if (moveStraight){
+            if(Math.abs(controllerY)>Math.abs(controllerX)){
+                controllerX = 0;
+        }
+            if(Math.abs(controllerX)>Math.abs(controllerY)){
+                controllerY = 0;
+            }
+        }
         controllerX = Functions.handleDeadband(controllerX, deadband.get());
         controllerY = Functions.handleDeadband(controllerY, deadband.get());
         controllerOmega = Functions.handleDeadband(controllerOmega, deadband.get());

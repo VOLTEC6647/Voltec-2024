@@ -117,9 +117,9 @@ public class Drive extends AndromedaSwerve {
      * @param fieldRelative True if field relative
      */
     public void acceptTeleopInputs(DoubleSupplier translationX, DoubleSupplier translationY,
-            DoubleSupplier rotation, BooleanSupplier fieldOrientedControl) {
+            DoubleSupplier rotation, BooleanSupplier fieldOrientedControl, BooleanSupplier moveStraight) {                
         teleopController.acceptControllerInput(translationY.getAsDouble(), translationX.getAsDouble(),
-                rotation.getAsDouble(), fieldOrientedControl.getAsBoolean());
+                rotation.getAsDouble(), fieldOrientedControl.getAsBoolean(), moveStraight.getAsBoolean());
     }
 
     /**
@@ -132,7 +132,7 @@ public class Drive extends AndromedaSwerve {
     public void acceptTeleopInputs(Translation2d translation, DoubleSupplier rotation,
             BooleanSupplier fieldOrientedControl) {
         teleopController.acceptControllerInput(translation.getY(), translation.getX(),
-                rotation.getAsDouble(), fieldOrientedControl.getAsBoolean());
+                rotation.getAsDouble(), fieldOrientedControl.getAsBoolean(), false);
     }
 
     private void acceptInputs(ChassisSpeeds speeds) {
