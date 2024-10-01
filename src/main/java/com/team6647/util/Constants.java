@@ -242,7 +242,7 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 45.0;
+                public static final double pivotKp = 20.0;
                 public static final double pivotKi = 1.5;
                 public static final double pivotKd = 0.0;
                 public static final double pivotMaxVel = 0.6;

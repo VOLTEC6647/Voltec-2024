@@ -61,10 +61,10 @@ public class ShooterPivotIOTalonFX implements ShooterPivotIO {
                 leftConfig.Slot0.kP = ShooterConstants.pivotKp;
                 leftConfig.Slot0.kI = ShooterConstants.pivotKi;
                 leftConfig.Slot0.kD = ShooterConstants.pivotKd;
-                leftConfig.Slot0.kS = 0.21761;
-                leftConfig.Slot0.kA = 0.011057;
-                leftConfig.Slot0.kV = 0.082246;
-                leftConfig.Slot0.kG = 0.5;
+                leftConfig.Slot0.kS = 0.14999;
+                leftConfig.Slot0.kA = 0.0058939;
+                leftConfig.Slot0.kV = 0.09967;
+                leftConfig.Slot0.kG = 0.26902;//0.5
                 leftConfig.Slot0.GravityType = GravityTypeValue.Arm_Cosine;
 
                 leftConfig.MotionMagic.MotionMagicAcceleration = ShooterConstants.pivotMaxAccel;
