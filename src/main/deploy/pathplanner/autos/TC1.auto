@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 0.44,
+      "y": 7.32
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -12,6 +18,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "AngleMid"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -19,6 +31,12 @@
                 "type": "path",
                 "data": {
                   "pathName": "TopShoot"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PrepareShoot"
                 }
               }
             ]
@@ -43,9 +61,15 @@
           }
         },
         {
-          "type": "sequential",
+          "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "TopOut"
+                }
+              },
               {
                 "type": "race",
                 "data": {
@@ -53,31 +77,38 @@
                     {
                       "type": "wait",
                       "data": {
-                        "waitTime": 10.0
+                        "waitTime": 7.0
                       }
                     },
                     {
-                      "type": "named",
+                      "type": "sequential",
                       "data": {
-                        "name": "ExtendIntake"
+                        "commands": [
+                          {
+                            "type": "wait",
+                            "data": {
+                              "waitTime": 1.0
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "ExtendIntake"
+                            }
+                          }
+                        ]
                       }
                     }
                   ]
                 }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "IntakeHome"
-                }
-              },
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "TopOut"
-                }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "IntakeHome"
           }
         },
         {
@@ -97,7 +128,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "PrepareCamShoott"
+                        "name": "PrepareShoot"
                       }
                     }
                   ]
@@ -113,15 +144,15 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 2.0
+            "name": "ReadyShoott"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "ReadyShoott"
+            "name": "Idle"
           }
         }
       ]

@@ -113,7 +113,8 @@ public class SuperStructure {
         INTAKE_IDLE,
         PREPARE_AUTO_SHOOTING_SUBWOOFER,
         PREPARE_AUTO_SHOOTING,
-        INTAKE_HOMED, INTAKE_DONE, ERROR, READY
+        INTAKE_HOMED, INTAKE_DONE, ERROR, READY,
+        INSTANT_SHOOT
     }
 
     public static Command update(SuperStructureState newState) {
@@ -183,6 +184,8 @@ public class SuperStructure {
                 return intakeIdleCommand();
             case INTAKE_HOMED:
                 return intakeHomeCommand();
+            case INSTANT_SHOOT:
+                return instantShootCommand();
             default:
                 break;
         }
@@ -242,8 +245,8 @@ public class SuperStructure {
 
     public static boolean canShoot = false;
     private static Command prepareAutoShootingSubwoofer() {
-        return Commands.deadline(
-                Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
+        return Commands.sequence(
+                //Commands.waitUntil(() -> shooterSubsystem.getBeamBrake()),
                 Commands.sequence(
                         setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
                         new InstantCommand(() -> {
@@ -254,10 +257,16 @@ public class SuperStructure {
                         Commands.parallel(
                                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING))
-                                .withTimeout(1),//huh? 3
-                        Commands.waitUntil( ()-> canShoot),
-                        new InstantCommand(()->{canShoot = false;}),
-                        new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
+                                .withTimeout(2)//huh? 3
+                        ));
+    }
+
+    private static Command instantShootCommand(){
+        return Commands.sequence(
+            new InstantCommand(()->{canShoot = false;}),
+            new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING),
+            new WaitCommand(1)
+            );
     }
 
     private static Command setGoalCommand(SuperStructureState state) {

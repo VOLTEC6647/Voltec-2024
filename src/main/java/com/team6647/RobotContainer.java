@@ -223,7 +223,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 SuperStructure.update(SuperStructureState.AUTO_INDEXING));
                 
                 NamedCommands.registerCommand("Idle",
-                                SuperStructure.update(SuperStructureState.INTAKE_HOMED).withTimeout(1));
+                                SuperStructure.update(SuperStructureState.AUTO_IDLE).withTimeout(1));
                 NamedCommands.registerCommand("VisionAlign",
                                 SuperStructure.update(SuperStructureState.INTAKE_ALIGN));
                 NamedCommands.registerCommand("SuppIndex",
@@ -238,8 +238,12 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
                 NamedCommands.registerCommand("PrepareShoot", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING_SUBWOOFER));
                 //NamedCommands.registerCommand("PrepareCamShoott", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING)); 
-                NamedCommands.registerCommand("ReadyShoott", new InstantCommand(()->{SuperStructure.canShoot=true;}));
-                NamedCommands.registerCommand("AngleLong", new InstantCommand(()->{SuperStructure.autoShootingAngle=-30;}));
+                NamedCommands.registerCommand("ReadyShoott", SuperStructure.update(SuperStructureState.INSTANT_SHOOT));
+
+
+                NamedCommands.registerCommand("AngleSub", new InstantCommand(()->{SuperStructure.autoShootingAngle=-45;}));
+                NamedCommands.registerCommand("AngleMid", new InstantCommand(()->{SuperStructure.autoShootingAngle=-30;}));
+                NamedCommands.registerCommand("AngleLong", new InstantCommand(()->{SuperStructure.autoShootingAngle=-20;}));
 
 
 
