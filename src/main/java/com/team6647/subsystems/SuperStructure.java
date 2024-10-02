@@ -47,6 +47,7 @@ import com.team6647.util.Constants;
 import com.team6647.util.ShootingCalculatorUtil;
 import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -114,7 +115,8 @@ public class SuperStructure {
         PREPARE_AUTO_SHOOTING_SUBWOOFER,
         PREPARE_AUTO_SHOOTING,
         INTAKE_HOMED, INTAKE_DONE, ERROR, READY,
-        INSTANT_SHOOT
+        INSTANT_SHOOT, WAITING_NOTE,
+        PREPARE_AMP
     }
 
     public static Command update(SuperStructureState newState) {
@@ -186,6 +188,10 @@ public class SuperStructure {
                 return intakeHomeCommand();
             case INSTANT_SHOOT:
                 return instantShootCommand();
+            case WAITING_NOTE:
+                return waitingNoteCommand();
+            case PREPARE_AMP:
+                return prepareAutoScoreAmp();
             default:
                 break;
         }
@@ -264,7 +270,8 @@ public class SuperStructure {
     private static Command instantShootCommand(){
         return Commands.sequence(
             new InstantCommand(()->{canShoot = false;}),
-            new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING),
+            new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.SHOOTING),
+            new InstantCommand(()->{SuperStructure.hasNote=false;}),
             new WaitCommand(1)
             );
     }
@@ -318,8 +325,8 @@ public class SuperStructure {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.AUTO_INTAKING),
                 IntakeCommands.getIntakeCommand(),
-                Commands.waitSeconds(0.5))
-                .andThen(SuperStructure.update(SuperStructureState.AUTO_IDLE));
+                Commands.waitSeconds(0))//0.5
+                .andThen(SuperStructure.update(SuperStructureState.INTAKE_IDLE));
     }
 
     private static Command indexingCommand() {
@@ -386,11 +393,8 @@ public class SuperStructure {
             
                 setGoalCommand(SuperStructureState.INTAKE_IDLE),
                 Commands.parallel(
-                            
-                            new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED),
-                                            new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED)
-
-                             
+                    new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.STOPPED),
+                    new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.STOPPED)                             
                 ),
                 new InitIntake(intakePivotSubsystem),
                 Commands.parallel(
@@ -634,6 +638,15 @@ public class SuperStructure {
                         new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING)));
     }
 
+    private static Command prepareAutoScoreAmp() {
+        return Commands.sequence(
+                Commands.sequence(
+                        prepareScoreAmp(),
+                        Commands.waitSeconds(1.5),
+                        setGoalCommand(SuperStructureState.AUTO_AMP)
+                        ));
+    }
+
     private static Command prepareScoreAmp() {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.PREPARING_AMP),
@@ -712,6 +725,15 @@ public class SuperStructure {
                         new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
+    }
+
+    public static boolean hasNote = false;
+
+    public static Command waitingNoteCommand() {
+        return Commands.sequence(
+                //Commands.waitUntil(() -> new Debouncer(0.1).calculate(!intakeSubsystem.getBeamBrake()))
+                Commands.waitUntil(() -> hasNote)
+                );
     }
 
 

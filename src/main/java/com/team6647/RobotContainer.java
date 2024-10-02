@@ -68,6 +68,7 @@ import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -216,7 +217,7 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("GrabPiece",
                                 SuperStructure.update(SuperStructureState.AUTO_INTAKING_COMPLETE));
                 NamedCommands.registerCommand("ExtendIntake",
-                                SuperStructure.update(SuperStructureState.AUTO_INTAKING));
+                                SuperStructure.update(SuperStructureState.INTAKING_COMPLETE));//AUTO_INTAKING
                 NamedCommands.registerCommand("IntakeHomed",
                                 SuperStructure.update(SuperStructureState.INTAKE_HOMED).withTimeout(1)); 
                 NamedCommands.registerCommand("IndexPiece",
@@ -237,6 +238,8 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("ShootMove", Commands.waitSeconds(0));
                 NamedCommands.registerCommand("PrepareShoot", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING_SUBWOOFER));
+                NamedCommands.registerCommand("PrepareAmp", SuperStructure.update(SuperStructureState.PREPARE_AMP));
+
                 //NamedCommands.registerCommand("PrepareCamShoott", SuperStructure.update(SuperStructureState.PREPARE_AUTO_SHOOTING)); 
                 NamedCommands.registerCommand("ReadyShoott", SuperStructure.update(SuperStructureState.INSTANT_SHOOT));
 
@@ -245,7 +248,7 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("AngleMid", new InstantCommand(()->{SuperStructure.autoShootingAngle=-30;}));
                 NamedCommands.registerCommand("AngleLong", new InstantCommand(()->{SuperStructure.autoShootingAngle=-20;}));
 
-
+                NamedCommands.registerCommand("WaitForNote", SuperStructure.update(SuperStructureState.WAITING_NOTE));
 
                 autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
                                 AutoBuilder.buildAutoChooser());

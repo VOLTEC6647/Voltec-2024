@@ -71,7 +71,7 @@ public class Constants {
                 /* Driver 2 */
 
                 public static final Trigger
-                                GMODE2 = driverController1.back(),
+                                GMODE2 = driverController2.back(),
 
                                 TOGGLE_INTAKE = driverController2.povRight(),
                                 INDEXING = driverController2.povUp(),

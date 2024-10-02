@@ -185,7 +185,7 @@ public class ShooterSubsystem extends SubsystemBase {
   }
 
   public boolean getBeamBrake() {
-    return inputs.beamBrake;
+    return !inputs.beamBrake;
   }
 
   public void runFlywheelCharacterization(double volts) {

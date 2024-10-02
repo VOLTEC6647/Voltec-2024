@@ -11,6 +11,7 @@ import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeExtend;
 import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerTarget;
+import com.team6647.subsystems.SuperStructure;
 import com.team6647.subsystems.intake.pivot.IntakePivotSubsystem;
 import com.team6647.subsystems.intake.roller.IntakeSubsystem;
 import com.team6647.subsystems.intake.roller.IntakeSubsystem.IntakeRollerState;
@@ -19,6 +20,7 @@ import com.team6647.util.Constants;
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 public class IntakeCommands {
 
@@ -30,9 +32,11 @@ public class IntakeCommands {
                 Debouncer debounce = new Debouncer(0.1);
 
                 return Commands.sequence(
+                        new InstantCommand(()->{SuperStructure.hasNote=false;}),
                                 new IntakeExtend().andThen(new InitIntake(intakePivotSubsystem)),
                                 new IntakeRollerTarget(intakeSubsystem, IntakeRollerState.INTAKING),
                                 Commands.waitUntil(() -> debounce.calculate(!intakeSubsystem.getBeamBrake())),
+                                new InstantCommand(()->{SuperStructure.hasNote=true;}),
                                 new IntakeRollerTarget(
                                                 intakeSubsystem,
                                                 IntakeRollerState.STOPPED),

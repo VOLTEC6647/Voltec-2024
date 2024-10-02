@@ -30,13 +30,13 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "TopShoot"
+                  "pathName": "TopToAmp"
                 }
               },
               {
                 "type": "named",
                 "data": {
-                  "name": "PrepareShoot"
+                  "name": "PrepareAmp"
                 }
               }
             ]
@@ -55,12 +55,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "AngleLong"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [
@@ -71,7 +65,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "TopOut"
+                        "pathName": "AmpToLeft"
                       }
                     },
                     {
@@ -83,7 +77,7 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "5ToShoot"
+                        "pathName": "LeftToAmp"
                       }
                     }
                   ]
@@ -98,11 +92,69 @@
                       "data": {
                         "commands": [
                           {
-                            "type": "wait",
+                            "type": "named",
                             "data": {
-                              "waitTime": 1.0
+                              "name": "ExtendIntake"
                             }
                           },
+                          {
+                            "type": "named",
+                            "data": {
+                              "name": "PrepareAmp"
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ReadyShoott"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "AmpToCenter"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "WaitForNote"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "race",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "sequential",
+                      "data": {
+                        "commands": [
                           {
                             "type": "named",
                             "data": {
