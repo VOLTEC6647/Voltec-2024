@@ -249,6 +249,8 @@ public class RobotContainer extends SuperRobotContainer {
                 NamedCommands.registerCommand("AngleLong", new InstantCommand(()->{SuperStructure.autoShootingAngle=-20;}));
 
                 NamedCommands.registerCommand("WaitForNote", SuperStructure.update(SuperStructureState.WAITING_NOTE));
+                NamedCommands.registerCommand("AutoAlign", SuperStructure.update(SuperStructureState.AUTO_ALIGN));
+
 
                 autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
                                 AutoBuilder.buildAutoChooser());

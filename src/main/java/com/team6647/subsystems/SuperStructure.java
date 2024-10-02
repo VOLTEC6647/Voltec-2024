@@ -116,7 +116,7 @@ public class SuperStructure {
         PREPARE_AUTO_SHOOTING,
         INTAKE_HOMED, INTAKE_DONE, ERROR, READY,
         INSTANT_SHOOT, WAITING_NOTE,
-        PREPARE_AMP
+        PREPARE_AMP, AUTO_ALIGN
     }
 
     public static Command update(SuperStructureState newState) {
@@ -192,6 +192,8 @@ public class SuperStructure {
                 return waitingNoteCommand();
             case PREPARE_AMP:
                 return prepareAutoScoreAmp();
+            case AUTO_ALIGN:
+                return new VisionSpeakerAlign(andromedaSwerve, visionSubsystem);
             default:
                 break;
         }

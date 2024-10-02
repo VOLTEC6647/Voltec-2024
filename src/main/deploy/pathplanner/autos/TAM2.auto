@@ -164,6 +164,12 @@
                           {
                             "type": "named",
                             "data": {
+                              "name": "AngleMid"
+                            }
+                          },
+                          {
+                            "type": "named",
+                            "data": {
                               "name": "PrepareShoot"
                             }
                           }
@@ -174,6 +180,12 @@
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "AutoAlign"
           }
         },
         {
