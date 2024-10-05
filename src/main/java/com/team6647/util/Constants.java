@@ -62,8 +62,8 @@ public class Constants {
                                 FACE_RIGHT = driverController1.x(),
 
                                 SHOOTER_ALIGN1 = driverController1.leftBumper().or(driverController1.back()),
-                                LEFT_PASS_ALIGN = driverController1.leftTrigger(),
-                                RIGHT_PASS_ALIGN = driverController1.rightTrigger(),
+                                INTAKE_ALIGN = driverController1.leftTrigger(),
+                                PASS_ALIGN = driverController1.rightTrigger(),
                                 
                                 STRAIGHT = driverController1.rightBumper(),
                                 DEBUG_IDLE = driverController1.povUp();
@@ -282,7 +282,7 @@ public class Constants {
 
                 public static final int forwardLimitSwitchID = 7;
 
-                public static final double subwooferRPM = 2200;
+                public static final double subwooferRPM = 2500;
                 public static final double shootingRPM = 5000;
 
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();

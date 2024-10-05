@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.44,
-      "y": 7.32
+      "x": 0.4357068913852507,
+      "y": 7.319272841113443
     },
     "rotation": 0
   },
@@ -82,31 +82,24 @@
                     }
                   ]
                 }
+              }
+            ]
+          }
+        },
+        {
+          "type": "sequential",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ExtendIntake"
+                }
               },
               {
-                "type": "race",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "sequential",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "ExtendIntake"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PrepareAmp"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  "name": "PrepareAmp"
                 }
               }
             ]
@@ -135,13 +128,19 @@
                     {
                       "type": "path",
                       "data": {
-                        "pathName": "AmpToCenterN"
+                        "pathName": "AmpToRightN"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
                         "name": "WaitForNote"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "RightNToMiddle"
                       }
                     }
                   ]
@@ -164,7 +163,7 @@
                           {
                             "type": "named",
                             "data": {
-                              "name": "AngleMid"
+                              "name": "AngleSub"
                             }
                           },
                           {
@@ -198,6 +197,12 @@
           "type": "named",
           "data": {
             "name": "Idle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleOut"
           }
         }
       ]

@@ -19,7 +19,7 @@ public class HeadingController {
     private LoggedTunableNumber kp = new LoggedTunableNumber("HeadingController/kp", 3.5);
     private LoggedTunableNumber ki = new LoggedTunableNumber("HeadingController/ki", 0.0);
     private LoggedTunableNumber kd = new LoggedTunableNumber("HeadingController/kd", 0.00001);
-    private LoggedTunableNumber maxSpeed = new LoggedTunableNumber("HeadingController/maxSpeed", 50);
+    private LoggedTunableNumber maxSpeed = new LoggedTunableNumber("HeadingController/maxSpeed", 90);
     private LoggedTunableNumber maxAcceleration = new LoggedTunableNumber("HeadingController/maxAcceleration", 50);
     private LoggedTunableNumber headingTolerance = new LoggedTunableNumber("HeadingController/tolerance", 1);
 

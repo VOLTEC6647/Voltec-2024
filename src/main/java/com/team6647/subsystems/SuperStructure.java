@@ -116,7 +116,7 @@ public class SuperStructure {
         PREPARE_AUTO_SHOOTING,
         INTAKE_HOMED, INTAKE_DONE, ERROR, READY,
         INSTANT_SHOOT, WAITING_NOTE,
-        PREPARE_AMP, AUTO_ALIGN
+        PREPARE_AMP, AUTO_ALIGN, INSTANT_SHOOT_T
     }
 
     public static Command update(SuperStructureState newState) {
@@ -188,6 +188,8 @@ public class SuperStructure {
                 return intakeHomeCommand();
             case INSTANT_SHOOT:
                 return instantShootCommand();
+            case INSTANT_SHOOT_T:
+                return instantShootTCommand();
             case WAITING_NOTE:
                 return waitingNoteCommand();
             case PREPARE_AMP:
@@ -265,8 +267,17 @@ public class SuperStructure {
                         Commands.parallel(
                                 new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                                 new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING))
-                                .withTimeout(2)//huh? 3
+                                .withTimeout(3)//huh? 3
                         ));
+    }
+
+    private static Command instantShootTCommand(){
+        return Commands.sequence(
+            new InstantCommand(()->{canShoot = false;}),
+            new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.SHOOTING),
+            new InstantCommand(()->{SuperStructure.hasNote=false;}),
+            new WaitCommand(1)
+            );
     }
 
     private static Command instantShootCommand(){
@@ -586,9 +597,9 @@ public class SuperStructure {
                         new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
                 setGoalCommand(SuperStructureState.READY),
-                Commands.waitUntil(()-> OperatorConstants.READY.getAsBoolean()),
-                setGoalCommand(SuperStructureState.ERROR),
-                new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.SHOOTING));
+                Commands.waitUntil(()-> OperatorConstants.READY.getAsBoolean())
+                
+                );
                 
                 
                

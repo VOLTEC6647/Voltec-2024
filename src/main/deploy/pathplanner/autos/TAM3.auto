@@ -143,14 +143,7 @@
                       "data": {
                         "name": "WaitForNote"
                       }
-                    }
-                  ]
-                }
-              },
-              {
-                "type": "race",
-                "data": {
-                  "commands": [
+                    },
                     {
                       "type": "sequential",
                       "data": {
@@ -186,6 +179,75 @@
           "type": "named",
           "data": {
             "name": "AutoAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ReadyShoott"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "CenterNToRightN"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "WaitForNote"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "RightNToMiddle"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ExtendIntake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AngleLong"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "PrepareAmp"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
           }
         },
         {

@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.4122852182936875,
-      "y": 7.178742802564065
+      "x": 0.41,
+      "y": 7.18
     },
     "rotation": 0
   },
@@ -70,7 +70,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftToAmp"
+            "pathName": "LeftNToAmp"
           }
         },
         {

@@ -38,12 +38,15 @@ public class VisionSubsystem extends SubsystemBase {
 
     return instance;
   }
+  public boolean updateEnabled = true;
 
   @Override
   public void periodic() {
     io.updateInputs(inputs, andromedaSwerve.getSwerveAngle(), andromedaSwerve.getHeadingVelocity());
     Logger.processInputs("Vision", inputs);
-    computeVisionMeasurements();
+    if(updateEnabled){
+      computeVisionMeasurements();
+    }
     Logger.recordOutput("IsAutonomous", DriverStation.isAutonomous());
   }
 

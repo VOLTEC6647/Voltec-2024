@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.44,
-      "y": 7.32
+      "x": 1.2437546130441748,
+      "y": 5.515804013063089
     },
     "rotation": 0
   },
@@ -20,7 +20,25 @@
         {
           "type": "named",
           "data": {
-            "name": "AngleMid"
+            "name": "AngleSub"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PrepareShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ReadyShoott"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
           }
         },
         {
@@ -28,15 +46,110 @@
           "data": {
             "commands": [
               {
-                "type": "path",
+                "type": "sequential",
                 "data": {
-                  "pathName": "TopToAmp"
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "CenterToMiddleN"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "WaitForNote"
+                      }
+                    }
+                  ]
                 }
               },
               {
-                "type": "named",
+                "type": "sequential",
                 "data": {
-                  "name": "PrepareAmp"
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ExtendIntake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "AngleLong"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "PrepareShoot"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ReadyShoott"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Idle"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "MiddleNToRight"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "WaitForNote"
+                      }
+                    },
+                    {
+                      "type": "path",
+                      "data": {
+                        "pathName": "RightNToAmp"
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "ExtendIntake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "PrepareAmp"
+                      }
+                    }
+                  ]
                 }
               }
             ]
@@ -82,110 +195,27 @@
                     }
                   ]
                 }
-              },
-              {
-                "type": "race",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "sequential",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "ExtendIntake"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PrepareAmp"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "ReadyShoott"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Idle"
-          }
-        },
-        {
-          "type": "parallel",
+          "type": "sequential",
           "data": {
             "commands": [
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "path",
-                      "data": {
-                        "pathName": "AmpToCenterN"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "WaitForNote"
-                      }
-                    }
-                  ]
+                  "name": "ExtendIntake"
                 }
               },
               {
-                "type": "race",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "sequential",
-                      "data": {
-                        "commands": [
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "ExtendIntake"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "AngleMid"
-                            }
-                          },
-                          {
-                            "type": "named",
-                            "data": {
-                              "name": "PrepareShoot"
-                            }
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  "name": "PrepareAmp"
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "AutoAlign"
           }
         },
         {
@@ -198,6 +228,12 @@
           "type": "named",
           "data": {
             "name": "Idle"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MiddleOut"
           }
         }
       ]

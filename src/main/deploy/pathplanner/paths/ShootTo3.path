@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.7967169800245437,
-        "y": 5.550936522700434
+        "x": 5.143463182789417,
+        "y": 1.3350353662190912
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.330836567521922,
-        "y": 3.642070165738049
+        "x": 6.6775827702867945,
+        "y": -0.5738309907432941
       },
       "isLocked": false,
       "linkedName": "CShoot"
@@ -39,13 +39,11 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0
+    "rotation": 0,
+    "rotateFast": false
   },
   "reversed": false,
   "folder": null,
-  "idealStartingState": {
-    "rotation": 0,
-    "velocity": 0
-  },
+  "previewStartingState": null,
   "useDefaultConstraints": true
 }

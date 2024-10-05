@@ -63,6 +63,7 @@ import com.team6647.subsystems.vision.VisionSubsystem;
 import com.team6647.subsystems.vision.VisionIO;
 import com.team6647.subsystems.vision.VisionIOLimelight;
 import com.team6647.subsystems.vision.VisionIOSim;
+import com.team6647.util.AllianceFlipUtil;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
@@ -246,10 +247,12 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("AngleSub", new InstantCommand(()->{SuperStructure.autoShootingAngle=-45;}));
                 NamedCommands.registerCommand("AngleMid", new InstantCommand(()->{SuperStructure.autoShootingAngle=-30;}));
-                NamedCommands.registerCommand("AngleLong", new InstantCommand(()->{SuperStructure.autoShootingAngle=-20;}));
 
                 NamedCommands.registerCommand("WaitForNote", SuperStructure.update(SuperStructureState.WAITING_NOTE));
                 NamedCommands.registerCommand("AutoAlign", SuperStructure.update(SuperStructureState.AUTO_ALIGN));
+
+                NamedCommands.registerCommand("EnableLL", new InstantCommand(()->{visionSubsystem.updateEnabled = true;}));
+                NamedCommands.registerCommand("DisableLL", new InstantCommand(()->{visionSubsystem.updateEnabled = false;}));
 
 
                 autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
@@ -538,23 +541,27 @@ public class RobotContainer extends SuperRobotContainer {
                 }).repeatedly()
                 ).onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
 
-                OperatorConstants.LEFT_PASS_ALIGN.onTrue(
+                OperatorConstants.INTAKE_ALIGN.onTrue(
                         new InstantCommand(()->{
-                        andromedaSwerve.setTargetHeading(new Rotation2d(-30));
+                        andromedaSwerve.setTargetHeading(AllianceFlipUtil.apply(new Rotation2d(30)));
                         Drive.setMDriveMode(DriveMode.HEADING_LOCK);
                 })).onFalse(
                         new InstantCommand(()->{
                         Drive.setMDriveMode(DriveMode.TELEOP);
                 }));
 
-                OperatorConstants.RIGHT_PASS_ALIGN.onTrue(
+                OperatorConstants.PASS_ALIGN.onTrue(
                         new InstantCommand(()->{
-                        andromedaSwerve.setTargetHeading(new Rotation2d(30));
+                        andromedaSwerve.setTargetHeading(AllianceFlipUtil.apply(new Rotation2d(124)));
                         Drive.setMDriveMode(DriveMode.HEADING_LOCK);
                 })).onFalse(
                         new InstantCommand(()->{
                         Drive.setMDriveMode(DriveMode.TELEOP);
                 }));
+
+                OperatorConstants.READY.whileTrue(
+                        SuperStructure.update(SuperStructureState.INSTANT_SHOOT_T)
+                );
 
                 
 
@@ -611,7 +618,8 @@ public class RobotContainer extends SuperRobotContainer {
                         */
                         
                 OperatorConstants.SHOOTER_ALIGN1.or(OperatorConstants.SHOOTER_ALIGN2).whileTrue(
-                new VisionSpeakerAlign(andromedaSwerve, visionSubsystem).repeatedly())
+                        new InstantCommand(()->{visionSubsystem.updateEnabled = true;}).andThen(
+                new VisionSpeakerAlign(andromedaSwerve, visionSubsystem).repeatedly()))
                 .onFalse(new InstantCommand(()->
                 {Drive.setMDriveMode(DriveMode.TELEOP);}));
 
@@ -648,4 +656,6 @@ public class RobotContainer extends SuperRobotContainer {
         public Command getAutonomousCommand() {
                 return autoDashboardChooser.get();
         }
+        
+        
 }
