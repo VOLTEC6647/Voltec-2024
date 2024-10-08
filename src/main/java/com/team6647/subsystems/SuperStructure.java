@@ -576,12 +576,13 @@ public class SuperStructure {
                 new ShooterRollerTarget(rollerSubsystem, ShooterFeederState.INTAKING));
     }
 
-    public static int subwooferRotation = -45;
+    public static int subwooferRotation = ShooterConstants.angleSubwoofer;
 
     private static Command shootingSubwoofer2P() {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHOOTING_SUBWOOFER),
                 new InstantCommand(() -> {
+                    /*
                     if(!OperatorConstants.GMODE2.getAsBoolean()){
                         subwooferRotation = -35             ;
                     }else{
@@ -589,6 +590,7 @@ public class SuperStructure {
                             subwooferRotation = -40;
                         }
                     }
+                     */
                     ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), subwooferRotation, ShooterConstants.subwooferRPM);
 
                     updateShootingParameters(ampParams);

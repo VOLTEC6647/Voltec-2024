@@ -74,9 +74,13 @@ public class Constants {
                                 GMODE2 = driverController2.back(),
 
                                 TOGGLE_INTAKE = driverController2.povRight(),
-                                INDEXING = driverController2.povUp(),
-                                INTAKE_SHUTTLE = driverController2.povDown(),
-                                INTAKING_ONLY_FORCED = driverController2.povLeft(),
+                                INDEXING = NONE,//driverController2.povUp(),
+                                INTAKE_SHUTTLE = NONE,//driverController2.povDown(),
+                                INTAKING_ONLY_FORCED = NONE,//driverController2.povLeft(),
+
+                                TARGET_FAR = driverController2.povUp(),
+                                TARGET_LINE = driverController2.povLeft(),
+                                TARGET_SUBWOOFER = driverController2.povDown(),
                                 
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = NONE,
@@ -284,6 +288,10 @@ public class Constants {
 
                 public static final double subwooferRPM = 2500;
                 public static final double shootingRPM = 5000;
+
+                public static final int angleSubwoofer = -45;
+                public static final int angleLine = -35;
+                public static final int angleFar = -30;
 
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 

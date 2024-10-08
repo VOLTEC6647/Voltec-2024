@@ -24,6 +24,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.InitIntake;
 import com.team6647.commands.IntakeRollerStartEnd;
+import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerStartEnd;
 import com.team6647.commands.ShooterRollerTarget;
 import com.team6647.commands.VisionSpeakerAlign;
@@ -68,6 +69,7 @@ import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.ShooterConstants;
+import com.team6647.util.ShootingCalculatorUtil.ShootingParameters;
 
 import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -625,6 +627,29 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.DEBUG_IDLE.onTrue(
                         SuperStructure.update(SuperStructureState.IDLE)
+                );
+
+                OperatorConstants.TARGET_SUBWOOFER.or(OperatorConstants.TARGET_LINE).or(OperatorConstants.TARGET_FAR).onTrue(
+                        new InstantCommand(()->{
+                                if(OperatorConstants.TARGET_SUBWOOFER.getAsBoolean()){
+                                        SuperStructure.subwooferRotation = ShooterConstants.angleSubwoofer;
+                                }
+                                if(OperatorConstants.TARGET_LINE.getAsBoolean()){
+                                        SuperStructure.subwooferRotation = ShooterConstants.angleLine;
+                                }
+                                if(OperatorConstants.TARGET_FAR.getAsBoolean()){
+                                        SuperStructure.subwooferRotation = ShooterConstants.angleFar;
+                                }
+                        }).andThen(
+                                new InstantCommand(() -> {
+                                        ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), SuperStructure.subwooferRotation, ShooterConstants.subwooferRPM);
+                                        SuperStructure.updateShootingParameters(ampParams);}).andThen(
+                                Commands.sequence(
+                                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING)
+                                ).onlyIf(()->SuperStructure.mRobotState==SuperStructureState.READY||SuperStructure.mRobotState==SuperStructureState.SHOOTING_SUBWOOFER)
+                        )
+                        )
+
                 );
         
         }
