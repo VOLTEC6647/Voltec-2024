@@ -173,7 +173,7 @@ public class SuperStructure {
                 return new VisionIntakeAlign(neuralVisionSubsystem,
                         andromedaSwerve);
             case SHUTTLE:
-                return sendNotes();
+                return sendNotes2P();
             case PREPARE_CLIMB:
                 return prepareClimb();
             case CLIMBING:
@@ -599,7 +599,11 @@ public class SuperStructure {
                         new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
                         new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
                 setGoalCommand(SuperStructureState.READY),
-                Commands.waitUntil(()-> OperatorConstants.READY.getAsBoolean())
+                Commands.sequence(
+                        new RunCommand(() -> leds.strobePurple(0.2)).withTimeout(2),
+                        new RunCommand(() -> leds.solidPurple()))
+                        .repeatedly()
+                //Commands.waitUntil(()-> OperatorConstants.READY.getAsBoolean())
                 
                 );
                 
@@ -610,6 +614,23 @@ public class SuperStructure {
     private static final LEDSubsystem leds = LEDSubsystem.getInstance();
 
     private static Command sendNotes() {
+        return Commands.sequence(
+                setGoalCommand(SuperStructureState.SHUTTLE),
+                new InstantCommand(() -> {
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 2800);//-1
+                    //ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), shuttleAngle.getAsDouble(), shuttleRPM.getAsDouble());
+
+                    updateShootingParameters(ampParams);
+                }),
+                Commands.parallel(
+                        new FlywheelTarget(shooterSubsystem, FlywheelState.SHOOTING),
+                        new ShooterPivotTarget(shooterPivotSubsystem, ShooterPivotState.SHOOTING)),
+                Commands.sequence(
+                        new RunCommand(() -> leds.strobePurple(0.2)).withTimeout(2),
+                        new RunCommand(() -> leds.solidPurple())).repeatedly());
+    }
+
+    private static Command sendNotes2P() {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHUTTLE),
                 new InstantCommand(() -> {
