@@ -470,10 +470,9 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.SHUTTLE
                                 .whileTrue(
                                 new FlywheelTarget(shooterSubsystem, FlywheelState.PREPARING)
-                                .andThen(Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.READY))
-                                .onlyIf(()->OperatorConstants.TOGGLE_INTAKE.getAsBoolean())
+                                .andThen(Commands.waitUntil(()->SuperStructure.mRobotState==SuperStructureState.READY)).onlyIf(()->OperatorConstants.TOGGLE_INTAKE.getAsBoolean())
                                 .andThen(SuperStructure.update(SuperStructureState.SHUTTLE)))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.TOGGLE_INTAKE.getAsBoolean()));
 
                 // -------- Amp Commands --------
 
@@ -554,6 +553,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.PASS_ALIGN.onTrue(
                         new InstantCommand(()->{
+                        //  Swerve/Rotation
                         andromedaSwerve.setTargetHeading(AllianceFlipUtil.apply(new Rotation2d(124)));
                         Drive.setMDriveMode(DriveMode.HEADING_LOCK);
                 })).onFalse(
