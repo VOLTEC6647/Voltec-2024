@@ -566,7 +566,8 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.READY.whileTrue(
                         SuperStructure.update(SuperStructureState.INSTANT_SHOOT_T).onlyIf(()->SuperStructure.mRobotState != SuperStructureState.IDLE)
-                );
+                ).onFalse(SuperStructure.update(SuperStructureState.IDLE))
+                ;
 
                 OperatorConstants.ITEST.whileTrue(
                 new InstantCommand(()->{intakePivotSubsystem.setIntakeVoltage(2.00);})        

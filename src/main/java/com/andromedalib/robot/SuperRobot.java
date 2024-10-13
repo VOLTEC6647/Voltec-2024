@@ -6,6 +6,7 @@ package com.andromedalib.robot;
 import org.littletonrobotics.junction.LoggedRobot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -45,6 +46,7 @@ public class SuperRobot extends LoggedRobot {
     public void robotInit() {
         container.initSubsystems();
         container.configureBindings();
+        SmartDashboard.putData(CommandScheduler.getInstance());
 
         if (useCamera)
             CameraServer.startAutomaticCapture();
