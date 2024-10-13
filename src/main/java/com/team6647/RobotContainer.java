@@ -23,6 +23,7 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team6647.commands.FlywheelTarget;
 import com.team6647.commands.InitIntake;
+import com.team6647.commands.IntakeHome;
 import com.team6647.commands.IntakeRollerStartEnd;
 import com.team6647.commands.ShooterPivotTarget;
 import com.team6647.commands.ShooterRollerStartEnd;
@@ -566,6 +567,13 @@ public class RobotContainer extends SuperRobotContainer {
                 OperatorConstants.READY.whileTrue(
                         SuperStructure.update(SuperStructureState.INSTANT_SHOOT_T).onlyIf(()->SuperStructure.mRobotState != SuperStructureState.IDLE)
                 );
+
+                OperatorConstants.ITEST.whileTrue(
+                new InstantCommand(()->{intakePivotSubsystem.setIntakeVoltage(2.00);})        
+                //new IntakeHome(intakePivotSubsystem)
+                );
+
+        
 
                 
 
