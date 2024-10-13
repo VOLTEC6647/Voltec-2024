@@ -71,9 +71,10 @@ public class SuperStructure {
     @AutoLogOutput(key = "SuperStructure/State")
     public static SuperStructureState mRobotState = SuperStructureState.IDLE;
     
-    private static LoggedTunableNumber shuttleAngle = new LoggedTunableNumber("Shooter/Pivot/ShuttleAngle", 1);
-    private static LoggedTunableNumber shuttleRPM = new LoggedTunableNumber("Shooter/Pivot/ShuttleAngle", 2500);
-
+    //private static LoggedTunableNumber shuttleAngle = new LoggedTunableNumber("Shooter/Pivot/ShuttleAngle", 1);
+    public static int shuttleAngle = ShooterConstants.shuttleAngle1;
+    //private static LoggedTunableNumber shuttleRPM = new LoggedTunableNumber("Shooter/Pivot/ShuttleAngle", 2500);
+    public static int shuttleRPM = ShooterConstants.shuttleRPM1;
 
     public static SuperStructure getInstance() {
         if (instance == null) {
@@ -634,7 +635,7 @@ public class SuperStructure {
         return Commands.sequence(
                 setGoalCommand(SuperStructureState.SHUTTLE),
                 new InstantCommand(() -> {
-                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), -45, 2800);//-1
+                    ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), shuttleAngle, shuttleRPM);//-1
                     //ShootingParameters ampParams = new ShootingParameters(new Rotation2d(), shuttleAngle.getAsDouble(), shuttleRPM.getAsDouble());
 
                     updateShootingParameters(ampParams);

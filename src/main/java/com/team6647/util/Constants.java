@@ -55,17 +55,17 @@ public class Constants {
                                 //BACKWARD_DYNAMIC_CHARACTERIZATION_TRIGGER = driverController1.povLeft(),
                                 RESET_GYRO = driverController1.povDown(),
 
-                                GMODE1 = driverController1.rightBumper(),
+                                //GMODE1 = driverController1.rightBumper(),
                                 FACE_UP = driverController1.a(),
                                 FACE_DOWN = driverController1.y(),
                                 FACE_LEFT = driverController1.b(),
                                 FACE_RIGHT = driverController1.x(),
 
-                                SHOOTER_ALIGN1 = driverController1.leftBumper().or(driverController1.back()),
-                                INTAKE_ALIGN = driverController1.leftTrigger(),
+                                SHOOTER_ALIGN1 = driverController1.rightBumper().or(driverController1.back()),
+                                INTAKE_ALIGN = NONE,//driverController1.leftTrigger(),
                                 PASS_ALIGN = driverController1.rightTrigger(),
                                 
-                                STRAIGHT = driverController1.rightBumper(),
+                                STRAIGHT = driverController1.leftBumper(),
                                 DEBUG_IDLE = driverController1.povUp();
 
                 /* Driver 2 */
@@ -74,18 +74,19 @@ public class Constants {
                                 GMODE2 = driverController2.back(),
 
                                 TOGGLE_INTAKE = driverController2.povRight(),
-                                INDEXING = NONE,//driverController2.povUp(),
-                                INTAKE_SHUTTLE = NONE,//driverController2.povDown(),
-                                INTAKING_ONLY_FORCED = NONE,//driverController2.povLeft(),
+                                INDEXING = driverController2.povUp(),
+                                INTAKE_SHUTTLE = driverController2.povDown(),
+                                INTAKING_ONLY = NONE,
+                                INTAKING_ONLY_FORCED = driverController2.povLeft(),
 
-                                TARGET_FAR = driverController2.povUp(),
-                                TARGET_LINE = driverController2.povLeft(),
-                                TARGET_SUBWOOFER = driverController2.povDown(),
+                                TARGET_FAR = NONE,//driverController2.povUp(),
+                                TARGET_LINE = new Trigger(() -> driverController1.getLeftY() > 0.6),
+                                TARGET_SUBWOOFER = new Trigger(() -> driverController1.getLeftY() < -0.6),
                                 
                                 TOGGLE_AMP = driverController2.x(),
                                 SHOOT_SPEAKER = NONE,
-                                SHOOT_SUBWOOFER = driverController2.b(), //SHOOT_SUBWOOFER = driverController2.a(),
-                                READY = driverController2.a(),
+                                SHOOT_SUBWOOFER = driverController2.a(), //SHOOT_SUBWOOFER = driverController2.a(),
+                                READY = driverController2.b(),
                                 SHUTTLE = driverController2.y(),
                                 
                                 CLIMB_TOP = driverController2.povUp(),
@@ -97,7 +98,7 @@ public class Constants {
                                 //FORCE_IDLE = driverController2.povLeft(),
                                 PREPARE_CLIMB = driverController2.leftBumper(),
                                 CLIMB = driverController2.rightBumper(),
-                                RE_ENABLE_PIVOT = driverController2.leftStick().and(driverController1.rightStick()),
+                                RE_ENABLE_PIVOT = driverController2.leftStick(),
                                 //PREPARE_SHOOTER = driverController2.rightStick(),//driverController2.start();
                                 PREPARE_SHOOTER = new Trigger(()->Math.abs(driverController2.getRightX())>0.2||Math.abs(driverController2.getRightY())>0.2),
                                 UNPREPARE_SHOOTER = driverController2.start(),
@@ -292,6 +293,13 @@ public class Constants {
                 public static final int angleSubwoofer = -45;
                 public static final int angleLine = -35;
                 public static final int angleFar = -30;
+
+                public static final int shuttleAngle1 = -45;
+                public static final int shuttleRPM1 = 2800;
+                public static final int shuttleAngle2 = -45;
+                public static final int shuttleRPM2 = 2800;
+                public static final int shuttleAngle3 = -45;
+                public static final int shuttleRPM3 = 2800;
 
                 public static final InterpolatingDoubleTreeMap shooterPivotMap = new InterpolatingDoubleTreeMap();
 

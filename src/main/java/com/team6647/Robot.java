@@ -68,7 +68,7 @@ public class Robot extends SuperRobot {
 
     System.out.println("[Init] Instantiating RobotContainer");
     container = RobotContainer.getInstance();
-    super.setRobotContainer(container, false);
+    super.setRobotContainer(container, true);
     super.robotInit();
   }
 

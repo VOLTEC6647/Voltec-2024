@@ -44,10 +44,10 @@ public class NeuralVisionSubsystem extends SubsystemBase {
     return instance;
   }
 
-  @Override
+  //@Override
   public void periodic() {
-    io.updateInputs(inputs);
-    Logger.processInputs("Neural", inputs);
+    ////io.updateInputs(inputs);
+    ////Logger.processInputs("Neural", inputs);
   }
 
   /* 

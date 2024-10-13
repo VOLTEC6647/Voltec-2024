@@ -65,6 +65,7 @@ import com.team6647.subsystems.vision.VisionIO;
 import com.team6647.subsystems.vision.VisionIOLimelight;
 import com.team6647.subsystems.vision.VisionIOSim;
 import com.team6647.util.AllianceFlipUtil;
+import com.team6647.util.CameraServerThread;
 import com.team6647.util.Constants.DriveConstants;
 import com.team6647.util.Constants.OperatorConstants;
 import com.team6647.util.Constants.RobotConstants;
@@ -146,6 +147,7 @@ public class RobotContainer extends SuperRobotContainer {
                                 visionSubsystem = VisionSubsystem.getInstance(new VisionIOLimelight());
                                 neuralVisionSubsystem = NeuralVisionSubsystem
                                                 .getInstance(new NeuralVisionIOLimelight());
+                                //CameraServerThread.init();
                                 break;
                         case SIM:
                                 andromedaSwerve = Drive.getInstance(
@@ -404,7 +406,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // Complete intaking sequence
                 OperatorConstants.TOGGLE_INTAKE
-                                .onTrue(SuperStructure.update(SuperStructureState.INTAKING_COMPLETE))
+                                .whileTrue(SuperStructure.update(SuperStructureState.INTAKING_COMPLETE))
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()));
 
                 // Pass intake from intake to shooter
@@ -413,9 +415,9 @@ public class RobotContainer extends SuperRobotContainer {
                                 .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // Intake only, no shooter
-                //OperatorConstants.INTAKING_ONLY
-                                //.whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
-                                //.onFalse(SuperStructure.update(SuperStructureState.IDLE));
+                OperatorConstants.INTAKING_ONLY
+                                .whileTrue(SuperStructure.update(SuperStructureState.INTAKING))
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));
 
                 // Ignores Beam Break
 
@@ -426,14 +428,14 @@ public class RobotContainer extends SuperRobotContainer {
                 // -------- Shooter Commands --------
 
                 OperatorConstants.PREPARE_SHOOTER
-                                .onTrue(new InstantCommand(()->{
+                                .whileTrue(new InstantCommand(()->{
 
                                                 shooterSubsystem.setFlywheelState(FlywheelState.PREPARING);
                                         }
                                 ));
 
                 OperatorConstants.UNPREPARE_SHOOTER
-                                .onTrue(new InstantCommand(()->{
+                                .whileTrue(new InstantCommand(()->{
 
                                                 shooterSubsystem.setFlywheelState(FlywheelState.STOPPED);
                                         }
@@ -542,7 +544,7 @@ public class RobotContainer extends SuperRobotContainer {
                 }).repeatedly()
                 ).onFalse(new InstantCommand(()->{Drive.setMDriveMode(DriveMode.TELEOP);}));
 
-                OperatorConstants.INTAKE_ALIGN.onTrue(
+                OperatorConstants.INTAKE_ALIGN.whileTrue(
                         new InstantCommand(()->{
                         andromedaSwerve.setTargetHeading(AllianceFlipUtil.apply(new Rotation2d(30)));
                         Drive.setMDriveMode(DriveMode.HEADING_LOCK);
@@ -551,7 +553,7 @@ public class RobotContainer extends SuperRobotContainer {
                         Drive.setMDriveMode(DriveMode.TELEOP);
                 }));
 
-                OperatorConstants.PASS_ALIGN.onTrue(
+                OperatorConstants.PASS_ALIGN.whileTrue(
                         new InstantCommand(()->{
                         //  Swerve/Rotation
                         andromedaSwerve.setTargetHeading(AllianceFlipUtil.apply(new Rotation2d(124)));
@@ -562,7 +564,7 @@ public class RobotContainer extends SuperRobotContainer {
                 }));
 
                 OperatorConstants.READY.whileTrue(
-                        SuperStructure.update(SuperStructureState.INSTANT_SHOOT_T)
+                        SuperStructure.update(SuperStructureState.INSTANT_SHOOT_T).onlyIf(()->SuperStructure.mRobotState != SuperStructureState.IDLE)
                 );
 
                 
@@ -633,12 +635,18 @@ public class RobotContainer extends SuperRobotContainer {
                         new InstantCommand(()->{
                                 if(OperatorConstants.TARGET_SUBWOOFER.getAsBoolean()){
                                         SuperStructure.subwooferRotation = ShooterConstants.angleSubwoofer;
+                                        SuperStructure.shuttleAngle = ShooterConstants.shuttleAngle1;
+                                        SuperStructure.shuttleRPM = ShooterConstants.shuttleRPM1;
                                 }
                                 if(OperatorConstants.TARGET_LINE.getAsBoolean()){
                                         SuperStructure.subwooferRotation = ShooterConstants.angleLine;
+                                        SuperStructure.shuttleAngle = ShooterConstants.shuttleAngle2;
+                                        SuperStructure.shuttleRPM = ShooterConstants.shuttleRPM2;
                                 }
                                 if(OperatorConstants.TARGET_FAR.getAsBoolean()){
                                         SuperStructure.subwooferRotation = ShooterConstants.angleFar;
+                                        SuperStructure.shuttleAngle = ShooterConstants.shuttleAngle3;
+                                        SuperStructure.shuttleRPM = ShooterConstants.shuttleRPM3;
                                 }
                         }).andThen(
                                 new InstantCommand(() -> {
