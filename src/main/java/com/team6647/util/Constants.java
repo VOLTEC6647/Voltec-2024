@@ -113,7 +113,7 @@ public class Constants {
 
                 public static final boolean tuningMode = true;
 
-                public static final String mechanismsCANnivore = "6647_Mechanisms";
+                public static final String mechanismsCANnivore = "rio";
 
                 public static Mode getMode() {
                         if ((currentMode == Mode.SIM || currentMode == Mode.REPLAY) && RobotBase.isReal()) {
