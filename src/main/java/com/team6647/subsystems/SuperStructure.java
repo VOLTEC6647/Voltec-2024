@@ -299,8 +299,9 @@ public class SuperStructure {
                 ShooterCommands.getShooterIntakingCommand(),
                 setGoalCommand(SuperStructureState.INTAKING_COMPLETE),
                 Commands.sequence(
-                        IntakeCommands.getFullIntakeCommand(),
-                        Commands.waitSeconds(0.3)))
+                        IntakeCommands.getFullIntakeCommand()
+                        ,Commands.waitSeconds(0.1)//0.3
+                        ))
 
                 .andThen(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.INSTANT_SHOOTER.getAsBoolean()))
                 .andThen(Commands.sequence(

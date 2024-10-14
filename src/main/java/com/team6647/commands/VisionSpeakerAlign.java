@@ -34,7 +34,7 @@ public class VisionSpeakerAlign extends Command {
     this.swerve = swevre;
     this.visionSubsystem = visionSubsystem;
 
-    addRequirements(visionSubsystem, swerve);
+    addRequirements(visionSubsystem/*, swerve*/);
   }
 
   @Override
@@ -47,6 +47,8 @@ public class VisionSpeakerAlign extends Command {
 
   @Override
   public void execute() {
+
+    speakerPose = AllianceFlipUtil.apply(Speaker.centerSpeakerOpening.toTranslation2d());
     this.parameters = ShootingCalculatorUtil.getShootingParameters(RobotState.getPose(),
         speakerPose);
 

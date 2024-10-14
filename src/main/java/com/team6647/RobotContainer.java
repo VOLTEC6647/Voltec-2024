@@ -78,6 +78,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
@@ -139,15 +140,19 @@ public class RobotContainer extends SuperRobotContainer {
                                                                                                 AndromedaMap.mod4Const)),
                                                 }, DriveConstants.andromedaSwerveConfig);
                                 intakeSubsystem = IntakeSubsystem.getInstance(new IntakeIOTalonFX());
-                                intakePivotSubsystem = IntakePivotSubsystem
-                                                .getInstance(new IntakePivotIOSparkMaxKraken());
+                                SmartDashboard.putData(intakeSubsystem);
+                                intakePivotSubsystem = IntakePivotSubsystem.getInstance(new IntakePivotIOSparkMaxKraken());
+                                SmartDashboard.putData(intakePivotSubsystem);
                                 shooterPivotSubsystem = ShooterPivotSubsystem.getInstance(new ShooterPivotIOTalonFX());
+                                SmartDashboard.putData(shooterPivotSubsystem);
                                 shooterSubsystem = ShooterSubsystem.getInstance(new ShooterIOKraken());
-                                shooterRollerSubsystem = ShooterRollerSubsystem
-                                                .getInstance(new ShooterIORollerSparkMax());
+                                SmartDashboard.putData(shooterSubsystem);
+                                shooterRollerSubsystem = ShooterRollerSubsystem.getInstance(new ShooterIORollerSparkMax());
+                                SmartDashboard.putData(shooterRollerSubsystem);
                                 visionSubsystem = VisionSubsystem.getInstance(new VisionIOLimelight());
-                                neuralVisionSubsystem = NeuralVisionSubsystem
-                                                .getInstance(new NeuralVisionIOLimelight());
+                                SmartDashboard.putData(visionSubsystem);
+                                neuralVisionSubsystem = NeuralVisionSubsystem.getInstance(new NeuralVisionIOLimelight());
+                                SmartDashboard.putData(neuralVisionSubsystem);
                                 //CameraServerThread.init();
                                 break;
                         case SIM:
@@ -204,6 +209,7 @@ public class RobotContainer extends SuperRobotContainer {
 
                 // -------- Auto Declaration --------
 
+                if(false){
                 
                 NamedCommands.registerCommand("InitIntake",
                                 new InitIntake(intakePivotSubsystem));
@@ -258,7 +264,9 @@ public class RobotContainer extends SuperRobotContainer {
 
                 NamedCommands.registerCommand("EnableLL", new InstantCommand(()->{visionSubsystem.updateEnabled = true;}));
                 NamedCommands.registerCommand("DisableLL", new InstantCommand(()->{visionSubsystem.updateEnabled = false;}));
+                NamedCommands.registerCommand("Exit", new WaitCommand(10000));
 
+                }
 
                 autoDashboardChooser = new LoggedDashboardChooser<>("Auto chooser",
                                 AutoBuilder.buildAutoChooser());
@@ -408,7 +416,7 @@ public class RobotContainer extends SuperRobotContainer {
                 // Complete intaking sequence
                 OperatorConstants.TOGGLE_INTAKE
                                 .whileTrue(SuperStructure.update(SuperStructureState.INTAKING_COMPLETE))
-                                .onFalse(SuperStructure.update(SuperStructureState.IDLE).onlyIf(()->!OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()));
+                                .onFalse(SuperStructure.update(SuperStructureState.IDLE));//.onlyIf(()->!OperatorConstants.SHOOT_SUBWOOFER.getAsBoolean()));
 
                 // Pass intake from intake to shooter
                 OperatorConstants.INDEXING
@@ -533,9 +541,19 @@ public class RobotContainer extends SuperRobotContainer {
                 // -------- Auto heading --------
                 //55 deg
                 OperatorConstants.FACE_UP.or(OperatorConstants.FACE_DOWN.or(OperatorConstants.FACE_LEFT.or(OperatorConstants.FACE_RIGHT)))
-                .onTrue(new InstantCommand(()->{
+                .onTrue(
+                        new InstantCommand(()->{
+                        int divAmount = (OperatorConstants.FACE_DOWN.getAsBoolean()?1 : 0)+(OperatorConstants.FACE_UP.getAsBoolean()?1:0)+(OperatorConstants.FACE_LEFT.getAsBoolean()? 1 : 0)+(OperatorConstants.FACE_RIGHT.getAsBoolean()? 1 : 0);
+                        Rotation2d dir = new Rotation2d((0+(OperatorConstants.FACE_DOWN.getAsBoolean()?Math.PI : 0)+(OperatorConstants.FACE_LEFT.getAsBoolean()?Math.PI/2 : 0)+(OperatorConstants.FACE_RIGHT.getAsBoolean()?-Math.PI/2 : 0))/divAmount);
+                        System.out.println(dir.getDegrees());
+                        System.out.println(divAmount);
+                        andromedaSwerve.setTargetHeading(dir);}
+                        ).andThen(
+                        new InstantCommand(()->{
+                        
                         Drive.setMDriveMode(DriveMode.HEADING_LOCK);
-                })).whileTrue(
+                })))
+                .whileTrue(
                         new InstantCommand(()->{
                         int divAmount = (OperatorConstants.FACE_DOWN.getAsBoolean()?1 : 0)+(OperatorConstants.FACE_UP.getAsBoolean()?1:0)+(OperatorConstants.FACE_LEFT.getAsBoolean()? 1 : 0)+(OperatorConstants.FACE_RIGHT.getAsBoolean()? 1 : 0);
                         Rotation2d dir = new Rotation2d((0+(OperatorConstants.FACE_DOWN.getAsBoolean()?Math.PI : 0)+(OperatorConstants.FACE_LEFT.getAsBoolean()?Math.PI/2 : 0)+(OperatorConstants.FACE_RIGHT.getAsBoolean()?-Math.PI/2 : 0))/divAmount);
@@ -547,17 +565,18 @@ public class RobotContainer extends SuperRobotContainer {
 
                 OperatorConstants.INTAKE_ALIGN.whileTrue(
                         new InstantCommand(()->{
-                        andromedaSwerve.setTargetHeading(AllianceFlipUtil.apply(new Rotation2d(30)));
+                        andromedaSwerve.setTargetHeading(AllianceFlipUtil.apply(Rotation2d.fromDegrees(30)));
                         Drive.setMDriveMode(DriveMode.HEADING_LOCK);
                 })).onFalse(
                         new InstantCommand(()->{
                         Drive.setMDriveMode(DriveMode.TELEOP);
                 }));
 
+                //public static double passAngle = 124;
                 OperatorConstants.PASS_ALIGN.whileTrue(
                         new InstantCommand(()->{
                         //  Swerve/Rotation
-                        andromedaSwerve.setTargetHeading(AllianceFlipUtil.apply(new Rotation2d(124)));
+                        andromedaSwerve.setTargetHeading(AllianceFlipUtil.apply(Rotation2d.fromDegrees(124)));
                         Drive.setMDriveMode(DriveMode.HEADING_LOCK);
                 })).onFalse(
                         new InstantCommand(()->{
@@ -631,8 +650,8 @@ public class RobotContainer extends SuperRobotContainer {
                         */
                         
                 OperatorConstants.SHOOTER_ALIGN1.or(OperatorConstants.SHOOTER_ALIGN2).whileTrue(
-                        new InstantCommand(()->{visionSubsystem.updateEnabled = true;}).andThen(
-                new VisionSpeakerAlign(andromedaSwerve, visionSubsystem).repeatedly()))
+                        new InstantCommand(()->{visionSubsystem.updateEnabled = true;Drive.setMDriveMode(DriveMode.HEADING_LOCK);}).andThen(
+                new VisionSpeakerAlign(andromedaSwerve, visionSubsystem).repeatedly()))//
                 .onFalse(new InstantCommand(()->
                 {Drive.setMDriveMode(DriveMode.TELEOP);}));
 
@@ -640,7 +659,7 @@ public class RobotContainer extends SuperRobotContainer {
                         SuperStructure.update(SuperStructureState.IDLE)
                 );
 
-                OperatorConstants.TARGET_SUBWOOFER.or(OperatorConstants.TARGET_LINE).or(OperatorConstants.TARGET_FAR).onTrue(
+                OperatorConstants.TARGET_SUBWOOFER.or(OperatorConstants.TARGET_LINE).or(OperatorConstants.TARGET_LINE).onTrue(
                         new InstantCommand(()->{
                                 if(OperatorConstants.TARGET_SUBWOOFER.getAsBoolean()){
                                         SuperStructure.subwooferRotation = ShooterConstants.angleSubwoofer;

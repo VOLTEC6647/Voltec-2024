@@ -16,6 +16,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.team6647.util.Constants.RobotConstants;
 import com.team6647.util.Constants.ShooterConstants;
 
+import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.wpilibj.DigitalInput;
 
 public class ShooterIOKraken implements ShooterIO {
@@ -34,6 +35,8 @@ public class ShooterIOKraken implements ShooterIO {
 
         private VelocityVoltage topFlywheelVelocityVoltage = new VelocityVoltage(0).withSlot(0);
         private VelocityVoltage bottomFlywheelVelocityVoltage = new VelocityVoltage(0).withSlot(0);
+
+        Debouncer debounce = new Debouncer(0.2);
 
         public ShooterIOKraken() {
                 topFlywheelMotor.getConfigurator().apply(new TalonFXConfiguration());
@@ -64,7 +67,9 @@ public class ShooterIOKraken implements ShooterIO {
                 inputs.topMotorTemperature = topFlywheelMotor.getDeviceTemp().getValue();
                 inputs.bottomMotorTemperature = botttomFlywheelMotor.getDeviceTemp().getValue();
 
-                inputs.beamBrake = shooterBeamBrake.get();
+                inputs.beamBrake =shooterBeamBrake.get();
+                ///                inputs.beamBrake = debounce.calculate(shooterBeamBrake.get());
+
         }
 
         @Override

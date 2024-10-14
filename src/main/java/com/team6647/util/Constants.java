@@ -212,8 +212,8 @@ public class Constants {
                                         Units.inchesToMeters(197.765), Units.inchesToMeters(78.324));
 
                         /** Center of the speaker opening (blue alliance) */
-                        public static Translation3d centerSpeakerOpening = bottomLeftSpeaker
-                                        .interpolate(topRightSpeaker, 0.5);
+                        public static Translation3d centerSpeakerOpening = (bottomLeftSpeaker.plus(bottomLeftSpeaker)).div(2);
+                                        //.interpolate(topRightSpeaker, 0.5);
 
                         public static Translation2d TargetLocation = new Translation2d(0.06, 5.55);
 
@@ -249,7 +249,7 @@ public class Constants {
 
                 public static final double shooterTolerance = 100.0;
 
-                public static final double pivotKp = 20.0;
+                public static final double pivotKp = 50.0;
                 public static final double pivotKi = 1.5;
                 public static final double pivotKd = 0.0;
                 public static final double pivotMaxVel = 0.6;
@@ -298,7 +298,7 @@ public class Constants {
 
                 public static final int shuttleAngle1 = -45;
                 public static final int shuttleRPM1 = 2800;
-                public static final int shuttleAngle2 = -45;
+                public static final int shuttleAngle2 = -37;
                 public static final int shuttleRPM2 = 2800;
                 public static final int shuttleAngle3 = -45;
                 public static final int shuttleRPM3 = 2800;
@@ -408,8 +408,8 @@ public class Constants {
                 public static final double intakeExhaustingVelocity = 0.5;
                 public static final double intakeIdleVelocity = -0.1;
 
-                public static final double pushingAcutatingPosition = 7;
-                public static final double pushingHomedPosition = 1;
+                public static final double pushingAcutatingPosition = 21;
+                public static final double pushingHomedPosition = 2;
 
                 public static final int pushingLimitSwitch = 9;
                 public static final int intakeLimitSwitchLChannel = 1;

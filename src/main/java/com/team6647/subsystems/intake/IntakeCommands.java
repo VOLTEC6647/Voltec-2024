@@ -29,7 +29,7 @@ public class IntakeCommands {
 
         public static final Command getFullIntakeCommand() {
 
-                Debouncer debounce = new Debouncer(0.1);
+                Debouncer debounce = new Debouncer(0.3);
 
                 return Commands.sequence(
                         new InstantCommand(()->{SuperStructure.hasNote=false;}),
@@ -47,7 +47,7 @@ public class IntakeCommands {
         }
 
         public static final Command getIntakeCommand() {
-                Debouncer debounce = new Debouncer(0.1);
+                Debouncer debounce = new Debouncer(0.3);
 
                 return Commands.sequence(
                                 new IntakeExtend().andThen(new InitIntake(intakePivotSubsystem)),

@@ -229,12 +229,6 @@
           "data": {
             "name": "Idle"
           }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "MiddleOut"
-          }
         }
       ]
     }
